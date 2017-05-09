@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/menu_personal"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_your_profile"
+            android:icon="@drawable/ic_nav_profile"
+            android:title="Your Profile"/>
+    </group>
+
+    <group
+        android:id="@+id/chef"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/navOnGoing"
+            android:title="On Going"/>
+        <item
+            android:id="@+id/navOnComplete"
+            android:title="On Completed"/>
+
+    </group>
+
+    <group
+        android:id="@+id/menu_page"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_setting"
+            android:title="Setting"/>
+        <item
+            android:id="@+id/nav_about"
+            android:title="About"/>
+
+    </group>
+
+    <group
+        android:id="@+id/menu_navigation"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/ic_nav_sign_out"
+            android:title="Sign out"/>
+    </group>
+</menu>

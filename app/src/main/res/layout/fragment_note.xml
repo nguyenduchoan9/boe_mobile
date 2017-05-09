@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.nux.dhoan9.firstmvvm.viewmodel.TodoListViewModel"/>
+
+        <variable
+            name="viewModel"
+            type="TodoListViewModel"/>
+    </data>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvTodos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:listBinder="@{viewModel.todoListBinder}"/>
+</layout>

@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.nux.dhoan9.firstmvvm.viewmodel.ProfileViewModel"/>
+
+        <variable
+            name="viewmodel"
+            type="ProfileViewModel"/>
+    </data>
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/activity_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="8dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/ivCoverProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="156dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/cover_profile"/>
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/ivAvatar"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="100dp"
+                        android:src="@drawable/placeholder"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/ivAvatar"
+                        android:layout_marginLeft="16dp"
+                        android:layout_toRightOf="@+id/ivAvatar"
+                        android:text="Nguyend Duc Hoang"
+                        android:textSize="24sp"/>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/header"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                        <TextView
+                            android:id="@+id/tvInfoAccount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Account"
+                            android:textSize="16sp"/>
+
+                        <include layout="@layout/separate_layout"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/tvTitleEmail"
+                                android:layout_width="96dp"
+                                android:layout_height="wrap_content"
+                                android:padding="4dp"
+                                android:text="Email"
+                                android:textSize="16sp"
+                                android:textStyle="bold|italic"/>
+
+                            <TextView
+                                android:id="@+id/tvUsername"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_toRightOf="@+id/tvTitleEmail"
+                                android:padding="4dp"
+                                android:text="@{viewmodel.email}"
+                                android:textSize="16sp"
+                                tools:text="uab@gmail.com"/>
+                        </RelativeLayout>
+
+                        <include layout="@layout/separate_layout"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/tvTitlePassword"
+                                android:layout_width="96dp"
+                                android:layout_height="wrap_content"
+                                android:padding="4dp"
+                                android:text="Password"
+                                android:textSize="16sp"
+                                android:textStyle="bold|italic"/>
+
+                            <TextView
+                                android:id="@+id/tvPassword"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_toRightOf="@+id/tvTitlePassword"
+                                android:padding="4dp"
+                                android:text="**************"
+                                android:textSize="16sp"/>
+                        </RelativeLayout>
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                        <TextView
+                            android:id="@+id/tvInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Information"
+                            android:textSize="16sp"/>
+
+                        <include layout="@layout/separate_layout"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/tvTitleFirstName"
+                                android:layout_width="96dp"
+                                android:layout_height="wrap_content"
+                                android:padding="4dp"
+                                android:text="First Name"
+                                android:textSize="16sp"
+                                android:textStyle="bold|italic"/>
+
+                            <TextView
+                                android:id="@+id/tvFirstName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_toRightOf="@+id/tvTitleFirstName"
+                                android:padding="4dp"
+                                android:text="@{viewmodel.firstName}"
+                                android:textSize="16sp"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginRight="8dp"
+                                android:src="@drawable/ic_create_24dp"/>
+                        </RelativeLayout>
+
+                        <include layout="@layout/separate_layout"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/tvTitleLastName"
+                                android:layout_width="96dp"
+                                android:layout_height="wrap_content"
+                                android:padding="4dp"
+                                android:text="Last Name"
+                                android:textSize="16sp"
+                                android:textStyle="bold|italic"/>
+
+                            <TextView
+                                android:id="@+id/tvClass"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_toRightOf="@+id/tvTitleLastName"
+                                android:padding="4dp"
+                                android:text="@{viewmodel.lastName}"
+                                android:textSize="16sp"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginRight="8dp"
+                                android:src="@drawable/ic_create_24dp"/>
+                        </RelativeLayout>
+
+                        <include layout="@layout/separate_layout"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/tvAddressTitle"
+                                android:layout_width="96dp"
+                                android:layout_height="wrap_content"
+                                android:padding="4dp"
+                                android:text="Address"
+                                android:textSize="16sp"
+                                android:textStyle="bold|italic"/>
+
+                            <TextView
+                                android:id="@+id/tvAddress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_toRightOf="@+id/tvAddressTitle"
+                                android:padding="4dp"
+                                android:text="@{viewmodel.address}"
+                                android:textSize="16sp"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginRight="8dp"
+                                android:src="@drawable/ic_create_24dp"/>
+                        </RelativeLayout>
+
+                        <include layout="@layout/separate_layout"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/tvPhoneTitle"
+                                android:layout_width="96dp"
+                                android:layout_height="wrap_content"
+                                android:padding="4dp"
+                                android:text="Phone"
+                                android:textSize="16sp"
+                                android:textStyle="bold|italic"/>
+
+                            <TextView
+                                android:id="@+id/tvPhone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_toRightOf="@+id/tvPhoneTitle"
+                                android:padding="4dp"
+                                android:text="@{viewmodel.phone}"
+                                android:textSize="16sp"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginRight="8dp"
+                                android:src="@drawable/ic_create_24dp"/>
+                        </RelativeLayout>
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ProgressBar
+                    android:id="@+id/pbLoading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"/>
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+</layout>

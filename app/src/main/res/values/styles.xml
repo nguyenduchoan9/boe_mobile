@@ -1,0 +1,52 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.NoStatusBar" parent="AppTheme.NoActionBar">
+        <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
+    </style>
+    <style name="CustomInputEditText">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorControlNormal">@color/whiteDark</item>
+        <item name="android:textColorHint">@color/whiteDark</item>
+    </style>
+
+    <style name="LoginButton">
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/medium_space</item>
+        <item name="android:textSize">@dimen/size_normal_text</item>
+        <item name="android:background">@drawable/login_button</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:elevation" tools:targetApi="lollipop">4dp</item>
+    </style>
+    <style name="RegisterButton">
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/medium_space</item>
+        <item name="android:textSize">@dimen/size_normal_text</item>
+        <item name="android:background">@drawable/register_button</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:elevation" tools:targetApi="lollipop">4dp</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.NavigationView">
+        <item name="android:listDivider">@color/colorDividerNavigation</item>
+        <item name="android:textColorSecondary">@color/colorTextNavigation</item>
+        <item name="android:textColorPrimary">@color/colorTextPrimaryNavigation</item>
+    </style>
+</resources>

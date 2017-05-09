@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Information">
+        <menu>
+            <group
+                android:id="@+id/menu_personal"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_your_profile"
+                    android:icon="@drawable/ic_nav_profile"
+                    android:title="Profile"/>
+                <item
+                    android:id="@+id/nav_your_order"
+                    android:icon="@drawable/ic_nav_profile"
+                    android:title="Order"/>
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="Categories">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/appetizer"
+                    android:icon="@drawable/ic_appetizer"
+                    android:title="Appetizer"/>
+                <item
+                    android:id="@+id/dessert"
+                    android:icon="@drawable/ic_dessert"
+                    android:title="Dessert"/>
+                <item
+                    android:id="@+id/first_course"
+                    android:icon="@drawable/ic_first_course"
+                    android:title="First Course"/>
+                <item
+                    android:id="@+id/main_course"
+                    android:icon="@drawable/ic_main"
+                    android:title="Main course"/>
+                <item
+                    android:id="@+id/side_dish"
+                    android:icon="@drawable/ic_side_dish"
+                    android:title="Side Dish"/>
+                <item
+                    android:id="@+id/vegetarian"
+                    android:icon="@drawable/ic_salad"
+                    android:title="Vegetarian"/>
+                <item
+                    android:id="@+id/cheap"
+                    android:icon="@drawable/ic_chip"
+                    android:title="Cheap"/>
+                <item
+                    android:id="@+id/pizza"
+                    android:icon="@drawable/ic_pizza"
+                    android:title="Pizza"/>
+            </group>
+        </menu>
+    </item>
+    <item android:title="More">
+        <menu>
+            <group
+                android:id="@+id/menu_page"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_setting"
+                    android:title="Setting"
+                    android:icon="@drawable/ic_settings_cogwheel"/>
+                <item
+                    android:id="@+id/nav_sign_out"
+                    android:icon="@drawable/ic_nav_sign_out"
+                    android:title="Sign out"/>
+            </group>
+        </menu>
+    </item>
+</menu>
