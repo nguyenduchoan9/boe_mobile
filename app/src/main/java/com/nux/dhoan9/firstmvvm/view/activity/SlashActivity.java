@@ -19,24 +19,30 @@ public class SlashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slash);
-        ((Application)getApplication()).getComponent()
+        ((Application) getApplication()).getComponent()
                 .inject(this);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                navigateUser();        
+                navigateUser();
             }
         }, 4000);
-        
+
 
     }
 
     private void navigateUser() {
-        if (preferencesManager.isLoggedin()) {
+//        if (preferencesManager.isLoggedin()) {
+//            startActivity(ChefActivity.newInstance(this));
+//        } else {
+//            startActivity(LoginActivity.newInstance(this));
+//        }
+        int role = preferencesManager.getRole();
+        if (1 == role) {
             startActivity(ChefActivity.newInstance(this));
-        } else {
-            startActivity(LoginActivity.newInstance(this));
+        } else if (2 == role) {
+            startActivity(CustomerActivity.newInstance(this));
         }
     }
 }

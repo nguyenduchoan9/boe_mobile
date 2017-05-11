@@ -17,7 +17,6 @@ import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityHomeBinding;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
-import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.view.fragment.NoteFragment;
 
 import javax.inject.Inject;

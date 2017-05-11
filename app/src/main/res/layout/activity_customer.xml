@@ -24,8 +24,7 @@
             android:fitsSystemWindows="true"
             android:nestedScrollingEnabled="true"
             android:theme="@style/AppTheme.NavigationView"
-            app:headerLayout="@layout/drawer_header"
-            app:menu="@menu/drawer_menu_customer">
+            app:headerLayout="@layout/drawer_header">
         </android.support.design.widget.NavigationView>
 
     </android.support.v4.widget.DrawerLayout>

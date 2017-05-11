@@ -1,6 +1,7 @@
 package com.nux.dhoan9.firstmvvm.data.repo;
 
 import com.nux.dhoan9.firstmvvm.model.Dish;
+import com.nux.dhoan9.firstmvvm.model.MenuCategories;
 import com.nux.dhoan9.firstmvvm.model.Todo;
 
 import java.util.List;
@@ -9,6 +10,6 @@ import java.util.List;
  */
 
 public interface DishRepo {
-    List<Dish> getDishes();
+    List<MenuCategories> getMenuCategories();
     Dish getDishDetail(int id);
 }

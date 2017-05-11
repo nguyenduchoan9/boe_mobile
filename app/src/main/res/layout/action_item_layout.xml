@@ -1,0 +1,39 @@
+<layout>
+
+    <data>
+
+        <variable
+            name="actionTitle"
+            type="String"/>
+    </data>
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                                        android:id="@+id/cvWrap"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="8dp"
+                                        android:layout_marginRight="8dp"
+                                        app:cardBackgroundColor="@color/aqua"
+                                        app:cardCornerRadius="20dp"
+                                        app:cardElevation="0dp"
+                                        app:cardUseCompatPadding="true">
+
+        <TextView
+            android:id="@+id/tvCatalogue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:padding="8dp"
+            android:text="@{actionTitle}"
+            android:textAlignment="gravity"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_medium_text"
+            android:textStyle="bold"
+            />
+    </android.support.v7.widget.CardView>
+</layout>
+
+
+

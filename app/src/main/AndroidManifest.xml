@@ -41,6 +41,13 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".view.activity.QRCodeScanActivity">
         </activity>
+        <activity
+            android:name=".view.activity.DishDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar.NoStatusBar"/>
+        <activity android:name=".view.activity.CartActivity">
+        </activity>
+        <activity android:name=".view.activity.HistoryActivity">
+        </activity>
     </application>
 
 </manifest>

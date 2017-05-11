@@ -6,7 +6,10 @@ import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
 import com.nux.dhoan9.firstmvvm.view.custom.TextChange;
 import com.nux.dhoan9.firstmvvm.view.custom.TextChangeAdapter;
@@ -50,5 +53,15 @@ public class BindingUtils {
             checkBox.setChecked(checked);
             checkBox.jumpDrawablesToCurrentState();
         }
+    }
+
+    @BindingAdapter("setImage")
+    public static void setResizedBackground(ImageView imageView, int resource) {
+        Glide.with(imageView.getContext())
+                .load(resource)
+                .asBitmap()
+                .override(120, 160)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .into(imageView);
     }
 }

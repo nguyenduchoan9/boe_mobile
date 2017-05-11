@@ -8,9 +8,9 @@ public class Dish {
     private int id;
     private String name;
     private float price;
-    private String image;
+    private int image;
 
-    public Dish(int id, String name, float price, String image) {
+    public Dish(int id, String name, float price, int image) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -41,11 +41,11 @@ public class Dish {
         this.price = price;
     }
 
-    public String getImage() {
+    public int getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(int image) {
         this.image = image;
     }
 }

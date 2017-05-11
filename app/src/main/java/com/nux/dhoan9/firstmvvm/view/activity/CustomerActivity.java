@@ -20,6 +20,7 @@ import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityCustomerBinding;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.view.adapter.CustomerFragmentAdapter;
+import com.nux.dhoan9.firstmvvm.view.custom.CustomViewPager;
 
 import javax.inject.Inject;
 
@@ -46,7 +47,8 @@ public class CustomerActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        ViewPager viewPager = binding.actionBarContent.content.viewPager;
+        CustomViewPager viewPager = binding.actionBarContent.content.viewPager;
+        viewPager.setPagingEnabled(false);
         FragmentPagerAdapter adapter = new CustomerFragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         TabLayout tabLayout = binding.actionBarContent.tabLayout;
@@ -106,12 +108,6 @@ public class CustomerActivity extends AppCompatActivity {
     private void initDependency() {
         ((Application) getApplication()).getComponent()
                 .inject(this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.setting_item, menu);
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

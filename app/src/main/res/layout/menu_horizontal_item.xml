@@ -1,0 +1,61 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.nux.dhoan9.firstmvvm.viewmodel.MenuCategoriesViewModel"/>
+
+        <variable
+            name="viewModel"
+            type="MenuCategoriesViewModel"/>
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        card_view:cardBackgroundColor="#fff"
+        card_view:cardCornerRadius="4dp"
+        card_view:elevation="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingTop="16dp">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="sans-serif-light | sans-serif-condensed"
+                android:text="@{viewModel.title}"
+                android:textSize="@dimen/size_medium_text"
+                android:textStyle="bold"
+                card_view:text="title"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/tvTitle"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                android:fontFamily="sans-serif-light | sans-serif-condensed"
+                android:text="more"
+                android:textAllCaps="true"
+                android:textColor="@android:color/holo_green_dark"
+                android:textSize="@dimen/size_small_text"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvDishes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvTitle"
+                android:layout_marginTop="8dp"/>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</layout>

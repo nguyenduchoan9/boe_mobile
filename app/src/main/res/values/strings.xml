@@ -7,4 +7,7 @@
     <string name="register_text">Register</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+
+    <string name="item_image_transition">item_image_transition</string>
+
 </resources>

@@ -9,7 +9,7 @@ public class DishViewModel {
     public final int id;
     public final String name;
     public final float price;
-    public final String image;
+    public final int image;
 
     public DishViewModel(Dish dish) {
         this.id = dish.getId();

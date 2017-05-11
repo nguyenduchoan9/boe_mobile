@@ -16,8 +16,16 @@ import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentMenuBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
+import com.nux.dhoan9.firstmvvm.model.ActionMenuHorizontal;
+import com.nux.dhoan9.firstmvvm.utils.Constant;
+import com.nux.dhoan9.firstmvvm.view.adapter.ActionAdapter;
 import com.nux.dhoan9.firstmvvm.view.adapter.DishListAdapter;
+import com.nux.dhoan9.firstmvvm.view.adapter.MenuCategoryListAdapter;
 import com.nux.dhoan9.firstmvvm.viewmodel.DishListViewModel;
+import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -26,11 +34,12 @@ import rx.android.schedulers.AndroidSchedulers;
 public class MenuFragment extends BaseFragment {
     FragmentMenuBinding binding;
     private RecyclerView rvDish;
+    private RecyclerView rvAction;
 
     @Inject
-    DishListAdapter adapter;
+    MenuCategoryListAdapter adapter;
     @Inject
-    DishListViewModel viewModel;
+    MenuCateListViewModel viewModel;
 
     public MenuFragment() {
         // Required empty public constructor
@@ -73,17 +82,28 @@ public class MenuFragment extends BaseFragment {
     private void initializer() {
         binding.setViewModel(viewModel);
         viewModel.initialize();
-        viewModel.scrollTo()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(pos -> rvDish.smoothScrollToPosition(pos));
+//        viewModel.scrollTo()
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(pos -> rvDish.smoothScrollToPosition(pos));
     }
 
     private void initView() {
-        StaggeredGridLayoutManager layoutManager =
-                new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
-        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+        LinearLayoutManager manager =
+                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvDish = binding.rvDish;
         rvDish.setAdapter(adapter);
-        rvDish.setLayoutManager(layoutManager);
+        rvDish.setLayoutManager(manager);
+
+        LinearLayoutManager managerAction =
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        rvAction = binding.rvAction;
+        ActionAdapter actionAdapter = new ActionAdapter(getContext());
+        rvAction.setAdapter(actionAdapter);
+        rvAction.setLayoutManager(managerAction);
+
+        List<ActionMenuHorizontal> actionMenuHorizontals = new ArrayList<>();
+        actionMenuHorizontals.add(new ActionMenuHorizontal("CART", Constant.MENU_TYPE_CART));
+        actionMenuHorizontals.add(new ActionMenuHorizontal("HISTORY", Constant.MENU_TYPE_HISTORY));
+        actionAdapter.initialize(actionMenuHorizontals);
     }
 }

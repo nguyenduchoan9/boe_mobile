@@ -27,4 +27,7 @@ public class Constant {
 
     public final static String SCANNER_RESULT_CONTENT = "SCANNER_RESULT_CONTENT";
     public final static String SCANNER_RESULT_QRCODE = "SCANNER_RESULT_QRCODE";
+
+    public final static int MENU_TYPE_CART = 1;
+    public final static int MENU_TYPE_HISTORY = 2;
 }

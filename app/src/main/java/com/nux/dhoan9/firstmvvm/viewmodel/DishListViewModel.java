@@ -40,8 +40,8 @@ public class DishListViewModel {
         return dishes;
     }
 
-    public void initialize() {
-        dishes.addAll(dishesViewModel(dishRepo.getDishes()));
+    public void initialize(List<Dish> dishesItem) {
+        dishes.addAll(dishesViewModel(dishesItem));
         listBinder.notifyDataChange(dishes);
     }
 

@@ -1,6 +1,8 @@
 package com.nux.dhoan9.firstmvvm.data.repo;
 
+import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.model.Dish;
+import com.nux.dhoan9.firstmvvm.model.MenuCategories;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,19 +11,13 @@ import java.util.List;
  */
 
 public class DishRepoImpl implements DishRepo {
+    List<MenuCategories> menu;
+    String[] titles = {"Suggest", "Discount", "Menu"};
     List<Dish> dishes;
 
-    public DishRepoImpl() {
-        dishes = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            dishes.add(new Dish(i, "Dish - " + i, 9999,
-                    i % 2 == 0 ? "chocolate_ball.jpg" : "chocolate_cake.jpg"));
-        }
-    }
-
     @Override
-    public List<Dish> getDishes() {
-        return dishes;
+    public List<MenuCategories> getMenuCategories() {
+        return menu;
     }
 
     private int indexOf(Dish dish) {
@@ -36,5 +32,25 @@ public class DishRepoImpl implements DishRepo {
             }
         }
         return null;
+    }
+
+    private int nextId() {
+        return dishes.size();
+    }
+
+    public DishRepoImpl() {
+        menu = new ArrayList<>();
+        dishes = new ArrayList<>();
+        for (int title = 0; title < titles.length; title++) {
+            List<Dish> dishByCategory = new ArrayList<>();
+            for (int i = 0; i < 20; i++) {
+                Dish dish = new Dish(nextId(), "Dish - " + i, 9999,
+                        i % 2 == 0 ? R.drawable.chocolate_ball : R.drawable.chocolate_cake);
+                dishes.add(dish);
+                dishByCategory.add(dish);
+            }
+            menu.add(new MenuCategories(titles[title], dishByCategory));
+        }
+
     }
 }
