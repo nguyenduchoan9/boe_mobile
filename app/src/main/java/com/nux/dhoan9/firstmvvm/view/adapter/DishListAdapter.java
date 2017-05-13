@@ -17,14 +17,19 @@ import android.view.ViewGroup;
 
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.DishItemLayoutBinding;
+import com.nux.dhoan9.firstmvvm.dependency.scope.ActivityScope;
+import com.nux.dhoan9.firstmvvm.dependency.scope.ForActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.DishDetailActivity;
 import com.nux.dhoan9.firstmvvm.viewmodel.DishListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.DishViewModel;
 
 import java.util.List;
+
+import javax.inject.Inject;
 /**
  * Created by hoang on 08/05/2017.
  */
+@ActivityScope
 public class DishListAdapter extends Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
@@ -33,7 +38,8 @@ public class DishListAdapter extends Adapter<RecyclerView.ViewHolder> {
     private final LayoutInflater inflater;
     private Context mContext;
 
-    public DishListAdapter(DishListViewModel viewModel, Context context) {
+    @Inject
+    public DishListAdapter(DishListViewModel viewModel, @ForActivity Context context) {
         this.viewModel = viewModel;
         this.inflater = LayoutInflater.from(context);
         this.mContext = context;

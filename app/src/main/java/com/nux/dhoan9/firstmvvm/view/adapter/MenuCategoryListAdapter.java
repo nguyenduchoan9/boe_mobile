@@ -11,6 +11,7 @@ import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.MenuHorizontalItemBinding;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ActivityScope;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ForActivity;
+import com.nux.dhoan9.firstmvvm.view.activity.DishesByCategoryActivity;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCategoriesViewModel;
 
@@ -62,6 +63,9 @@ public class MenuCategoryListAdapter extends RecyclerView.Adapter<MenuCategoryLi
         }
 
         private void initView(MenuCategoriesViewModel viewModel) {
+            binding.tvMore.setOnClickListener(v -> {
+                mContext.startActivity(DishesByCategoryActivity.newInstance(mContext));
+            });
             LinearLayoutManager manager =
                     new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
             rvDishes = binding.rvDishes;

@@ -53,4 +53,8 @@ public class DishRepoImpl implements DishRepo {
         }
 
     }
+
+    public List<Dish> getDishes(){
+        return dishes;
+    }
 }

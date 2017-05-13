@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout>
 
     <data>
 
@@ -10,31 +10,91 @@
             type="MenuCateListViewModel"/>
     </data>
 
-    <ScrollView
+    <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:layout_width="match_parent">
+        android:background="#fff">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent"
-                      android:orientation="vertical">
+        <FrameLayout
+            android:id="@+id/frContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottomNavigation"/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvAction"
+        <com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom
+            android:id="@+id/bottomNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#fff"
+            android:elevation="8dp"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <RelativeLayout
+                android:id="@+id/rlCutlery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"/>
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="8dp">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvDish"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@id/rvDish"
-                android:layout_marginTop="8dp"/>
+                <ImageView
+                    android:id="@+id/ivCutlery"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_cutlery"/>
+            </RelativeLayout>
 
-        </LinearLayout>
-    </ScrollView>
+            <RelativeLayout
+                android:id="@+id/rlDrinking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <ImageView
+                    android:id="@+id/ivDrinking"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_wine_bottle"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlOrder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <ImageView
+                    android:id="@+id/ivOrder"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_order"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <ImageView
+                    android:id="@+id/ivHistory"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_history"/>
+            </RelativeLayout>
+        </com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom>
+    </RelativeLayout>
 </layout>

@@ -12,4 +12,5 @@ import java.util.List;
 public interface DishRepo {
     List<MenuCategories> getMenuCategories();
     Dish getDishDetail(int id);
+    List<Dish> getDishes();
 }

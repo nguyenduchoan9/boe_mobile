@@ -5,9 +5,10 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,30 +17,23 @@ import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentMenuBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
-import com.nux.dhoan9.firstmvvm.model.ActionMenuHorizontal;
-import com.nux.dhoan9.firstmvvm.utils.Constant;
-import com.nux.dhoan9.firstmvvm.view.adapter.ActionAdapter;
-import com.nux.dhoan9.firstmvvm.view.adapter.DishListAdapter;
 import com.nux.dhoan9.firstmvvm.view.adapter.MenuCategoryListAdapter;
-import com.nux.dhoan9.firstmvvm.viewmodel.DishListViewModel;
+import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-
 public class MenuFragment extends BaseFragment {
     FragmentMenuBinding binding;
-    private RecyclerView rvDish;
-    private RecyclerView rvAction;
-
+    private int fragmentPos;
     @Inject
     MenuCategoryListAdapter adapter;
     @Inject
     MenuCateListViewModel viewModel;
+    CutleryFragment cutleryFragment = new CutleryFragment();
+    DrinkingFragment drinkingFragment = new DrinkingFragment();
+    OrderFragment orderFragment = new OrderFragment();
+    HistoryFragment historyFragment = new HistoryFragment();
 
     public MenuFragment() {
         // Required empty public constructor
@@ -80,30 +74,103 @@ public class MenuFragment extends BaseFragment {
     }
 
     private void initializer() {
-        binding.setViewModel(viewModel);
-        viewModel.initialize();
-//        viewModel.scrollTo()
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(pos -> rvDish.smoothScrollToPosition(pos));
     }
 
     private void initView() {
-        LinearLayoutManager manager =
-                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        rvDish = binding.rvDish;
-        rvDish.setAdapter(adapter);
-        rvDish.setLayoutManager(manager);
+        initContent();
+        binding.bottomNavigation.setPress(0);
+        binding.bottomNavigation.setListener(new NavigationBottom.NavigationListener() {
+            @Override
+            public void onCutleryClick() {
+                showFragmentPosition(0);
+            }
 
-        LinearLayoutManager managerAction =
-                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        rvAction = binding.rvAction;
-        ActionAdapter actionAdapter = new ActionAdapter(getContext());
-        rvAction.setAdapter(actionAdapter);
-        rvAction.setLayoutManager(managerAction);
+            @Override
+            public void onDrinkingClick() {
+                showFragmentPosition(1);
+            }
 
-        List<ActionMenuHorizontal> actionMenuHorizontals = new ArrayList<>();
-        actionMenuHorizontals.add(new ActionMenuHorizontal("CART", Constant.MENU_TYPE_CART));
-        actionMenuHorizontals.add(new ActionMenuHorizontal("HISTORY", Constant.MENU_TYPE_HISTORY));
-        actionAdapter.initialize(actionMenuHorizontals);
+            @Override
+            public void onOrderClick() {
+                showFragmentPosition(2);
+            }
+
+            @Override
+            public void onHistoryClick() {
+                showFragmentPosition(3);
+            }
+        });
+    }
+
+    private void initContent() {
+        replaceContent(cutleryFragment, false, "CutleryFragment");
+        replaceContent(drinkingFragment, false, "DrinkingFragment");
+        replaceContent(orderFragment, false, "OrderFragment");
+        replaceContent(historyFragment, false, "HistoryFragment");
+
+        showFragmentPosition(0);
+    }
+
+    private void replaceContent(Fragment fragment, boolean exist, String tag) {
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        if (exist) {
+            ft.show(fragment);
+        } else {
+            ft.add(R.id.frContent, fragment, tag);
+        }
+        ft.commit();
+    }
+
+    private ActionBar getActionBar() {
+        return ((AppCompatActivity) getActivity()).getSupportActionBar();
+    }
+
+    private FragmentManager getSupportFragmentManager() {
+        return getActivity().getSupportFragmentManager();
+    }
+
+    private void showFragment(Fragment fragment) {
+        if (fragment instanceof CutleryFragment) {
+            getActionBar().setTitle(R.string.cutlery_fragment);
+            getSupportFragmentManager().beginTransaction().show(fragment).commit();
+        } else if (fragment instanceof DrinkingFragment) {
+            getActionBar().setTitle(R.string.drinking_fragment);
+            getSupportFragmentManager().beginTransaction().show(fragment).commit();
+        } else if (fragment instanceof OrderFragment) {
+            getActionBar().setTitle(R.string.order_fragment);
+            getSupportFragmentManager().beginTransaction().show(fragment).commit();
+        } else if (fragment instanceof HistoryFragment) {
+            getActionBar().setTitle(R.string.history_fragment);
+            getSupportFragmentManager().beginTransaction().show(fragment).commit();
+        }
+    }
+
+    private void hideFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction().hide(fragment).commit();
+    }
+
+    private void showFragmentPosition(int pos) {
+        fragmentPos = pos;
+        if (0 == pos) {
+            showFragment(cutleryFragment);
+            hideFragment(drinkingFragment);
+            hideFragment(orderFragment);
+            hideFragment(historyFragment);
+        } else if (1 == pos) {
+            showFragment(drinkingFragment);
+            hideFragment(cutleryFragment);
+            hideFragment(orderFragment);
+            hideFragment(historyFragment);
+        } else if (2 == pos) {
+            showFragment(orderFragment);
+            hideFragment(cutleryFragment);
+            hideFragment(drinkingFragment);
+            hideFragment(historyFragment);
+        } else if (3 == pos) {
+            showFragment(historyFragment);
+            hideFragment(cutleryFragment);
+            hideFragment(drinkingFragment);
+            hideFragment(orderFragment);
+        }
     }
 }

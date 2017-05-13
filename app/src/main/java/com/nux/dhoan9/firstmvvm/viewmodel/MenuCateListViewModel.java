@@ -32,7 +32,7 @@ public class MenuCateListViewModel extends BaseViewModel {
         menuCategoriesViewModels = new ArrayList<>();
         List<MenuCategories> menuCategoriesList = dishRepo.getMenuCategories();
         for (MenuCategories menuCategories : menuCategoriesList) {
-            DishListViewModel dishListViewModel = new DishListViewModel(listBinder, dishRepo);
+            DishListViewModel dishListViewModel = new DishListViewModel(listBinder, dishRepo, resources, threadScheduler);
             MenuCategoriesViewModel menuCategoriesViewModel =
                     new MenuCategoriesViewModel(dishListViewModel, menuCategories.getTitle());
 

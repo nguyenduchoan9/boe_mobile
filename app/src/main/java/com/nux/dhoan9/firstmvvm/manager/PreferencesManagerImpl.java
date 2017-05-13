@@ -54,6 +54,9 @@ public class PreferencesManagerImpl implements PreferencesManager {
         sharedPreferences.edit()
                 .remove(USER)
                 .apply();
+        sharedPreferences.edit()
+                .remove(ROLE)
+                .apply();
     }
 
     @Override

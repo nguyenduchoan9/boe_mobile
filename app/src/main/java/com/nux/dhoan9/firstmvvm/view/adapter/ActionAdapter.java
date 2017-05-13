@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.nux.dhoan9.firstmvvm.R;
@@ -42,9 +43,11 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.ActionView
         ActionMenuHorizontal actionMenuHorizontal = actionMenuHorizontals.get(position);
         holder.binding.setActionTitle(actionMenuHorizontal.getTitle());
         if (Constant.MENU_TYPE_CART == actionMenuHorizontal.getType()) {
-            mContext.startActivity(CartActivity.newInstance(mContext));
+            holder.itemView.setOnClickListener(v ->
+                    mContext.startActivity(CartActivity.newInstance(mContext)));
         } else if (Constant.MENU_TYPE_HISTORY == actionMenuHorizontal.getType()) {
-            mContext.startActivity(HistoryActivity.newInstance(mContext));
+            holder.itemView.setOnClickListener(v ->
+                    mContext.startActivity(HistoryActivity.newInstance(mContext)));
         }
         holder.binding.executePendingBindings();
     }

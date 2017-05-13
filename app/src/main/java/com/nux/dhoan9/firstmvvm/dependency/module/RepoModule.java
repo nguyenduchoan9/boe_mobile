@@ -1,5 +1,7 @@
 package com.nux.dhoan9.firstmvvm.dependency.module;
 
+import com.nux.dhoan9.firstmvvm.data.repo.CartRepo;
+import com.nux.dhoan9.firstmvvm.data.repo.CartRepoImpl;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepoImpl;
 import com.nux.dhoan9.firstmvvm.data.repo.TodoRepo;
@@ -32,5 +34,10 @@ public class RepoModule {
     @Provides
     public DishRepo provideDishRepo() {
         return new DishRepoImpl();
+    }
+
+    @Provides
+    public CartRepo provideCartRepo(Retrofit retrofit) {
+        return new CartRepoImpl(retrofit);
     }
 }

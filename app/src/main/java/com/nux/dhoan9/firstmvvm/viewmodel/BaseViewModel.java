@@ -12,8 +12,8 @@ import rx.Observable;
  */
 
 public abstract class BaseViewModel extends BaseObservable {
-    private ThreadScheduler threadScheduler;
-    private Resources resources;
+    protected ThreadScheduler threadScheduler;
+    protected Resources resources;
 
     public BaseViewModel(ThreadScheduler threadScheduler, Resources resources) {
         this.threadScheduler = threadScheduler;
@@ -28,4 +28,5 @@ public abstract class BaseViewModel extends BaseObservable {
     protected String getString(int id){
         return resources.getString(id);
     }
+
 }

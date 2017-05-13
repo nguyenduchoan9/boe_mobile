@@ -20,5 +20,7 @@ public class MenuCategoriesViewModel {
         this.title = title;
     }
 
-
+    public DishListViewModel getDishViewModels() {
+        return dishViewModels;
+    }
 }

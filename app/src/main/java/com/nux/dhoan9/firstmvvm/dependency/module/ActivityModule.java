@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.nux.dhoan9.firstmvvm.dependency.scope.ActivityScope;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ForActivity;
+import com.nux.dhoan9.firstmvvm.dependency.scope.ForSecondActivity;
 import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
 
 import dagger.Module;
@@ -28,6 +29,5 @@ public class ActivityModule {
     public Context provideContext(){
         return activity;
     }
-
 
 }
