@@ -43,6 +43,8 @@ public class SlashActivity extends AppCompatActivity {
             startActivity(ChefActivity.newInstance(this));
         } else if (2 == role) {
             startActivity(CustomerActivity.newInstance(this));
+        }else{
+            startActivity(LoginActivity.newInstance(this));
         }
     }
 }

@@ -11,8 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityCartBinding;
-import com.nux.dhoan9.firstmvvm.dependency.module.CartModule;
-import com.nux.dhoan9.firstmvvm.view.adapter.CartAdapter;
+import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
+import com.nux.dhoan9.firstmvvm.view.adapter.OrderAdapter;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemListViewModel;
 
 import javax.inject.Inject;
@@ -23,7 +23,7 @@ public class CartActivity extends AppCompatActivity {
     @Inject
     CartItemListViewModel cartItemListViewModel;
     @Inject
-    CartAdapter adapter;
+    OrderAdapter adapter;
 
     RecyclerView rvCart;
 
@@ -32,9 +32,8 @@ public class CartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_cart);
         ((Application) getApplication()).getComponent()
-                .plus(new CartModule(this))
+                .plus(new ActivityModule(this))
                 .inject(this);
-
     }
 
     @Override

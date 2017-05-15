@@ -3,7 +3,9 @@ package com.nux.dhoan9.firstmvvm.view.fragment;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,23 +14,30 @@ import android.view.ViewGroup;
 import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentOrderBinding;
-import com.nux.dhoan9.firstmvvm.view.adapter.CartAdapter;
+import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
+import com.nux.dhoan9.firstmvvm.manager.CartManager;
+import com.nux.dhoan9.firstmvvm.view.adapter.OrderAdapter;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemListViewModel;
+import com.nux.dhoan9.firstmvvm.viewmodel.CartItemViewModel;
+
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link OrderFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class OrderFragment extends Fragment {
     FragmentOrderBinding binding;
 
     @Inject
     CartItemListViewModel cartItemListViewModel;
     @Inject
-    CartAdapter adapter;
+    OrderAdapter adapter;
+    @Inject
+    CartManager cartManager;
 
     RecyclerView rvCart;
 
@@ -43,8 +52,9 @@ public class OrderFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((Application)getActivity().getApplication()).getComponent()
-
+        ((Application) getActivity().getApplication()).getComponent()
+                .plus(new ActivityModule(getActivity()))
+                .inject(this);
     }
 
     @Override
@@ -54,4 +64,60 @@ public class OrderFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initializeData();
+    }
+
+    private void initializeData() {
+        binding.setViewModel(cartItemListViewModel);
+        cartItemListViewModel.initialize();
+        initTotalPayment(cartItemListViewModel.getCartItems());
+    }
+
+    private void initTotalPayment(List<CartItemViewModel> cartItems) {
+        float total = 0F;
+        for (int i = 0; i < cartItems.size(); i++) {
+            CartItemViewModel cartItem = cartItems.get(i);
+            total += cartItem.quantity * cartItem.price;
+        }
+        binding.tvTotalPayment.setText(String.valueOf(total));
+    }
+
+    private void initView() {
+        rvCart = binding.rvCart;
+        adapter.setListener(new OrderAdapter.CartListener() {
+            @Override
+            public void onIncrementQuantity(Observable<Float> subscribe) {
+                float currentTotal = Float.valueOf(binding.tvTotalPayment.getText().toString());
+                subscribe
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(value ->
+                        binding.tvTotalPayment.setText(String.valueOf(currentTotal + value)));
+            }
+
+            @Override
+            public void onDecrementQuantity(Observable<Float> subscribe) {
+                float currentTotal = Float.valueOf(binding.tvTotalPayment.getText().toString());
+                subscribe
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(value ->
+                        binding.tvTotalPayment.setText(String.valueOf(currentTotal - value)));
+            }
+        });
+        LinearLayoutManager manager =
+                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rvCart.setAdapter(adapter);
+        rvCart.setLayoutManager(manager);
+
+    }
 }

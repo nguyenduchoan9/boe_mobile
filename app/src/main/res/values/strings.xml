@@ -10,6 +10,7 @@
 
     <string name="item_image_transition">item_image_transition</string>
     <string name="item_cart_sum">Total:</string>
+    <string name="scan_qr_code_fragment">Scan QR Code</string>
     <string name="cutlery_fragment">Cutlery</string>
     <string name="drinking_fragment">Drinking</string>
     <string name="order_fragment">Order</string>

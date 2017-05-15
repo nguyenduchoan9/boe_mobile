@@ -1,5 +1,4 @@
-<layout xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -16,6 +15,7 @@
                                         android:layout_marginBottom="8dp"
                                         android:layout_marginLeft="4dp"
                                         android:layout_marginRight="4dp"
+                                        card_view:cardCornerRadius="1dp"
                                         android:orientation="vertical"
                                         card_view:cardElevation="4dp">
 
@@ -32,8 +32,9 @@
 
                 <ImageView
                     android:id="@+id/ivCover"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_below="@+id/tvCancel"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
                     android:src="@drawable/chocolate_ball"/>
@@ -46,7 +47,7 @@
                     android:layout_toRightOf="@+id/ivCover"
                     android:fontFamily="serif-monospace"
                     android:text="@{viewModel.name}"
-                    android:textSize="@dimen/size_x_large_text"/>
+                    android:textSize="@dimen/size_medium_text"/>
 
                 <TextView
                     android:id="@+id/tvQuantity"
@@ -58,12 +59,12 @@
                     android:layout_toLeftOf="@+id/ivPlus"
                     android:fontFamily="serif-monospace"
                     android:text="@{viewModel.quantityView}"
-                    android:textSize="@dimen/size_x_large_text"/>
+                    android:textSize="@dimen/size_medium_text"/>
 
                 <ImageView
                     android:id="@+id/ivPlus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:layout_alignBottom="@+id/tvQuantity"
                     android:layout_alignParentRight="true"
                     android:layout_alignTop="@+id/tvQuantity"
@@ -73,8 +74,8 @@
 
                 <ImageView
                     android:id="@+id/ivMinus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:layout_alignBottom="@+id/tvQuantity"
                     android:layout_alignTop="@+id/tvQuantity"
                     android:layout_below="@+id/tvCancel"
@@ -93,7 +94,7 @@
                     android:gravity="end"
                     android:text='@{String.valueOf(viewModel.price) + " x " + viewModel.quantityView}'
                     android:textAlignment="textEnd"
-                    android:textSize="@dimen/size_x_large_text"/>
+                    android:textSize="@dimen/size_medium_text"/>
 
                 <TextView
                     android:id="@+id/tvCancel"

@@ -4,6 +4,9 @@ import android.databinding.ObservableField;
 
 import com.nux.dhoan9.firstmvvm.model.CartItem;
 import com.nux.dhoan9.firstmvvm.model.Dish;
+
+import rx.Observable;
+import rx.Subscriber;
 /**
  * Created by hoang on 12/05/2017.
  */
@@ -33,18 +36,32 @@ public class CartItemViewModel extends DishViewModel {
         return super.equals(obj);
     }
 
-    public void onPlusClick() {
+    public Observable<Float> onPlusClick() {
         quantity += 1;
         quantityView.set(String.valueOf(quantity));
         totalView.set(String.valueOf(price * quantity));
+        return Observable.create(new Observable.OnSubscribe<Float>() {
+            @Override
+            public void call(Subscriber<? super Float> subscriber) {
+                subscriber.onNext(price);
+                subscriber.onCompleted();
+            }
+        });
     }
 
-    public void onMinusClick() {
+    public Observable<Float> onMinusClick() {
         if (0 == quantity) {
-            return;
+            return Observable.create(subscriber -> {
+                subscriber.onNext(0F);
+                subscriber.onCompleted();
+            });
         }
         quantity -= 1;
         quantityView.set(String.valueOf(quantity));
         totalView.set(String.valueOf(price * quantity));
+        return Observable.create(subscriber -> {
+            subscriber.onNext(price);
+            subscriber.onCompleted();
+        });
     }
 }

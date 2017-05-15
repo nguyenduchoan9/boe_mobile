@@ -4,13 +4,11 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.DishCartItemBinding;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ActivityScope;
-import com.nux.dhoan9.firstmvvm.dependency.scope.CartScope;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ForActivity;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemViewModel;
@@ -18,16 +16,18 @@ import com.nux.dhoan9.firstmvvm.viewmodel.CartItemViewModel;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 /**
  * Created by hoang on 12/05/2017.
  */
-@CartScope
-public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartItemViewHolder> {
+@ActivityScope
+public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemViewHolder> {
     private final LayoutInflater layoutInflater;
     private final CartItemListViewModel viewModel;
 
     @Inject
-    public CartAdapter(@ForActivity Context context, CartItemListViewModel viewModel) {
+    public OrderAdapter(@ForActivity Context context, CartItemListViewModel viewModel) {
         this.layoutInflater = LayoutInflater.from(context);
         this.viewModel = viewModel;
     }
@@ -62,5 +62,17 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartItemViewHo
             super(binding.getRoot());
             this.binding = binding;
         }
+    }
+
+    public interface CartListener {
+        void onIncrementQuantity(Observable<Float> subscribe);
+
+        void onDecrementQuantity(Observable<Float> subscribe);
+    }
+
+    private CartListener listener;
+
+    public void setListener(CartListener listener) {
+        this.listener = listener;
     }
 }

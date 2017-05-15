@@ -38,6 +38,7 @@
                     android:textSize="@dimen/size_x_large_text"/>
 
                 <TextView
+                    android:id="@+id/tvTotalPayment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
