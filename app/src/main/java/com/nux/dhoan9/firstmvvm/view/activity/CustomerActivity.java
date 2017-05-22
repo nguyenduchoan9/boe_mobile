@@ -241,4 +241,8 @@ public class CustomerActivity extends BaseActivity {
         }
         fragmentPos = pos;
     }
+
+    public NavigationBottom getNavigationBottom() {
+        return navigationBottom;
+    }
 }

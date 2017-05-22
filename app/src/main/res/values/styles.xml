@@ -17,6 +17,7 @@
     <style name="AppTheme.NoActionBar.NoStatusBar" parent="AppTheme.NoActionBar">
         <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
     </style>
+
     <style name="CustomInputEditText">
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorControlNormal">@color/whiteDark</item>
@@ -31,6 +32,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:elevation" tools:targetApi="lollipop">4dp</item>
     </style>
+
     <style name="RegisterButton">
         <item name="android:gravity">center</item>
         <item name="android:padding">@dimen/medium_space</item>
@@ -40,9 +42,35 @@
         <item name="android:elevation" tools:targetApi="lollipop">4dp</item>
     </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="TotalPaymentTextView">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/size_medium_text</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/total_payment_bg</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="ClearOrderTextView">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/size_medium_text</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/clear_payment_bg</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="ContinuesButton">
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/size_medium_text</item>
+        <item name="android:background">@drawable/pay_payment_bg</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <style name="AppTheme.NavigationView">
         <item name="android:listDivider">@color/colorDividerNavigation</item>

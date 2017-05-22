@@ -15,45 +15,40 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:background="#fff"
         tools:context="com.nux.dhoan9.firstmvvm.view.activity.CartActivity">
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/sumContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="serif-monospace"
-                    android:text="Total:"
-                    android:textSize="@dimen/size_x_large_text"/>
-
-                <TextView
-                    android:id="@+id/tvTotalPayment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:fontFamily="serif-monospace"
-                    android:text="1000000"
-                    android:textSize="@dimen/size_x_large_text"
-                    />
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvCart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/sumContainer"
             app:listBinder="@{viewModel.listBinder}"/>
+
+        <TextView
+            android:id="@+id/tvClearAll"
+            style="@style/ClearOrderTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/tvTotalPayment"
+            android:text="@string/text_clear_all"/>
+
+        <TextView
+            android:id="@+id/tvContinues"
+            style="@style/ContinuesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tvClearAll"
+            android:layout_marginTop="16dp"
+            android:text="Continues"/>
+
+        <TextView
+            android:id="@+id/tvTotalPayment"
+            style="@style/TotalPaymentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:text="$ 9000"/>
     </RelativeLayout>
 </layout>

@@ -16,4 +16,5 @@
     <string name="order_fragment">Order</string>
     <string name="history_fragment">History</string>
 
+    <string name="text_clear_all"><u>Clear all</u></string>
 </resources>

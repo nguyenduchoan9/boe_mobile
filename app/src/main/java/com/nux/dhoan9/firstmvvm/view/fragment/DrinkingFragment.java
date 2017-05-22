@@ -15,7 +15,9 @@ import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentDrinkingBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
+import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.MenuCategoryListAdapter;
+import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
 
 import javax.inject.Inject;
@@ -65,6 +67,7 @@ public class DrinkingFragment extends Fragment {
     public void onStart() {
         super.onStart();
         initializerData();
+        ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
     }
 
     private void initializerData() {
@@ -77,5 +80,25 @@ public class DrinkingFragment extends Fragment {
         rvDish = binding.rvDish;
         rvDish.setAdapter(adapter);
         rvDish.setLayoutManager(manager);
+        rvDish.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                NavigationBottom view = ((CustomerActivity) getActivity()).getNavigationBottom();
+                if (dy > 0) {
+                    // Scrolling up
+                    view.animate()
+                            .setDuration(300)
+                            .translationY(view.getHeight() * 1.5F);
+                    view.setVisibility(View.GONE);
+                } else {
+                    // Scrolling down
+                    view.setVisibility(View.VISIBLE);
+                    view.animate()
+                            .setDuration(300)
+                            .translationY(0);
+                }
+            }
+        });
     }
 }

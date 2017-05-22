@@ -4,7 +4,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:elevation="8dp">
+        android:background="@android:color/transparent"
+        android:paddingTop="1dp">
 
         <com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom
             android:id="@+id/bottomNavigation"
@@ -27,7 +28,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_history"/>
+                    android:src="@drawable/ic_scan_qr_code"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -59,7 +60,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_wine_bottle"/>
+                    android:src="@drawable/ic_drinking_wine"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -75,7 +76,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_order"/>
+                    android:src="@drawable/ic_ordering"/>
             </RelativeLayout>
 
             <RelativeLayout
