@@ -101,7 +101,7 @@ dependencies {
 //    compile 'com.google.android.gms:play-services:10.2.1'
     compile "com.google.android.gms:play-services-gcm:10.2.0"
 }
-apply plugin: 'com.google.gms.google-services'
+
 /*
 Resolves dependency versions across test and production APKs, specifically, transitive
 dependencies. This is required since Espresso internally has a dependency on support-annotations.
@@ -122,3 +122,4 @@ configurations.compile.dependencies.each { compileDependency ->
         configurations.androidTestCompile.exclude module: "${compileDependency.getName()}"
     }
 }
+apply plugin: 'com.google.gms.google-services'
