@@ -8,18 +8,19 @@ import com.nux.dhoan9.firstmvvm.model.Dish;
 public class DishViewModel {
     public final int id;
     public final String name;
-    public final float price;
-    public final int image;
+    public final float price=1000;
+    public final String image;
+    public final String description;
 
     public DishViewModel(Dish dish) {
         this.id = dish.getId();
         this.name = dish.getName();
-        this.price = dish.getPrice();
         this.image = dish.getImage();
+        this.description = dish.getDescription();
     }
 
     public Dish toModel(DishViewModel viewModel) {
-        return new Dish(id, name, price, image);
+        return new Dish(id, name, description, price, image);
     }
 
     @Override

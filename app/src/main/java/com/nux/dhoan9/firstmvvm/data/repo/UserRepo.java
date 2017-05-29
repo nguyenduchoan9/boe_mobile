@@ -15,5 +15,6 @@ import rx.Observable;
 public interface UserRepo {
     Observable<Response<User>> register(UserRegisterParam params);
     Observable<Response<User>> getUserProfile();
-    Observable<Response<User>> loginByEmail(LoginUserParam params);
+    Observable<Response<User>> loginByUsername(LoginUserParam params);
+    Observable<Void> logout(int id);
 }

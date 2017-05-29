@@ -15,6 +15,7 @@ import java.util.List;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
+
 /**
  * Created by hoang on 08/05/2017.
  */
@@ -49,6 +50,16 @@ public class DishListViewModel extends BaseViewModel {
     public void initialize(List<Dish> dishesItem) {
         dishes.addAll(dishesViewModel(dishesItem));
         listBinder.notifyDataChange(dishes);
+    }
+
+    public void initializeCategory(int idCategory) {
+        dishRepo.getDishesByCategory(idCategory)
+                .compose(withScheduler())
+                .subscribe(dishesResult -> {
+                    dishes.addAll(dishesViewModel(dishesResult));
+                    listBinder.notifyDataChange(dishes);
+                });
+
     }
 
     private List<DishViewModel> dishesViewModel(List<Dish> dishesData) {

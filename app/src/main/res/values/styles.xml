@@ -77,4 +77,24 @@
         <item name="android:textColorSecondary">@color/colorTextNavigation</item>
         <item name="android:textColorPrimary">@color/colorTextPrimaryNavigation</item>
     </style>
+
+    <style name="Button">
+        <item name="android:padding">12dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/size_medium_text</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:elevation" tools:targetApi="lollipop">4dp</item>
+    </style>
+
+    <style name="RedButton" parent="Button">
+        <item name="android:background">@drawable/red_button</item>
+    </style>
+
+    <style name="AppTheme.EditText">
+        <item name="colorControlNormal">@color/gray_light</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+    </style>
 </resources>

@@ -17,4 +17,8 @@
     <string name="history_fragment">History</string>
 
     <string name="text_clear_all"><u>Clear all</u></string>
+    <string name="text_login_as_guest"><u>Login as guest</u></string>
+    <string name="text_submit">Submit</string>
+    <string name="text_not_available_network">Your network is not available</string>
+    <string name="text_server_maintanance">The server is under maintenance</string>
 </resources>

@@ -6,20 +6,20 @@ import java.util.List;
  */
 
 public class MenuCategories {
-    private String title;
+    private Category category;
     private List<Dish> dishes;
 
-    public MenuCategories(String title, List<Dish> dishes) {
-        this.title = title;
+    public MenuCategories(Category category, List<Dish> dishes) {
+        this.category = category;
         this.dishes = dishes;
     }
 
-    public String getTitle() {
-        return title;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public List<Dish> getDish() {

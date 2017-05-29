@@ -1,12 +1,12 @@
 package com.nux.dhoan9.firstmvvm.view.fragment;
 
-
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,23 +21,24 @@ import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
 
 import javax.inject.Inject;
-
+import javax.inject.Named;
 
 public class DrinkingFragment extends Fragment {
     FragmentDrinkingBinding binding;
     private RecyclerView rvDish;
 
     @Inject
+    @Named("drinking")
     MenuCategoryListAdapter adapter;
     @Inject
+    @Named("drinking")
     MenuCateListViewModel viewModel;
-
 
     public DrinkingFragment() {
         // Required empty public constructor
     }
 
-    public static DrinkingFragment newInstance(String param1, String param2) {
+    public static DrinkingFragment newInstance() {
         DrinkingFragment fragment = new DrinkingFragment();
         return fragment;
     }
@@ -48,30 +49,45 @@ public class DrinkingFragment extends Fragment {
         ((Application) getActivity().getApplication()).getComponent()
                 .plus(new ActivityModule(getActivity()))
                 .inject(this);
+        Log.i(log, "onCreate");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_drinking, container, false);
+        Log.i(log, "onCreatView");
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.i(log, "onViewCreated");
         initView();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Log.i(log, "onStart");
         initializerData();
         ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
     }
+    private String log = "zzzzzz-Droinking_TAG";
+    @Override
+    public void onStop() {
+        Log.i(log, "onStop");
+        super.onStop();
+    }
 
     private void initializerData() {
-        viewModel.initialize();
+        viewModel.initializeDrinking();
     }
 
     private void initView() {

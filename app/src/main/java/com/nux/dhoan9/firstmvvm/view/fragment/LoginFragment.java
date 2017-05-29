@@ -13,16 +13,21 @@ import com.nux.dhoan9.firstmvvm.databinding.FragmentLoginBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.UserModule;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.User;
+import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.nux.dhoan9.firstmvvm.utils.test.EspressoIdlingResource;
 import com.nux.dhoan9.firstmvvm.view.activity.ChefActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
+import com.nux.dhoan9.firstmvvm.view.activity.LoginActivity;
+import com.nux.dhoan9.firstmvvm.view.activity.QRCodeActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.RegisterActivity;
 import com.nux.dhoan9.firstmvvm.viewmodel.LoginViewModel;
 
 import javax.inject.Inject;
 
 import retrofit2.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class LoginFragment extends BaseFragment {
 
@@ -61,27 +66,40 @@ public class LoginFragment extends BaseFragment {
         binding.setViewmodel(loginViewModel);
         binding.btnLogin.setOnClickListener(v -> {
             EspressoIdlingResource.increment();
-            String email = binding.etEmail.getText().toString().trim();
-            if ("customer".equals(email)) {
-                preferencesManager.setRole(2);
-                startActivity(CustomerActivity.newInstance(getContext()));
-            } else if ("chef".equals(email)) {
-                preferencesManager.setRole(1);
-                startActivity(ChefActivity.newInstance(getContext()));
-            }
-//            loginViewModel.login()
-//                    .compose(RxUtils.withLoading(binding.pbLoading))
-//                    .subscribe(loginResponse -> {
-//                        navigateFlow(loginResponse);
-//                        EspressoIdlingResource.decrement();
+            loginViewModel.login()
+                    .compose(RxUtils.withLoading(binding.pbLoading))
+                    .subscribe(loginResponse -> {
+                        navigateFlow(loginResponse);
+                        EspressoIdlingResource.decrement();
+                    });
+//            RxUtils.checkNetWork(getContext())
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(isAvailable -> {
+//                        if (-1 == isAvailable) {
+//                            ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
+//                        } else if (-2 == isAvailable) {
+//                            ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
+//                        } else {
+//
+//                        }
 //                    });
+        });
+        binding.tvEndpoint.setOnClickListener(v -> {
+            showEndpointDialog();
         });
         binding.executePendingBindings();
     }
 
+    private void showEndpointDialog() {
+        EndpointDialogFragment.newInstance()
+                .show(getFragmentManager(),
+                        EndpointDialogFragment.class.getSimpleName());
+    }
+
     public void navigateFlow(Response<User> loginResponse) {
         if (loginResponse.isSuccessful()) {
-            startActivity(ChefActivity.newInstance(getContext()));
+            startActivity(QRCodeActivity.newInstance(getContext()));
         }
     }
 

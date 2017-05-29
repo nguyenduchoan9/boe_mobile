@@ -17,6 +17,7 @@ import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.DishByCategoryItemBinding;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ActivityScope;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ForActivity;
+import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
 import com.nux.dhoan9.firstmvvm.view.activity.DishDetailActivity;
 import com.nux.dhoan9.firstmvvm.viewmodel.DishListViewModel;
@@ -57,7 +58,7 @@ public class DishesByCategoryAdapter extends RecyclerView.Adapter<DishesByCatego
         holder.binding.executePendingBindings();
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, DishDetailActivity.class);
-            intent.putExtra(DishDetailActivity.DISH_ID, viewModelItem.id);
+            intent.putExtra(Constant.KEY_DISH_DETAIL, viewModelItem.id);
             ActivityOptions ops = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
                     Pair.create(holder.binding.ivCover,
                             holder.itemView.getContext().getString(R.string.item_image_transition))

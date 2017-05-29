@@ -17,6 +17,7 @@ public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
         buildComponent();
+        daggerAppComponent.inject(this);
     }
 
     private void buildComponent() {
@@ -29,4 +30,8 @@ public class Application extends android.app.Application {
         return daggerAppComponent;
     }
 
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+    }
 }

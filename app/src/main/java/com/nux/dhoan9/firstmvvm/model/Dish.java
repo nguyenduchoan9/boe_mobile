@@ -1,51 +1,45 @@
 package com.nux.dhoan9.firstmvvm.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by hoang on 08/05/2017.
  */
 
 public class Dish {
     private int id;
+    @SerializedName("dish_name")
     private String name;
+    private String description;
     private float price;
-    private int image;
-
-    public Dish(int id, String name, float price, int image) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.image = image;
-    }
+    private String image;
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getDescription() {
+        return description;
     }
 
     public float getPrice() {
-        return price;
+        return 10000;
     }
 
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public Dish(int id, String name, String description, float price, String image) {
+
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
         this.image = image;
     }
 }

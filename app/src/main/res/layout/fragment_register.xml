@@ -38,7 +38,7 @@
                 android:layout_marginLeft="@dimen/medium_space"
                 android:layout_marginRight="@dimen/medium_space"
                 android:theme="@style/CustomInputEditText"
-                app:validateError="@{viewmodel.emailError}">
+                app:validateError="@{viewmodel.usernameError}">
 
                 <EditText
                     android:id="@+id/etEmail"

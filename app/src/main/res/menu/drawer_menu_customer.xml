@@ -6,11 +6,11 @@
                 android:id="@+id/menu_personal"
                 android:checkableBehavior="single">
                 <item
-                    android:id="@+id/nav_your_profile"
+                    android:id="@+id/profile"
                     android:icon="@drawable/ic_nav_profile"
                     android:title="Profile"/>
                 <item
-                    android:id="@+id/nav_your_order"
+                    android:id="@+id/order"
                     android:icon="@drawable/ic_nav_profile"
                     android:title="Order"/>
             </group>
@@ -61,11 +61,19 @@
                 android:id="@+id/menu_page"
                 android:checkableBehavior="single">
                 <item
-                    android:id="@+id/nav_setting"
+                    android:id="@+id/setting"
                     android:title="Setting"
                     android:icon="@drawable/ic_settings_cogwheel"/>
                 <item
-                    android:id="@+id/nav_sign_out"
+                    android:id="@+id/apiEndpoint"
+                    android:title="API"
+                    android:icon="@drawable/ic_settings_cogwheel"/>
+                <item
+                    android:id="@+id/payment"
+                    android:title="Pay"
+                    android:icon="@drawable/ic_settings_cogwheel"/>
+                <item
+                    android:id="@+id/logOut"
                     android:icon="@drawable/ic_nav_sign_out"
                     android:title="Sign out"/>
             </group>

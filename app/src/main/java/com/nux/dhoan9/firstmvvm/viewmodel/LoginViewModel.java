@@ -29,7 +29,7 @@ import rx.subjects.BehaviorSubject;
  */
 
 public class LoginViewModel extends BaseViewModel {
-    private String email = "";
+    private String username = "";
     private String password = "";
     public ObservableField<String> emailError = new ObservableField<>();
     public ObservableField<String> passwordError = new ObservableField<>();
@@ -55,12 +55,12 @@ public class LoginViewModel extends BaseViewModel {
     }
 
     public TextChange onEmailChange = value -> {
-        email = value;
+        username= value;
         validateEmail();
     };
 
     private void validateEmail() {
-        emailError.set(loginValidator.validateEmail(email));
+        emailError.set(loginValidator.validateUsername(username));
     }
 
     public TextChange onPasswordChange = value -> {
@@ -79,8 +79,8 @@ public class LoginViewModel extends BaseViewModel {
     }
 
     public Observable<Response<User>> loginTask() {
-        LoginUserParam params = new LoginUserParam(email, password);
-        return userRepo.loginByEmail(params)
+        LoginUserParam params = new LoginUserParam(username, password);
+        return userRepo.loginByUsername(params)
                 .compose(withScheduler())
                 .doOnNext(this::isSuccess);
     }
@@ -89,8 +89,14 @@ public class LoginViewModel extends BaseViewModel {
     public void isSuccess(Response<User> userResponse) {
         if (userResponse.isSuccessful()) {
             if (null != userResponse.body()) {
-                saveCredentialHeader(userResponse.headers());
-                saveUser(userResponse.body());
+                User user = userResponse.body();
+                if(Constant.ROLE_DINER.equals(user.getRole())){
+                    saveCredentialHeader(userResponse.headers());
+                    saveUser(userResponse.body());
+                }else {
+                    throw new IllegalArgumentException(Constant.MESSAGE_PERMISSION_LOGIN_ERROR);
+                }
+
             }
         } else {
             handleError(userResponse);

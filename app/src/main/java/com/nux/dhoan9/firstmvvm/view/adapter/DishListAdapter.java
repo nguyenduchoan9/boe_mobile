@@ -19,6 +19,7 @@ import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.DishItemLayoutBinding;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ActivityScope;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ForActivity;
+import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.view.activity.DishDetailActivity;
 import com.nux.dhoan9.firstmvvm.viewmodel.DishListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.DishViewModel;
@@ -66,15 +67,17 @@ public class DishListAdapter extends Adapter<RecyclerView.ViewHolder> {
         Log.e("chocolate", String.valueOf(position));
         if (isPositionHeader(position)) {
             // nothing
+            Log.e("chocolate-header", String.valueOf(position));
         } else if (isPositionFooter(position)) {
             // nothing
+            Log.e("chocolate-footer", String.valueOf(position));
         } else {
             DishViewModel viewModel = getDishes().get(position - 1);
             ((DishViewHolder) holder).binding.setViewModel(viewModel);
             ((DishViewHolder) holder).binding.executePendingBindings();
             holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(mContext, DishDetailActivity.class);
-                intent.putExtra(DishDetailActivity.DISH_ID, viewModel.id);
+                intent.putExtra(Constant.KEY_DISH_DETAIL, viewModel.id);
                 ActivityOptions ops = ActivityOptions.makeSceneTransitionAnimation((Activity) holder.itemView.getContext(),
                         Pair.create(((DishViewHolder) holder).binding.ivImage,
                                 holder.itemView.getContext().getString(R.string.item_image_transition))
@@ -99,7 +102,7 @@ public class DishListAdapter extends Adapter<RecyclerView.ViewHolder> {
     }
 
     private boolean isPositionFooter(int pos) {
-        return pos == getDishes().size() + 1;
+        return pos == getItemCount() -1;
     }
 
     private List<DishViewModel> getDishes() {

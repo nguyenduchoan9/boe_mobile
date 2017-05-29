@@ -19,6 +19,7 @@ public class DishDiffCallback extends DiffCallBack<DishViewModel> {
         return oldObject.id == newObject.id
                 && oldObject.name.equals(newObject.name)
                 && oldObject.price == newObject.price
-                && oldObject.image == newObject.image;
+                && oldObject.image == newObject.image
+                && oldObject.description == newObject.description;
     }
 }

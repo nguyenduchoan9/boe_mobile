@@ -24,10 +24,10 @@ public class LoginValidator extends BaseValidator {
         return errors.isEmpty();
     }
 
-    public String validateEmail(String email) {
+    public String validateUsername(String email) {
         String error = null;
-        if (!VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()) {
-            error = Constant.INVALID_EMAIL_ERROR;
+        if(email.trim().length() < 8 || email.trim().length() > 40){
+            error = Constant.INVALID_USERNAME_ERROR;
         }
         pushError(EMAIL_ERROR_KEY, error);
         return error;
@@ -35,7 +35,7 @@ public class LoginValidator extends BaseValidator {
 
     public String validatePassword(String password) {
         String error = null;
-        if (password.trim().length() < 6 || password.trim().length() > 32) {
+        if (password.trim().length() < 6 || password.trim().length() > 40) {
             error = Constant.INVALID_PASSWORD_LENGTH_ERROR;
         }
         pushError(PASSWORD_ERROR_KEY, error);

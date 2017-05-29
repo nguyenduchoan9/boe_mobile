@@ -10,6 +10,7 @@ import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Created by hoang on 09/05/2017.
  */
@@ -30,22 +31,43 @@ public class MenuCateListViewModel extends BaseViewModel {
 
     public void initialize() {
         menuCategoriesViewModels = new ArrayList<>();
-        List<MenuCategories> menuCategoriesList = dishRepo.getMenuCategories();
-        for (MenuCategories menuCategories : menuCategoriesList) {
-            DishListViewModel dishListViewModel = new DishListViewModel(listBinder, dishRepo, resources, threadScheduler);
-            MenuCategoriesViewModel menuCategoriesViewModel =
-                    new MenuCategoriesViewModel(dishListViewModel, menuCategories.getTitle());
+        dishRepo.getMenu()
+                .compose(withScheduler())
+                .subscribe(menu -> {
+                    for (MenuCategories menuCategories : menu) {
+                        DishListViewModel dishListViewModel = new DishListViewModel(listBinder, dishRepo, resources, threadScheduler);
+                        MenuCategoriesViewModel menuCategoriesViewModel =
+                                new MenuCategoriesViewModel(dishListViewModel, menuCategories.getCategory());
 
-            menuCategoriesViewModels.add(menuCategoriesViewModel);
-            dishListViewModel.initialize(menuCategories.getDish());
-        }
+                        menuCategoriesViewModels.add(menuCategoriesViewModel);
+                        dishListViewModel.initialize(menuCategories.getDish());
+                    }
+                });
+
+    }
+
+    public void initializeDrinking() {
+        menuCategoriesViewModels = new ArrayList<>();
+        dishRepo.getMenuDrinking()
+                .compose(withScheduler())
+                .subscribe(menu -> {
+                    for (MenuCategories menuCategories : menu) {
+                        DishListViewModel dishListViewModel = new DishListViewModel(listBinder, dishRepo, resources, threadScheduler);
+                        MenuCategoriesViewModel menuCategoriesViewModel =
+                                new MenuCategoriesViewModel(dishListViewModel, menuCategories.getCategory());
+
+                        menuCategoriesViewModels.add(menuCategoriesViewModel);
+                        dishListViewModel.initialize(menuCategories.getDish());
+                    }
+                });
+
     }
 
     public MenuCategoriesViewModel getPosition(int pos) {
         return menuCategoriesViewModels.get(pos);
     }
 
-    public int getSize(){
+    public int getSize() {
         return menuCategoriesViewModels.size();
     }
 }

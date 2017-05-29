@@ -4,11 +4,10 @@
 
     <data>
 
-        <import type="com.nux.dhoan9.firstmvvm.R"/>
-
+        <import type="com.nux.dhoan9.firstmvvm.viewmodel.DishDetailViewModel"/>
         <variable
-            name="image"
-            type="int"/>
+            name="viewModel"
+            type="DishDetailViewModel"/>
     </data>
 
     <com.nux.dhoan9.firstmvvm.view.custom.ElasticDragDismissFrameLayout
@@ -31,7 +30,7 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:transitionName="@string/item_image_transition"
-            app:setImage="@{image}"
+            app:setImage='@{viewModel.image}'
             tools:src="@drawable/chocolate_ball"/>
 
         <android.support.v4.widget.NestedScrollView
@@ -53,7 +52,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="hello world"/>
+                    android:text="@{viewModel.name}"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.description}"/>
             </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>

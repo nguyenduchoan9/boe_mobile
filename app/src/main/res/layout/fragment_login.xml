@@ -2,28 +2,28 @@
 
     <data>
 
-        <import type="com.nux.dhoan9.firstmvvm.viewmodel.LoginViewModel" />
+        <import type="com.nux.dhoan9.firstmvvm.viewmodel.LoginViewModel"/>
 
         <variable
             name="viewmodel"
-            type="LoginViewModel" />
+            type="LoginViewModel"/>
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="center"
-            android:src="@drawable/cat" />
+            android:src="@drawable/cat"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#90000000" />
+            android:background="#90000000"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,9 +46,9 @@
                     android:layout_height="wrap_content"
                     android:hint="Email"
                     android:inputType="textEmailAddress"
-                    android:textSize="16sp"
                     android:textColor="@android:color/white"
-                    app:textChange="@{viewmodel.onEmailChange}" />
+                    android:textSize="16sp"
+                    app:textChange="@{viewmodel.onEmailChange}"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -68,9 +68,9 @@
                     android:layout_height="wrap_content"
                     android:hint="Password"
                     android:inputType="textPassword"
-                    android:textSize="16sp"
                     android:textColor="@android:color/white"
-                    app:textChange="@{viewmodel.onPasswordChange}" />
+                    android:textSize="16sp"
+                    app:textChange="@{viewmodel.onPasswordChange}"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -82,7 +82,7 @@
                 android:layout_marginLeft="@dimen/medium_space"
                 android:layout_marginRight="@dimen/medium_space"
                 android:layout_marginTop="@dimen/medium_space"
-                android:text="@string/login_text" />
+                android:text="@string/login_text"/>
 
             <Button
                 android:id="@+id/btnRegister"
@@ -92,8 +92,18 @@
                 android:layout_marginLeft="@dimen/medium_space"
                 android:layout_marginRight="@dimen/medium_space"
                 android:layout_marginTop="@dimen/medium_space"
-                android:text="@string/register_text" />
+                android:text="@string/register_text"/>
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:text="@string/text_login_as_guest"
+            android:textColor="@color/white"
+            android:textSize="20sp"/>
 
         <RelativeLayout
             android:id="@+id/pbLoading"
@@ -105,7 +115,16 @@
             <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"/>
         </RelativeLayout>
+        <TextView
+            android:id="@+id/tvEndpoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="end point"
+            android:layout_marginTop="32dp"
+            android:textSize="16sp"
+            android:textColor="@color/white"/>
     </RelativeLayout>
 </layout>

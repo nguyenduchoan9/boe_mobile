@@ -1,6 +1,7 @@
 package com.nux.dhoan9.firstmvvm.manager;
 
 import com.nux.dhoan9.firstmvvm.model.HeaderCredential;
+import com.nux.dhoan9.firstmvvm.model.QRCodeTableInfo;
 import com.nux.dhoan9.firstmvvm.model.User;
 
 import okhttp3.Headers;
@@ -16,6 +17,7 @@ public interface PreferencesManager {
     void logOut();
     void saveCredentialHeader(Headers headers);
     HeaderCredential getCredentialHeader();
-    int getRole();
-    void setRole(int role);
+    String getRole();
+    void setTableInfo(QRCodeTableInfo tableInfo);
+    QRCodeTableInfo getTableInfo();
 }

@@ -1,6 +1,5 @@
 package com.nux.dhoan9.firstmvvm.view.fragment;
 
-
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -10,17 +9,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentQrcodeBinding;
+import com.nux.dhoan9.firstmvvm.dependency.module.UserModule;
+import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
+import com.nux.dhoan9.firstmvvm.model.QRCodeTableInfo;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
+import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.QRCodeScanActivity;
 
+import javax.inject.Inject;
 import static android.app.Activity.RESULT_OK;
-
 
 public class QRCodeFragment extends Fragment {
     private final int REQUEST_CODE = 400;
     FragmentQrcodeBinding binding;
+
+    @Inject
+    PreferencesManager preferencesManager;
 
     public QRCodeFragment() {
         // Required empty public constructor
@@ -36,6 +43,8 @@ public class QRCodeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((Application) getActivity().getApplication()).getComponent()
+                .inject(this);
     }
 
     @Override
@@ -60,8 +69,11 @@ public class QRCodeFragment extends Fragment {
             if (null != data) {
                 String barcodeFormat = data.getStringExtra(Constant.SCANNER_RESULT_QRCODE);
                 String content = data.getStringExtra(Constant.SCANNER_RESULT_CONTENT);
-                binding.tvContent.setText(content);
-                binding.tvFormat.setText(barcodeFormat);
+                if (null != barcodeFormat && null != content) {
+                    QRCodeTableInfo tableInfo = new QRCodeTableInfo(barcodeFormat, content);
+                    preferencesManager.setTableInfo(tableInfo);
+                    startActivity(CustomerActivity.newInstance(getContext()));
+                }
             }
         }
     }

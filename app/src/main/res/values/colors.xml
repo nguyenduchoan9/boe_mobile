@@ -15,4 +15,5 @@
     <color name="tran_gray">#bbffffff</color>
     <color name="white">#ffffff</color>
     <color name="aqua">#6BBAA7</color>
+    <color name="gray_light">#dfdfdf</color>
 </resources>

@@ -13,23 +13,7 @@
             android:layout_height="wrap_content"
             android:background="#fff"
             android:orientation="horizontal"
-            android:weightSum="5">
-
-            <RelativeLayout
-                android:id="@+id/rlScanQRCode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="8dp">
-
-                <ImageView
-                    android:id="@+id/ivScanQRCode"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_scan_qr_code"/>
-            </RelativeLayout>
+            android:weightSum="4">
 
             <RelativeLayout
                 android:id="@+id/rlCutlery"
@@ -41,8 +25,8 @@
 
                 <ImageView
                     android:id="@+id/ivCutlery"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_cutlery"/>
             </RelativeLayout>
@@ -57,8 +41,8 @@
 
                 <ImageView
                     android:id="@+id/ivDrinking"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_drinking_wine"/>
             </RelativeLayout>
@@ -73,8 +57,8 @@
 
                 <ImageView
                     android:id="@+id/ivOrder"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_ordering"/>
             </RelativeLayout>
@@ -89,8 +73,8 @@
 
                 <ImageView
                     android:id="@+id/ivHistory"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_history"/>
             </RelativeLayout>

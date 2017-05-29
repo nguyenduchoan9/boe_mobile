@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_name"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:minWidth="512dp"
+    android:orientation="vertical"
+    android:padding="@dimen/medium_space">
+
+    <EditText
+        android:id="@+id/edtEndpoint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Your endpoint"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:theme="@style/AppTheme.EditText"/>
+
+    <Button
+        android:id="@+id/btnSubmit"
+        style="@style/RedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_space"
+        android:text="@string/text_submit"/>
+</LinearLayout>

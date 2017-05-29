@@ -5,6 +5,7 @@ import android.util.Log;
 import com.nux.dhoan9.firstmvvm.data.request.user.LoginUserParam;
 import com.nux.dhoan9.firstmvvm.data.request.user.UserRegisterParam;
 import com.nux.dhoan9.firstmvvm.data.response.LoginResponse;
+import com.nux.dhoan9.firstmvvm.data.response.SessionDeleteResponse;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.User;
 import com.nux.dhoan9.firstmvvm.services.UserServices;
@@ -33,12 +34,7 @@ public class UserRepoImpl implements UserRepo {
     public Observable<Response<User>> register(UserRegisterParam params) {
         return Observable.create(subscriber -> {
             Observable<Response<User>> userResponse =
-                    services.postRegisterUser(
-                            params.getFirstName(),
-                            params.getLastName(),
-                            params.getEmail(),
-                            params.getPassword(),
-                            params.getPassword_confirmation());
+                    services.postRegisterUser(params);
             userResponse.compose(RxUtils.onProcessRequest())
                     .subscribe(new Subscriber<Response<User>>() {
                         @Override
@@ -62,7 +58,7 @@ public class UserRepoImpl implements UserRepo {
     @Override
     public Observable<Response<User>> getUserProfile() {
         return Observable.create(subscriber -> {
-            Observable<Response<User>> userResponse = services.getUserProfile();
+            Observable<Response<User>> userResponse = services.getUserProfile(1);
             userResponse.compose(RxUtils.onProcessRequest())
                     .subscribe(new Subscriber<Response<User>>() {
                         @Override
@@ -84,10 +80,10 @@ public class UserRepoImpl implements UserRepo {
     }
 
     @Override
-    public Observable<Response<User>> loginByEmail(LoginUserParam params) {
+    public Observable<Response<User>> loginByUsername(LoginUserParam params) {
         return Observable.create(subscriber -> {
             Observable<Response<User>> loginResponse =
-                    services.loginByEmail(params.getEmail(), params.getPassword());
+                    services.loginByEmail(params);
             loginResponse.compose(RxUtils.onProcessRequest())
                     .subscribe(new Subscriber<Response<User>>() {
                         @Override
@@ -108,5 +104,16 @@ public class UserRepoImpl implements UserRepo {
         });
     }
 
+    @Override
+    public Observable<Void> logout(int id) {
+        return Observable.create(subscriber -> {
+            services.logout(id)
+                    .compose(RxUtils.onProcessRequest())
+                    .subscribe(response -> {
+                        subscriber.onNext(null);
+                        subscriber.onCompleted();
+                    });
+        });
+    }
 
 }

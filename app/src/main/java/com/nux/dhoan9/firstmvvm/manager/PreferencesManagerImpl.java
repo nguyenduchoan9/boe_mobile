@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.nux.dhoan9.firstmvvm.model.QRCodeTableInfo;
 import com.nux.dhoan9.firstmvvm.model.User;
+import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.StringUtils;
 
 import okhttp3.Headers;
@@ -16,17 +18,17 @@ import com.nux.dhoan9.firstmvvm.model.HeaderCredential;
  */
 
 public class PreferencesManagerImpl implements PreferencesManager {
-    private static String USER = "USER";
-    private static String HEADERS = "HEADERS";
-    private static String ROLE = "ROLE";
+    private static final String USER = "USER";
+    private static final String HEADERS = "HEADERS";
+    private static final String TABLE_INFO = "TABLE_INFO";
     private SharedPreferences sharedPreferences;
     private Gson gson;
 
     public PreferencesManagerImpl(Context context, Gson gson) {
-        this.sharedPreferences = context.getSharedPreferences(USER, Context.MODE_PRIVATE);
+        this.sharedPreferences = context
+                .getSharedPreferences(Constant.ID, Context.MODE_PRIVATE);
         this.gson = gson;
     }
-
 
     @Override
     public User getUser() {
@@ -55,7 +57,10 @@ public class PreferencesManagerImpl implements PreferencesManager {
                 .remove(USER)
                 .apply();
         sharedPreferences.edit()
-                .remove(ROLE)
+                .remove(TABLE_INFO)
+                .apply();
+        sharedPreferences.edit()
+                .remove(HEADERS)
                 .apply();
     }
 
@@ -84,16 +89,24 @@ public class PreferencesManagerImpl implements PreferencesManager {
     }
 
     @Override
-    public int getRole() {
-        return sharedPreferences.getInt(ROLE, -1);
+    public String getRole() {
+        return getUser().getRole();
     }
 
     @Override
-    public void setRole(int role) {
+    public void setTableInfo(QRCodeTableInfo tableInfo) {
         sharedPreferences.edit()
-                .putInt(ROLE, role)
+                .putString(TABLE_INFO, gson.toJson(tableInfo))
                 .apply();
     }
 
+    @Override
+    public QRCodeTableInfo getTableInfo() {
+        String userJSON = sharedPreferences.getString(TABLE_INFO, "");
+        if (!StringUtils.isEmpty(userJSON)) {
+            return gson.fromJson(userJSON, QRCodeTableInfo.class);
+        }
+        return null;
+    }
 
 }

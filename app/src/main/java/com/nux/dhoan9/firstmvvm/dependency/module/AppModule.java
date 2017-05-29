@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.manager.CartManagerImpl;
+import com.nux.dhoan9.firstmvvm.manager.EndpointManager;
+import com.nux.dhoan9.firstmvvm.manager.EndpointManagerImpl;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManagerImpl;
 import com.nux.dhoan9.firstmvvm.utils.RetrofitUtils;
@@ -53,8 +55,9 @@ public class AppModule {
     }
 
     @Provides
-    public Retrofit provideRetrofit(PreferencesManager preferencesManager) {
-        return new RetrofitUtils(preferencesManager).create();
+    public Retrofit provideRetrofit(PreferencesManager preferencesManager,
+                                    EndpointManager endpointManager) {
+        return new RetrofitUtils(preferencesManager, endpointManager).create();
     }
 
     @Provides
@@ -71,6 +74,11 @@ public class AppModule {
     @Provides
     public ThreadScheduler provideThreadScheduler() {
         return new ThreadSchedulerImpl(AndroidSchedulers.mainThread(), Schedulers.io());
+    }
+
+    @Provides
+    public EndpointManager provideEndpointManager(Context context) {
+        return new EndpointManagerImpl(context);
     }
 
 }

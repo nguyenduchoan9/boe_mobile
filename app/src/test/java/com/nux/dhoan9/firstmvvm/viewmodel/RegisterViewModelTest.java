@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import com.nux.dhoan9.firstmvvm.data.repo.UserRepo;
 import com.nux.dhoan9.firstmvvm.data.repo.UserRepoImpl;
 import com.nux.dhoan9.firstmvvm.data.validator.RegisterValidator;
+import com.nux.dhoan9.firstmvvm.manager.EndpointManager;
+import com.nux.dhoan9.firstmvvm.manager.EndpointManagerImpl;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManagerImpl;
 import com.nux.dhoan9.firstmvvm.utils.RetrofitUtils;
@@ -42,22 +44,24 @@ public class RegisterViewModelTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         PreferencesManager preferencesManager = new PreferencesManagerImpl(context, new Gson());
+        EndpointManager endpointManager = new EndpointManagerImpl(context);
         registerViewModel = new RegisterViewModel(preferencesManager,
                 resources, new ThreadSchedulerImpl(Schedulers.io(), Schedulers.io()),
-                new RegisterValidator(resources), new UserRepoImpl(new RetrofitUtils(preferencesManager).create()));
+                new RegisterValidator(resources),
+                new UserRepoImpl(new RetrofitUtils(preferencesManager, endpointManager).create()));
     }
 
     @Test
     public void emailError_invalidEmail_showInvalidEmail() {
         registerViewModel.onEmailChange.onChange("invalid email");
-        assertEquals("Invalid Email", registerViewModel.emailError.get());
+        assertEquals("Invalid Email", registerViewModel.usernameError.get());
     }
 
     @Test
     public void emailError_validEmailFromInvalid_notShowInvalidEmail() {
         registerViewModel.onEmailChange.onChange("cs go");
         registerViewModel.onEmailChange.onChange("abc@gmail.com");
-        assertNull(registerViewModel.emailError.get());
+        assertNull(registerViewModel.usernameError.get());
     }
 
     @Test

@@ -14,6 +14,7 @@ import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 /**
  * Created by hoang on 12/05/2017.
  */
@@ -60,7 +61,7 @@ public class CartItemListViewModel extends BaseViewModel {
     private List<CartItemViewModel> toCartItemViewModels(List<CartItem> cartItems) {
         List<CartItemViewModel> cartItemViewModels = new ArrayList<>();
         for (CartItem cartItem : cartItems) {
-            Dish dish = new Dish(cartItem.getId(), cartItem.getName(), cartItem.getPrice(), cartItem.getImage());
+            Dish dish = new Dish(cartItem.getId(), cartItem.getName(), "des", cartItem.getPrice(), cartItem.getImage());
             cartItemViewModels.add(new CartItemViewModel(dish, cartItem.getQuantity()));
         }
 

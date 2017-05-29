@@ -7,6 +7,7 @@ import com.nux.dhoan9.firstmvvm.model.Dish;
 
 import rx.Observable;
 import rx.Subscriber;
+
 /**
  * Created by hoang on 12/05/2017.
  */
@@ -24,7 +25,7 @@ public class CartItemViewModel extends DishViewModel {
     }
 
     public CartItem toModel() {
-        return new CartItem(new Dish(id, name, price, image), quantity);
+        return new CartItem(new Dish(id, name, "des", price, image), quantity);
     }
 
     @Override

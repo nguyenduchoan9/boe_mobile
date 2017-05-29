@@ -1,10 +1,13 @@
 package com.nux.dhoan9.firstmvvm.services;
 
+import com.nux.dhoan9.firstmvvm.data.request.user.LoginUserParam;
+import com.nux.dhoan9.firstmvvm.data.request.user.UserRegisterParam;
 import com.nux.dhoan9.firstmvvm.data.response.SessionDeleteResponse;
 import com.nux.dhoan9.firstmvvm.model.User;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 
 import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -18,22 +21,17 @@ import rx.Observable;
 
 public interface UserServices {
 
-    @FormUrlEncoded
-    @POST("api/users")
-    Observable<Response<User>> postRegisterUser(@Field(Constant.FIRST_NAME_PARAMS) String firstName,
-                                                @Field(Constant.LAST_NAME_PARAMS) String lastName,
-                                                @Field(Constant.EMAIL_PARAMS) String email,
-                                                @Field(Constant.PASSWORD_PARAMS) String password,
-                                                @Field(Constant.PASSWORD_CONFIRMATION_PARAMS) String passwordConfirmation);
+//    @FormUrlEncoded
+    @POST("users")
+    Observable<Response<User>> postRegisterUser(@Body UserRegisterParam param);
 
-    @GET("api/users/1")
-    Observable<Response<User>> getUserProfile();
+    @GET("users/{id}")
+    Observable<Response<User>> getUserProfile(@Path("id") long id);
 
-    @FormUrlEncoded
-    @POST("api/sessions")
-    Observable<Response<User>> loginByEmail(@Field(Constant.EMAIL_PARAMS) String email,
-                                            @Field(Constant.PASSWORD_PARAMS) String password);
+//    @FormUrlEncoded
+    @POST("sessions")
+    Observable<Response<User>> loginByEmail(@Body LoginUserParam param);
 
-    @DELETE("api/sessions/{id}")
-    Observable<Response<SessionDeleteResponse>> logout(@Path("id") int id);
+    @DELETE("sessions/{id}")
+    Observable<Response<SessionDeleteResponse>> logout(@Path("id") long id);
 }

@@ -13,5 +13,5 @@ import dagger.Subcomponent;
 @ActivityScope
 @Subcomponent(modules = {ActivityModule.class, TodoModule.class})
 public interface TodoComponent {
-    void inject(NoteFragment noteFragment);
+//    void inject(NoteFragment noteFragment);
 }

@@ -14,7 +14,7 @@ public class ErrorUtils {
     public static <T> T parseError(Response<?> response, Class<T> clazz)
             throws IllegalAccessException, InstantiationException {
         Converter<ResponseBody, T> converter =
-                (new RetrofitUtils(null)).create()
+                (new RetrofitUtils(null, null)).create()
                         .responseBodyConverter(clazz, new Annotation[0]);
         T error;
 

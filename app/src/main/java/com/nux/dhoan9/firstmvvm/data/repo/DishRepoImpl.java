@@ -1,60 +1,129 @@
 package com.nux.dhoan9.firstmvvm.data.repo;
 
+import android.util.Log;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.model.MenuCategories;
+import com.nux.dhoan9.firstmvvm.services.DishServices;
+import com.nux.dhoan9.firstmvvm.services.UserServices;
+import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import retrofit2.Retrofit;
+import rx.Observable;
+import rx.Subscriber;
+
 /**
  * Created by hoang on 08/05/2017.
  */
 
 public class DishRepoImpl implements DishRepo {
-    List<MenuCategories> menu;
-    String[] titles = {"Suggest", "Discount", "Menu"};
-    List<Dish> dishes;
+    private final String LOG_TAG = DishRepoImpl.class.getSimpleName();
+    Retrofit retrofit;
+    DishServices services;
 
-    @Override
-    public List<MenuCategories> getMenuCategories() {
-        return menu;
-    }
-
-    private int indexOf(Dish dish) {
-        return dishes.indexOf(dish);
+    public DishRepoImpl(Retrofit retrofit) {
+        this.retrofit = retrofit;
+        services = retrofit.create(DishServices.class);
     }
 
     @Override
-    public Dish getDishDetail(int id) {
-        for (Dish dish : dishes) {
-            if (dish.getId() == id) {
-                return dish;
-            }
-        }
-        return null;
+    public Observable<List<MenuCategories>> getMenu() {
+        return Observable.create(subscriber -> {
+            services.getMenuCutlery(1)
+                    .compose(RxUtils.onProcessRequest())
+                    .subscribe(new Subscriber<List<MenuCategories>>() {
+                        @Override
+                        public void onCompleted() {
+                            subscriber.onCompleted();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.i(LOG_TAG, e.getMessage());
+                            subscriber.onError(e);
+                        }
+
+                        @Override
+                        public void onNext(List<MenuCategories> menuCategories) {
+                            subscriber.onNext(menuCategories);
+                        }
+                    });
+        });
     }
 
-    private int nextId() {
-        return dishes.size();
+    @Override
+    public Observable<List<MenuCategories>> getMenuDrinking() {
+        return Observable.create(subscriber -> {
+            services.getMenuDrinking(1)
+                    .compose(RxUtils.onProcessRequest())
+                    .subscribe(new Subscriber<List<MenuCategories>>() {
+                        @Override
+                        public void onCompleted() {
+                            subscriber.onCompleted();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.i(LOG_TAG, e.getMessage());
+                            subscriber.onError(e);
+                        }
+
+                        @Override
+                        public void onNext(List<MenuCategories> menuCategories) {
+                            subscriber.onNext(menuCategories);
+                        }
+                    });
+        });
     }
 
-    public DishRepoImpl() {
-        menu = new ArrayList<>();
-        dishes = new ArrayList<>();
-        for (int title = 0; title < titles.length; title++) {
-            List<Dish> dishByCategory = new ArrayList<>();
-            for (int i = 0; i < 20; i++) {
-                Dish dish = new Dish(nextId(), "Dish - " + i, 9999,
-                        i % 2 == 0 ? R.drawable.chocolate_ball : R.drawable.chocolate_cake);
-                dishes.add(dish);
-                dishByCategory.add(dish);
-            }
-            menu.add(new MenuCategories(titles[title], dishByCategory));
-        }
+    @Override
+    public Observable<Dish> getDishDetail(int id) {
+        return Observable.create(subscriber -> {
+            services.getDishDetail(id)
+                    .compose(RxUtils.onProcessRequest())
+                    .subscribe(new Subscriber<Dish>() {
+                        @Override
+                        public void onCompleted() {
+                            subscriber.onCompleted();
+                        }
 
+                        @Override
+                        public void onError(Throwable e) {
+                            subscriber.onError(e);
+                        }
+
+                        @Override
+                        public void onNext(Dish dish) {
+                            subscriber.onNext(dish);
+                        }
+                    });
+        });
     }
 
-    public List<Dish> getDishes(){
-        return dishes;
+    @Override
+    public Observable<List<Dish>> getDishesByCategory(int idCategory) {
+        return Observable.create(sub -> {
+            services.getDishByCategory(idCategory)
+                    .compose(RxUtils.onProcessRequest())
+                    .subscribe(new Subscriber<List<Dish>>() {
+                        @Override
+                        public void onCompleted() {
+                            sub.onCompleted();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            sub.onError(e);
+                        }
+
+                        @Override
+                        public void onNext(List<Dish> dish) {
+                            sub.onNext(dish);
+                        }
+                    });
+        });
     }
+
 }

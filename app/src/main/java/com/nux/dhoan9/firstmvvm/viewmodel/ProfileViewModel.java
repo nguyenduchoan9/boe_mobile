@@ -70,12 +70,12 @@ public class ProfileViewModel extends BaseViewModel {
         if (response.isSuccessful()) {
             if (null != response.body()) {
                 User user = response.body();
-                email = user.getEmail();
-                password = user.getPhone();
-                firstName = user.getFirstName();
-                lastName = user.getLastName();
-                address = StringUtils.isBlank(user.getAddress()) ? "My Address" : user.getAddress();
-                phone = StringUtils.isBlank(user.getPhone()) ? "MyPhone" : user.getPhone();
+//                email = user.getEmail();
+//                password = user.getPhone();
+//                firstName = user.getFirstName();
+//                lastName = user.getLastName();
+//                address = StringUtils.isBlank(user.getAddress()) ? "My Address" : user.getAddress();
+//                phone = StringUtils.isBlank(user.getPhone()) ? "MyPhone" : user.getPhone();
             }
         }
     }

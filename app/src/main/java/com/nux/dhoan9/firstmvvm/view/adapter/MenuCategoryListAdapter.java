@@ -1,9 +1,11 @@
 package com.nux.dhoan9.firstmvvm.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -11,6 +13,7 @@ import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.MenuHorizontalItemBinding;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ActivityScope;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ForActivity;
+import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.view.activity.DishesByCategoryActivity;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCategoriesViewModel;
@@ -19,14 +22,12 @@ import javax.inject.Inject;
 /**
  * Created by hoang on 09/05/2017.
  */
-@ActivityScope
 public class MenuCategoryListAdapter extends RecyclerView.Adapter<MenuCategoryListAdapter.MenuCategoryViewHolder> {
     private final MenuCateListViewModel menuCateListViewModel;
     private final LayoutInflater inflater;
     private Context mContext;
 
-    @Inject
-    public MenuCategoryListAdapter(MenuCateListViewModel menuCateListViewModel, @ForActivity Context context) {
+    public MenuCategoryListAdapter(MenuCateListViewModel menuCateListViewModel, Context context) {
         this.menuCateListViewModel = menuCateListViewModel;
         this.mContext = context;
         inflater = LayoutInflater.from(context);
@@ -41,6 +42,7 @@ public class MenuCategoryListAdapter extends RecyclerView.Adapter<MenuCategoryLi
 
     @Override
     public void onBindViewHolder(MenuCategoryViewHolder holder, int position) {
+        Log.e("category", String.valueOf(position));
         holder.bindingData(menuCateListViewModel.getPosition(position));
     }
 
@@ -64,7 +66,9 @@ public class MenuCategoryListAdapter extends RecyclerView.Adapter<MenuCategoryLi
 
         private void initView(MenuCategoriesViewModel viewModel) {
             binding.tvMore.setOnClickListener(v -> {
-                mContext.startActivity(DishesByCategoryActivity.newInstance(mContext));
+                Intent i = DishesByCategoryActivity.newInstance(mContext);
+                i.putExtra(Constant.KEY_ID_CATEGORY, viewModel.category.getId());
+                mContext.startActivity(i);
             });
             LinearLayoutManager manager =
                     new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);

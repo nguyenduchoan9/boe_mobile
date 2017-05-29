@@ -35,8 +35,8 @@ public class RegisterViewModel extends BaseViewModel {
     PreferencesManager preferencesManager;
     RegisterValidator registerValidator;
 
-    private String email = "";
-    public ObservableField<String> emailError = new ObservableField<>();
+    private String username = "";
+    public ObservableField<String> usernameError = new ObservableField<>();
     private String password = "";
     public ObservableField<String> passwordError = new ObservableField<>();
     private String passwordConfirm = "";
@@ -53,14 +53,13 @@ public class RegisterViewModel extends BaseViewModel {
         this.registerValidator = registerValidator;
     }
 
-
     public TextChange onEmailChange = value -> {
-        email = value;
+        username = value;
         validateEmail();
     };
 
     private void validateEmail() {
-        emailError.set(registerValidator.validateEmail(email));
+        usernameError.set(registerValidator.validateUsername(username));
     }
 
     public TextChange onPasswordChange = value -> {
@@ -82,7 +81,7 @@ public class RegisterViewModel extends BaseViewModel {
     }
 
     public Observable<Response<User>> register() {
-        emailError.set(registerValidator.validateEmail(email));
+        usernameError.set(registerValidator.validateUsername(username));
         passwordError.set(registerValidator.validatePassword(password));
         passwordConfirmError.set(registerValidator.validatePasswordConfirm(password, passwordConfirm));
         return registerValidator.validate() ? registerTask() : Observable.empty();
@@ -101,7 +100,7 @@ public class RegisterViewModel extends BaseViewModel {
                 saveCredentialHeader(userResponse.headers());
                 saveUser(userResponse.body());
             }
-        }else {
+        } else {
             handleError(userResponse);
         }
     }
@@ -113,13 +112,13 @@ public class RegisterViewModel extends BaseViewModel {
                 List<String> err;
                 if (null != error.getError().getMessage().getEmail()) {
                     err = error.getError().getMessage().getEmail();
-                    emailError.set(err.get(0));
+                    usernameError.set(err.get(0));
                 }
-                if (null != error.getError().getMessage().getPassword()){
+                if (null != error.getError().getMessage().getPassword()) {
                     err = error.getError().getMessage().getPassword();
                     passwordError.set(err.get(0));
                 }
-                if (null != error.getError().getMessage().getPasswordConfirmation()){
+                if (null != error.getError().getMessage().getPasswordConfirmation()) {
                     err = error.getError().getMessage().getPasswordConfirmation();
                     passwordError.set(err.get(0));
                 }
@@ -140,8 +139,8 @@ public class RegisterViewModel extends BaseViewModel {
     }
 
     private UserRegisterParam prepareParams() {
-        UserRegisterParam params = new UserRegisterParam("hoang", "nguyen",
-                email, password, passwordConfirm);
+        UserRegisterParam params = new UserRegisterParam("",
+                username, password, passwordConfirm);
         return params;
     }
 }

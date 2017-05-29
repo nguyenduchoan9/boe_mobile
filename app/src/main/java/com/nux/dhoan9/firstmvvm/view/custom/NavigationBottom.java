@@ -20,7 +20,6 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
     public RelativeLayout drinkIconContainer;
     public RelativeLayout orderIconContainer;
     public RelativeLayout historyIconContainer;
-    public RelativeLayout qrCodeContainer;
 
     public NavigationBottom(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -37,10 +36,7 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
         drinkIconContainer = (RelativeLayout) findViewById(R.id.rlDrinking);
         orderIconContainer = (RelativeLayout) findViewById(R.id.rlOrder);
         historyIconContainer = (RelativeLayout) findViewById(R.id.rlHistory);
-        qrCodeContainer = (RelativeLayout) findViewById(R.id.rlScanQRCode);
 
-        initViewClick(R.id.rlScanQRCode);
-        initViewClick(R.id.ivScanQRCode);
         initViewClick(R.id.rlCutlery);
         initViewClick(R.id.ivCutlery);
         initViewClick(R.id.rlDrinking);
@@ -49,11 +45,6 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
         initViewClick(R.id.ivOrder);
         initViewClick(R.id.rlHistory);
         initViewClick(R.id.ivHistory);
-//
-//        foodIcon.
-//        drinkIcon.setOnClickListener(this);
-//        orderIcon.setOnClickListener(this);
-//        historyIcon.setOnClickListener(this);
     }
 
     private void initViewClick(int id) {
@@ -64,7 +55,6 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
     }
 
     private void clearBackground() {
-        qrCodeContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
         foodIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
         drinkIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
         orderIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
@@ -75,18 +65,15 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
         clearBackground();
         switch (pos) {
             case 0:
-                qrCodeContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
-                break;
-            case 1:
                 foodIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
                 break;
-            case 2:
+            case 1:
                 drinkIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
                 break;
-            case 3:
+            case 2:
                 orderIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
                 break;
-            case 4:
+            case 3:
                 historyIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
                 break;
             default:
@@ -101,16 +88,6 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
         if (null != listener) {
             int id = v.getId();
             switch (id) {
-                case R.id.rlScanQRCode:
-                    clearBackground();
-                    qrCodeContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
-                    listener.onScanQRCodeClick();
-                    break;
-                case R.id.ivScanQRCode:
-                    clearBackground();
-                    qrCodeContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
-                    listener.onScanQRCodeClick();
-                    break;
                 case R.id.rlCutlery:
                     clearBackground();
                     foodIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
@@ -164,8 +141,6 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
     }
 
     public interface NavigationListener {
-        void onScanQRCodeClick();
-
         void onCutleryClick();
 
         void onDrinkingClick();

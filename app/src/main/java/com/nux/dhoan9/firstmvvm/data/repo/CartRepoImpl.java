@@ -24,7 +24,7 @@ public class CartRepoImpl implements CartRepo {
     public List<CartItem> getCart(List<CartItemRequest> cartItemRequests) {
         List<CartItem> cartItems = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            Dish dish = new Dish(i, "Cart - " + i, 4202, R.drawable.chocolate_ball);
+            Dish dish = new Dish(i, "Cart - " + i,"description",  4202, "image");
             cartItems.add(new CartItem(dish, i + 1));
         }
         return cartItems;

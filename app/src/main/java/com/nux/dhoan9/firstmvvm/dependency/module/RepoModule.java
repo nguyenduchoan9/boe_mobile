@@ -32,8 +32,8 @@ public class RepoModule {
     }
 
     @Provides
-    public DishRepo provideDishRepo() {
-        return new DishRepoImpl();
+    public DishRepo provideDishRepo(Retrofit retrofit) {
+        return new DishRepoImpl(retrofit);
     }
 
     @Provides

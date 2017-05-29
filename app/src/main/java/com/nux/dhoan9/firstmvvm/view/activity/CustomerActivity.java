@@ -14,22 +14,32 @@ import android.view.View;
 
 import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
+import com.nux.dhoan9.firstmvvm.data.repo.UserRepo;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityCustomerBinding;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
+import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.view.fragment.CutleryFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.DrinkingFragment;
+import com.nux.dhoan9.firstmvvm.view.fragment.EndpointDialogFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.HistoryFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.OrderFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.QRCodeFragment;
 
 import javax.inject.Inject;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class CustomerActivity extends BaseActivity {
     private NavigationBottom navigationBottom;
+    private final int CUTLERY_POS = 0;
+    private final int DRINKING_POS = 1;
+    private final int ORDER_POS = 2;
+    private final int HISTORY_POS = 3;
     @Inject
     PreferencesManager preferencesManager;
-    QRCodeFragment qrCodeFragment = new QRCodeFragment();
+    @Inject
+    UserRepo userRepo;
     CutleryFragment cutleryFragment = new CutleryFragment();
     DrinkingFragment drinkingFragment = new DrinkingFragment();
     OrderFragment orderFragment = new OrderFragment();
@@ -94,6 +104,15 @@ public class CustomerActivity extends BaseActivity {
             case R.id.nav_your_profile:
                 startActivity(ProfileActivity.newInstance(this));
                 break;
+            case R.id.logOut:
+                logout();
+                break;
+            case R.id.apiEndpoint:
+                showEndpointDialog();
+                break;
+            case R.id.payment:
+                startActivity(PaypalActivity.newInstance(this));
+                break;
             default:
                 break;
         }
@@ -133,48 +152,46 @@ public class CustomerActivity extends BaseActivity {
     private void initView() {
         navigationBottom = binding.actionBarContent.content.bottomNavigationContent.bottomNavigation;
         initContent();
-        navigationBottom.setPress(0);
+        navigationBottom.setPress(fragmentPos);
         navigationBottom.setListener(new NavigationBottom.NavigationListener() {
             @Override
-            public void onScanQRCodeClick() {
-                showFragmentPosition(0);
-            }
-
-            @Override
             public void onCutleryClick() {
-                showFragmentPosition(1);
+                showFragmentPosition(CUTLERY_POS);
             }
 
             @Override
             public void onDrinkingClick() {
-                showFragmentPosition(2);
+                showFragmentPosition(DRINKING_POS);
             }
 
             @Override
             public void onOrderClick() {
-                showFragmentPosition(3);
+                showFragmentPosition(ORDER_POS);
             }
 
             @Override
             public void onHistoryClick() {
-                showFragmentPosition(4);
+                showFragmentPosition(HISTORY_POS);
             }
         });
     }
 
     private void logout() {
-        preferencesManager.logOut();
-        startActivity(LoginActivity.newInstance(this));
+        userRepo.logout(preferencesManager.getUser().getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(success -> {
+                    preferencesManager.logOut();
+                    startActivity(LoginActivity.newInstance(this));
+                });
     }
 
     private void initContent() {
-        replaceContent(qrCodeFragment, false, "QRCodeFragment");
         replaceContent(cutleryFragment, false, "CutleryFragment");
         replaceContent(drinkingFragment, false, "DrinkingFragment");
         replaceContent(orderFragment, false, "OrderFragment");
         replaceContent(historyFragment, false, "HistoryFragment");
-
-        fragmentPos = 0;
+        fragmentPos = 1;
         showFragmentPosition(fragmentPos);
     }
 
@@ -186,12 +203,11 @@ public class CustomerActivity extends BaseActivity {
             ft.add(R.id.frContent, fragment, tag);
         }
         ft.commit();
+        getSupportFragmentManager().executePendingTransactions();
     }
 
     private void showFragment(Fragment fragment) {
-        if (fragment instanceof QRCodeFragment) {
-            getSupportActionBar().setTitle(R.string.scan_qr_code_fragment);
-        } else if (fragment instanceof CutleryFragment) {
+        if (fragment instanceof CutleryFragment) {
             getSupportActionBar().setTitle(R.string.cutlery_fragment);
         } else if (fragment instanceof DrinkingFragment) {
             getSupportActionBar().setTitle(R.string.drinking_fragment);
@@ -201,40 +217,32 @@ public class CustomerActivity extends BaseActivity {
             getSupportActionBar().setTitle(R.string.history_fragment);
         }
         getSupportFragmentManager().beginTransaction().show(fragment).commit();
+        getSupportFragmentManager().executePendingTransactions();
     }
 
     private void hideFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction().hide(fragment).commit();
+        getSupportFragmentManager().executePendingTransactions();
     }
 
     private void showFragmentPosition(int pos) {
-        if (0 == pos) {
-            showFragment(qrCodeFragment);
-            hideFragment(cutleryFragment);
-            hideFragment(drinkingFragment);
-            hideFragment(orderFragment);
-            hideFragment(historyFragment);
-        } else if (1 == pos) {
+        if (CUTLERY_POS == pos) {
             showFragment(cutleryFragment);
-            hideFragment(qrCodeFragment);
             hideFragment(drinkingFragment);
             hideFragment(orderFragment);
             hideFragment(historyFragment);
-        } else if (2 == pos) {
+        } else if (DRINKING_POS == pos) {
             showFragment(drinkingFragment);
-            hideFragment(qrCodeFragment);
             hideFragment(cutleryFragment);
             hideFragment(orderFragment);
             hideFragment(historyFragment);
-        } else if (3 == pos) {
+        } else if (ORDER_POS == pos) {
             showFragment(orderFragment);
-            hideFragment(qrCodeFragment);
             hideFragment(cutleryFragment);
             hideFragment(drinkingFragment);
             hideFragment(historyFragment);
-        } else if (4 == pos) {
+        } else if (HISTORY_POS == pos) {
             showFragment(historyFragment);
-            hideFragment(qrCodeFragment);
             hideFragment(cutleryFragment);
             hideFragment(drinkingFragment);
             hideFragment(orderFragment);
@@ -244,5 +252,17 @@ public class CustomerActivity extends BaseActivity {
 
     public NavigationBottom getNavigationBottom() {
         return navigationBottom;
+    }
+
+    @Override
+    protected void onDestroy() {
+        preferencesManager.setTableInfo(null);
+        super.onDestroy();
+    }
+
+    private void showEndpointDialog() {
+        EndpointDialogFragment.newInstance()
+                .show(getSupportFragmentManager(),
+                        EndpointDialogFragment.class.getSimpleName());
     }
 }

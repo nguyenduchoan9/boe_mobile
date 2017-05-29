@@ -17,6 +17,7 @@ import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityDishesByCategoryBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.DishByCategoryModule;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ForSecondActivity;
+import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.view.adapter.DishesByCategoryAdapter;
 import com.nux.dhoan9.firstmvvm.view.custom.ItemDecorationAlbumColumns;
 import com.nux.dhoan9.firstmvvm.viewmodel.DishListViewModel;
@@ -62,7 +63,7 @@ public class DishesByCategoryActivity extends AppCompatActivity {
         rvDish.setLayoutManager(manager);
 
         binding.setViewModel(viewModel);
-        viewModel.initialize(dishRepo.getDishes());
+        viewModel.initializeCategory(getIdCategory());
     }
 
     private void enableBackButton() {
@@ -78,5 +79,9 @@ public class DishesByCategoryActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    public int getIdCategory() {
+        return getIntent().getIntExtra(Constant.KEY_ID_CATEGORY, 1);
     }
 }

@@ -25,18 +25,20 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_above="@+id/tvPrice"
-            android:layout_marginRight="8dp"
+            android:layout_alignParentRight="true"
             android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
             android:fontFamily="sans-serif"
             android:text="@{viewModel.name}"
+            android:layout_marginLeft="8dp"
+            android:gravity="right"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_x_large_text"/>
+            android:textSize="@dimen/size_large_text"/>
 
         <TextView
-            android:layout_width="wrap_content"
             android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/ivCover"
             android:layout_alignParentRight="true"
@@ -45,7 +47,7 @@
             android:fontFamily="sans-serif"
             android:text='@{"$ " + String.valueOf(viewModel.price)}'
             android:textColor="@color/white"
-            android:textSize="@dimen/size_large_text"/>
+            android:textSize="@dimen/size_medium_text"/>
 
     </RelativeLayout>
 </layout>

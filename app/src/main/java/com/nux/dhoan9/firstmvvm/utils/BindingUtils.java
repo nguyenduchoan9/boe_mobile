@@ -10,7 +10,9 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.StringSignature;
 import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
+import com.nux.dhoan9.firstmvvm.view.custom.IntegerVersionSignature;
 import com.nux.dhoan9.firstmvvm.view.custom.TextChange;
 import com.nux.dhoan9.firstmvvm.view.custom.TextChangeAdapter;
 
@@ -56,12 +58,17 @@ public class BindingUtils {
     }
 
     @BindingAdapter("setImage")
-    public static void setResizedBackground(ImageView imageView, int resource) {
+    public static void setResizedBackground(ImageView imageView, String url) {
+        String key = imageView.getContext().getClass().getSimpleName().toString();
+//        Glide.with(imageView.getContext())
+//                .load(Constant.API_ENDPOINT + url)
+//                .asBitmap()
+//                .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                .skipMemoryCache(true)
+//                .into(imageView);
         Glide.with(imageView.getContext())
-                .load(resource)
-                .asBitmap()
-                .override(120, 160)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .load(Constant.API_ENDPOINT + url)
+                .signature(new StringSignature(key + url))
                 .into(imageView);
     }
 }

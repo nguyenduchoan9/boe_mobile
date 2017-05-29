@@ -5,12 +5,17 @@ import com.nux.dhoan9.firstmvvm.model.MenuCategories;
 import com.nux.dhoan9.firstmvvm.model.Todo;
 
 import java.util.List;
+import rx.Observable;
+
 /**
  * Created by hoang on 08/05/2017.
  */
 
 public interface DishRepo {
-    List<MenuCategories> getMenuCategories();
-    Dish getDishDetail(int id);
-    List<Dish> getDishes();
+    Observable<List<MenuCategories>> getMenu();
+    Observable<List<MenuCategories>> getMenuDrinking();
+
+    Observable<Dish> getDishDetail(int id);
+
+    Observable<List<Dish>> getDishesByCategory(int idCategory);
 }

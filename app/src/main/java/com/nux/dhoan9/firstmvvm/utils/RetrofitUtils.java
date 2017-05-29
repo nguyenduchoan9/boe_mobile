@@ -3,10 +3,12 @@ package com.nux.dhoan9.firstmvvm.utils;
 import android.util.Log;
 
 import com.nux.dhoan9.firstmvvm.BuildConfig;
+import com.nux.dhoan9.firstmvvm.manager.EndpointManager;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.HeaderCredential;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Headers;
 import okhttp3.Interceptor;
@@ -17,20 +19,23 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 /**
  * Created by hoang on 29/04/2017.
  */
 
 public class RetrofitUtils {
     PreferencesManager preferencesManager;
+    EndpointManager endpointManager;
 
-    public RetrofitUtils(PreferencesManager preferencesManager) {
+    public RetrofitUtils(PreferencesManager preferencesManager, EndpointManager endpointManager) {
         this.preferencesManager = preferencesManager;
+        this.endpointManager = endpointManager;
     }
 
     public Retrofit create() {
         return new Retrofit.Builder()
-                .baseUrl(BuildConfig.BASE_URL)
+                .baseUrl(endpointManager.getEndpoint() + "/api/")
                 .client(client())
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -43,6 +48,9 @@ public class RetrofitUtils {
                 .addInterceptor(headerAuthenticateInterceptor())
                 .addInterceptor(loggingInterceptorLevelHeaders())
                 .addInterceptor(loggingInterceptorLevelBody())
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
                 .build();
     }
 
