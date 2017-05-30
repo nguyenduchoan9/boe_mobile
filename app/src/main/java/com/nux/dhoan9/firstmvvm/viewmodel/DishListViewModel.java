@@ -21,7 +21,7 @@ import rx.subjects.PublishSubject;
  */
 
 public class DishListViewModel extends BaseViewModel {
-    private final ListBinder<DishViewModel> listBinder;
+    public final ListBinder<DishViewModel> listBinder;
     private final DishRepo dishRepo;
     private final List<DishViewModel> dishes = new ArrayList<>();
     private PublishSubject<Integer> scrollTo = PublishSubject.create();
@@ -49,6 +49,11 @@ public class DishListViewModel extends BaseViewModel {
 
     public void initialize(List<Dish> dishesItem) {
         dishes.addAll(dishesViewModel(dishesItem));
+        listBinder.notifyDataChange(dishes);
+    }
+
+    public void removeAllData(){
+        dishes.clear();
         listBinder.notifyDataChange(dishes);
     }
 

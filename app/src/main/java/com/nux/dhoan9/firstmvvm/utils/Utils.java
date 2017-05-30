@@ -1,8 +1,12 @@
 package com.nux.dhoan9.firstmvvm.utils;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.content.ContextCompat;
 import com.nux.dhoan9.firstmvvm.BuildConfig;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -42,5 +46,11 @@ public class Utils {
             e.printStackTrace();
         }
         return parseUrl.getHost();
+    }
+
+    public static Drawable changeDrawableColor(Drawable drawable, int newColor) {
+//        Drawable mDrawable = ContextCompat.getDrawable(context, icon).mutate();
+        drawable.setColorFilter(new PorterDuffColorFilter(newColor, PorterDuff.Mode.SRC_IN));
+        return drawable;
     }
 }

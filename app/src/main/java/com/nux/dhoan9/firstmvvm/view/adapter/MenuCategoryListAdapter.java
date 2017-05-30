@@ -79,6 +79,7 @@ public class MenuCategoryListAdapter extends RecyclerView.Adapter<MenuCategoryLi
             rvDishes.setLayoutManager(manager);
 
             binding.setViewModel(viewModel);
+            binding.setListBinder(menuCateListViewModel);
         }
     }
 }

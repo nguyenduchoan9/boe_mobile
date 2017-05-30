@@ -19,7 +19,6 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:padding="0dp"
-        android:transitionGroup="true"
         app:dragDismissDistance="260dp"
         app:dragDismissScale="0.8">
 
@@ -29,7 +28,6 @@
             android:layout_height="300dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:transitionName="@string/item_image_transition"
             app:setImage='@{viewModel.image}'
             tools:src="@drawable/chocolate_ball"/>
 
