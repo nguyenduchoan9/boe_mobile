@@ -78,11 +78,11 @@ public class DishListAdapter extends Adapter<RecyclerView.ViewHolder> {
             holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(mContext, DishDetailActivity.class);
                 intent.putExtra(Constant.KEY_DISH_DETAIL, viewModel.id);
-                ActivityOptions ops = ActivityOptions.makeSceneTransitionAnimation((Activity) holder.itemView.getContext(),
-                        Pair.create(((DishViewHolder) holder).binding.ivImage,
-                                holder.itemView.getContext().getString(R.string.item_image_transition))
-                );
-                mContext.startActivity(intent, ops.toBundle());
+//                ActivityOptions ops = ActivityOptions.makeSceneTransitionAnimation((Activity) holder.itemView.getContext(),
+//                        Pair.create(((DishViewHolder) holder).binding.ivImage,
+//                                holder.itemView.getContext().getString(R.string.item_image_transition))
+//                );
+                mContext.startActivity(intent);
             });
         }
     }

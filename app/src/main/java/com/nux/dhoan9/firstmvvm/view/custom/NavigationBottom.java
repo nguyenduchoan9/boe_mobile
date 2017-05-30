@@ -1,6 +1,7 @@
 package com.nux.dhoan9.firstmvvm.view.custom;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -11,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.nux.dhoan9.firstmvvm.R;
+import com.nux.dhoan9.firstmvvm.utils.Utils;
+
 /**
  * Created by hoang on 13/05/2017.
  */
@@ -20,6 +23,10 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
     public RelativeLayout drinkIconContainer;
     public RelativeLayout orderIconContainer;
     public RelativeLayout historyIconContainer;
+    public ImageView ivCutlery;
+    public ImageView ivDrinking;
+    public ImageView ivOrder;
+    public ImageView ivHistory;
 
     public NavigationBottom(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -36,7 +43,10 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
         drinkIconContainer = (RelativeLayout) findViewById(R.id.rlDrinking);
         orderIconContainer = (RelativeLayout) findViewById(R.id.rlOrder);
         historyIconContainer = (RelativeLayout) findViewById(R.id.rlHistory);
-
+        ivCutlery = (ImageView) findViewById(R.id.ivCutlery);
+        ivDrinking = (ImageView) findViewById(R.id.ivDrinking);
+        ivOrder = (ImageView) findViewById(R.id.ivOrder);
+        ivHistory = (ImageView) findViewById(R.id.ivHistory);
         initViewClick(R.id.rlCutlery);
         initViewClick(R.id.ivCutlery);
         initViewClick(R.id.rlDrinking);
@@ -55,33 +65,41 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
     }
 
     private void clearBackground() {
-        foodIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
-        drinkIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
-        orderIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
-        historyIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
+        Utils.changeDrawableColor(ivCutlery.getDrawable(),
+                ContextCompat.getColor(getContext(), android.R.color.black));
+        Utils.changeDrawableColor(ivDrinking.getDrawable(),
+                ContextCompat.getColor(getContext(), android.R.color.black));
+        Utils.changeDrawableColor(ivOrder.getDrawable(),
+                ContextCompat.getColor(getContext(), android.R.color.black));
+        Utils.changeDrawableColor(ivHistory.getDrawable(),
+                ContextCompat.getColor(getContext(), android.R.color.black));
     }
 
     public void setPress(int pos) {
         clearBackground();
         switch (pos) {
             case 0:
-                foodIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
+                Utils.changeDrawableColor(ivCutlery.getDrawable(),
+                        ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
                 break;
             case 1:
-                drinkIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
+                Utils.changeDrawableColor(ivDrinking.getDrawable(),
+                        ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
                 break;
             case 2:
-                orderIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
+                Utils.changeDrawableColor(ivOrder.getDrawable(),
+                        ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
                 break;
             case 3:
-                historyIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
+                Utils.changeDrawableColor(ivHistory.getDrawable(),
+                        ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
                 break;
             default:
-                foodIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
+                Utils.changeDrawableColor(ivCutlery.getDrawable(),
+                        ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
                 break;
         }
     }
-
 
     @Override
     public void onClick(View v) {
@@ -89,43 +107,35 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
             int id = v.getId();
             switch (id) {
                 case R.id.rlCutlery:
-                    clearBackground();
-                    foodIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
+                    setPress(0);
                     listener.onCutleryClick();
                     break;
                 case R.id.rlDrinking:
-                    clearBackground();
-                    drinkIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
+                    setPress(1);
                     listener.onDrinkingClick();
                     break;
                 case R.id.rlOrder:
-                    clearBackground();
-                    orderIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
+                    setPress(2);
                     listener.onOrderClick();
                     break;
                 case R.id.rlHistory:
-                    clearBackground();
-                    historyIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
+                    setPress(3);
                     listener.onHistoryClick();
                     break;
                 case R.id.ivCutlery:
-                    clearBackground();
-                    foodIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
+                    setPress(0);
                     listener.onCutleryClick();
                     break;
                 case R.id.ivDrinking:
-                    clearBackground();
-                    drinkIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
+                    setPress(1);
                     listener.onDrinkingClick();
                     break;
                 case R.id.ivOrder:
-                    clearBackground();
-                    orderIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
+                    setPress(2);
                     listener.onOrderClick();
                     break;
                 case R.id.ivHistory:
-                    clearBackground();
-                    historyIconContainer.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.whiteDark));
+                    setPress(3);
                     listener.onHistoryClick();
                     break;
                 default:

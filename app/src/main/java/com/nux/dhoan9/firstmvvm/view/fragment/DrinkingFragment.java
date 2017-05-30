@@ -20,8 +20,11 @@ import com.nux.dhoan9.firstmvvm.view.adapter.MenuCategoryListAdapter;
 import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
 
+import java.util.concurrent.locks.ReentrantLock;
 import javax.inject.Inject;
 import javax.inject.Named;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class DrinkingFragment extends Fragment {
     FragmentDrinkingBinding binding;
@@ -79,7 +82,9 @@ public class DrinkingFragment extends Fragment {
         initializerData();
         ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
     }
+
     private String log = "zzzzzz-Droinking_TAG";
+
     @Override
     public void onStop() {
         Log.i(log, "onStop");
@@ -87,7 +92,10 @@ public class DrinkingFragment extends Fragment {
     }
 
     private void initializerData() {
-        viewModel.initializeDrinking();
+        viewModel.initializeDrinking()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {});
     }
 
     private void initView() {
