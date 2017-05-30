@@ -1,11 +1,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout
+        android:id="@+id/navigationContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@android:color/transparent"
         android:paddingTop="1dp"
+        android:elevation="4dp"
         >
 
         <com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom
@@ -13,7 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#fff"
-            android:elevation="2dp"
             android:orientation="horizontal"
             android:weightSum="4">
 

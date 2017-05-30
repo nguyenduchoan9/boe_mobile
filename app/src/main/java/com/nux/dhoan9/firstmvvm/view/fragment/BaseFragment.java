@@ -5,13 +5,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.nux.dhoan9.firstmvvm.view.activity.BaseActivity;
+import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import rx.subjects.PublishSubject;
 
 /**
  * Created by hoang on 27/03/2017.
  */
 
-public abstract class BaseFragment extends Fragment{
+public abstract class BaseFragment extends Fragment {
     private PublishSubject<BaseFragment> createView = PublishSubject.create();
     private PublishSubject<BaseFragment> destroyView = PublishSubject.create();
 
@@ -34,5 +36,13 @@ public abstract class BaseFragment extends Fragment{
     public void onDestroyView() {
         destroyView.onNext(this);
         super.onDestroyView();
+    }
+
+    public void showProcessing(String title) {
+        ((CustomerActivity) getActivity()).showProcessing(title);
+    }
+
+    public void hideProcessing() {
+        ((CustomerActivity) getActivity()).hideProcessing();
     }
 }

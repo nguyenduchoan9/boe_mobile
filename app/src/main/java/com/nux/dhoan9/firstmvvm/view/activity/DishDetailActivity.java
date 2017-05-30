@@ -2,6 +2,7 @@ package com.nux.dhoan9.firstmvvm.view.activity;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import com.google.android.gms.dynamic.LifecycleDelegate;
 import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
@@ -31,6 +32,8 @@ public class DishDetailActivity extends BaseActivity {
     @Inject
     DishDetailViewModel viewModel;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +49,7 @@ public class DishDetailActivity extends BaseActivity {
 
     @Override
     protected void setProcessing() {
+
     }
 
     private void initDependencies() {

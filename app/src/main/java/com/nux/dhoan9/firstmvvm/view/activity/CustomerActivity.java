@@ -4,14 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 
+import com.andremion.floatingnavigationview.FloatingNavigationView;
 import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.repo.UserRepo;
@@ -36,6 +42,8 @@ public class CustomerActivity extends BaseActivity {
     private final int DRINKING_POS = 1;
     private final int ORDER_POS = 2;
     private final int HISTORY_POS = 3;
+    private FloatingNavigationView fnv;
+    private RelativeLayout navigationContainer;
     @Inject
     PreferencesManager preferencesManager;
     @Inject
@@ -67,9 +75,8 @@ public class CustomerActivity extends BaseActivity {
 
     @Override
     protected void setProcessing() {
-        srProcessing = binding.actionBarContent.content.srProcessing;
-        rlProcessing = binding.actionBarContent.content.rlProcessing;
-        tvProcessingTitle = binding.actionBarContent.content.tvProcessingTitle;
+        rlProcessing = binding.actionBarContent.content.processingContainer.rlProcessing;
+        tvProcessingTitle = binding.actionBarContent.content.processingContainer.tvProcessingTitle;
     }
 
     private void initDrawer() {
@@ -150,6 +157,7 @@ public class CustomerActivity extends BaseActivity {
     }
 
     private void initView() {
+        navigationContainer = binding.actionBarContent.content.bottomNavigationContent.navigationContainer;
         navigationBottom = binding.actionBarContent.content.bottomNavigationContent.bottomNavigation;
         initContent();
         navigationBottom.setPress(fragmentPos);
@@ -174,6 +182,35 @@ public class CustomerActivity extends BaseActivity {
                 showFragmentPosition(HISTORY_POS);
             }
         });
+
+        initFloatActionNavigation();
+    }
+
+    private void initFloatActionNavigation() {
+        fnv = binding.actionBarContent.floatingNavigationView;
+        fnv.setOnClickListener( v -> fnv.open());
+        fnv.setNavigationItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            switch (itemId) {
+                case R.id.profile:
+                    startActivity(ProfileActivity.newInstance(CustomerActivity.this));
+                    break;
+                case R.id.logOut:
+                    logout();
+                    break;
+                case R.id.apiEndpoint:
+                    showEndpointDialog();
+                    break;
+                case R.id.payment:
+                    startActivity(PaypalActivity.newInstance(CustomerActivity.this));
+                    break;
+                default:
+                    break;
+            }
+            fnv.setCheckedItem(itemId);
+            fnv.close();
+            return true;
+        });
     }
 
     private void logout() {
@@ -192,7 +229,7 @@ public class CustomerActivity extends BaseActivity {
         replaceContent(orderFragment, false, "OrderFragment");
         replaceContent(historyFragment, false, "HistoryFragment");
 //        showFragmentPosition(fragmentPos=3);
-        showFragmentPosition(fragmentPos=0);
+        showFragmentPosition(fragmentPos = 0);
     }
 
     private void replaceContent(Fragment fragment, boolean exist, String tag) {
@@ -250,19 +287,18 @@ public class CustomerActivity extends BaseActivity {
         fragmentPos = pos;
     }
 
-    public NavigationBottom getNavigationBottom() {
-        return navigationBottom;
-    }
-
-    @Override
-    protected void onDestroy() {
-        preferencesManager.setTableInfo(null);
-        super.onDestroy();
+    public RelativeLayout getNavigationBottom() {
+        return navigationContainer;
     }
 
     private void showEndpointDialog() {
         EndpointDialogFragment.newInstance()
                 .show(getSupportFragmentManager(),
                         EndpointDialogFragment.class.getSimpleName());
+    }
+
+    @Override
+    protected void setPreference(PreferencesManager preference) {
+        super.setPreference(this.preferencesManager);
     }
 }

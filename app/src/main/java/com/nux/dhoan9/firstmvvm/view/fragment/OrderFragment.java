@@ -132,7 +132,7 @@ public class OrderFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                NavigationBottom view = ((CustomerActivity) getActivity()).getNavigationBottom();
+                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
                 TextView tvTotalPayment = binding.tvTotalPayment;
                 TextView tvContinues = binding.tvContinues;
                 TextView tvClearAll = binding.tvClearAll;

@@ -9,13 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import com.bumptech.glide.Glide;
 import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentCutleryBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
-import com.nux.dhoan9.firstmvvm.utils.Utils;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.MenuCategoryListAdapter;
 import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
@@ -108,7 +108,7 @@ public class CutleryFragment extends BaseFragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                NavigationBottom view = ((CustomerActivity) getActivity()).getNavigationBottom();
+                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
                 if (dy > 0) {
 //                    // Scrolling up
 //                    view.animate()

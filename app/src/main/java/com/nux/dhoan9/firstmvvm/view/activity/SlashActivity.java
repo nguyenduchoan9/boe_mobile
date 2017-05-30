@@ -14,6 +14,7 @@ import com.nux.dhoan9.firstmvvm.model.QRCodeTableInfo;
 import com.nux.dhoan9.firstmvvm.model.User;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
+import com.nux.dhoan9.firstmvvm.view.fragment.EndpointDialogFragment;
 import javax.inject.Inject;
 
 public class SlashActivity extends AppCompatActivity {
@@ -30,6 +31,12 @@ public class SlashActivity extends AppCompatActivity {
         if (checkGooglePlayService()) {
             new Handler().postDelayed(() -> navigateUser(), 4000);
         }
+    }
+
+    private void showEndpointDialog() {
+        EndpointDialogFragment.newInstance()
+                .show(getSupportFragmentManager(),
+                        EndpointDialogFragment.class.getSimpleName());
     }
 
     //    https://stackoverflow.com/questions/31016722/googleplayservicesutil-vs-googleapiavailability

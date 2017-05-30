@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.nux.dhoan9.firstmvvm.Application;
@@ -108,7 +109,7 @@ public class DrinkingFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                NavigationBottom view = ((CustomerActivity) getActivity()).getNavigationBottom();
+                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
                 if (dy > 0) {
                     // Scrolling up
 //                    view.animate()
