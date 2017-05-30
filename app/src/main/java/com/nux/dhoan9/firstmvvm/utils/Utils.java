@@ -4,19 +4,16 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.view.View;
-import com.nux.dhoan9.firstmvvm.BuildConfig;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.URL;
 
 /**
@@ -66,10 +63,15 @@ public class Utils {
             x = BitmapFactory.decodeStream(input);
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             connection.disconnect();
         }
 
         return new BitmapDrawable(resources, x);
+    }
+    public static Drawable changeDrawableColor(Drawable drawable, int newColor) {
+//        Drawable mDrawable = ContextCompat.getDrawable(context, icon).mutate();
+        drawable.setColorFilter(new PorterDuffColorFilter(newColor, PorterDuff.Mode.SRC_IN));
+        return drawable;
     }
 }

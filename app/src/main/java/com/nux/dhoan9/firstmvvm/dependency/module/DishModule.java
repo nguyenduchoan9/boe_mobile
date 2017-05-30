@@ -12,10 +12,12 @@ import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
 import com.nux.dhoan9.firstmvvm.view.adapter.DishListAdapter;
 import com.nux.dhoan9.firstmvvm.view.adapter.MenuCategoryListAdapter;
 import com.nux.dhoan9.firstmvvm.view.diffCallBack.DishDiffCallback;
+import com.nux.dhoan9.firstmvvm.view.diffCallBack.MenuDiffCallback;
 import com.nux.dhoan9.firstmvvm.viewmodel.DishDetailViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.DishListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.DishViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
+import com.nux.dhoan9.firstmvvm.viewmodel.MenuCategoriesViewModel;
 import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
@@ -32,8 +34,18 @@ public class DishModule {
     }
 
     @Provides
+    public MenuDiffCallback provideMenuDiffCallback() {
+        return new MenuDiffCallback();
+    }
+
+    @Provides
     public ListBinder<DishViewModel> provideDishListBinder(DishDiffCallback dishDiffCallback) {
         return new ListBinder<>(dishDiffCallback);
+    }
+
+    @Provides
+    public ListBinder<MenuCategoriesViewModel> provideMenuListBinder(MenuDiffCallback menuDiffCallback) {
+        return new ListBinder<>(menuDiffCallback);
     }
 
     @Provides
@@ -57,8 +69,9 @@ public class DishModule {
     public MenuCateListViewModel provideMenuCateListViewModelCutlery(@NonNull ThreadScheduler threadScheduler,
                                                                      @NonNull Resources resources,
                                                                      @NonNull ListBinder<DishViewModel> listBinder,
-                                                                     @NonNull DishRepo dishRepo) {
-        return new MenuCateListViewModel(threadScheduler, resources, listBinder, dishRepo);
+                                                                     @NonNull DishRepo dishRepo,
+                                                                     @NonNull ListBinder<MenuCategoriesViewModel> menuListBinder) {
+        return new MenuCateListViewModel(threadScheduler, resources, listBinder, dishRepo, menuListBinder);
     }
 
     @Provides
@@ -67,8 +80,9 @@ public class DishModule {
     public MenuCateListViewModel provideMenuCateListViewModelDrinking(@NonNull ThreadScheduler threadScheduler,
                                                                       @NonNull Resources resources,
                                                                       @NonNull ListBinder<DishViewModel> listBinder,
-                                                                      @NonNull DishRepo dishRepo) {
-        return new MenuCateListViewModel(threadScheduler, resources, listBinder, dishRepo);
+                                                                      @NonNull DishRepo dishRepo,
+                                                                      @NonNull ListBinder<MenuCategoriesViewModel> menuListBinder) {
+        return new MenuCateListViewModel(threadScheduler, resources, listBinder, dishRepo, menuListBinder);
     }
 
     @Provides

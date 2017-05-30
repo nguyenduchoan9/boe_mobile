@@ -22,32 +22,22 @@
             android:src="@drawable/chocolate_ball"
             app:setImage="@{viewModel.image}"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/tvPrice"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginRight="8dp"
-            android:fontFamily="sans-serif"
-            android:text="@{viewModel.name}"
-            android:layout_marginLeft="8dp"
-            android:gravity="right"
-            android:textColor="@color/white"
-            android:textSize="@dimen/size_large_text"/>
-
-        <TextView
-            android:id="@+id/tvPrice"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/ivCover"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginRight="8dp"
-            android:fontFamily="sans-serif"
-            android:text='@{"$ " + String.valueOf(viewModel.price)}'
-            android:textColor="@color/white"
-            android:textSize="@dimen/size_medium_text"/>
+            android:background="@color/blur_white"
+            android:padding="8dp">
+
+            <TextView
+                style="@style/AppTheme.DishName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/tvPrice"
+                android:layout_alignParentRight="true"
+                android:text="@{viewModel.name}"/>
+        </RelativeLayout>
+
 
     </RelativeLayout>
 </layout>

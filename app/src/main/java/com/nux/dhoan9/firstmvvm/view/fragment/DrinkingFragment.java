@@ -11,17 +11,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentDrinkingBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
+import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.MenuCategoryListAdapter;
 import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
 
+import java.util.concurrent.locks.ReentrantLock;
 import javax.inject.Inject;
 import javax.inject.Named;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class DrinkingFragment extends Fragment {
     FragmentDrinkingBinding binding;
@@ -82,10 +87,18 @@ public class DrinkingFragment extends Fragment {
     }
 
     private void initializerData() {
-        viewModel.initializeDrinking();
+        binding.setViewModel(viewModel);
+        viewModel.initializeDrinking(false)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {});
+        Glide.with(this)
+                .load(Constant.API_ENDPOINT + "/images/1.jpg")
+                .into(binding.ivBackground);
     }
 
     private void initView() {
+        setActionSwipeContainer();
         LinearLayoutManager manager =
                 new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvDish = binding.rvDish;
@@ -98,18 +111,36 @@ public class DrinkingFragment extends Fragment {
                 NavigationBottom view = ((CustomerActivity) getActivity()).getNavigationBottom();
                 if (dy > 0) {
                     // Scrolling up
-                    view.animate()
-                            .setDuration(300)
-                            .translationY(view.getHeight() * 1.5F);
+//                    view.animate()
+//                            .setDuration(100)
+//                            .scaleX(0)
+//                            .scaleY(0);
                     view.setVisibility(View.GONE);
                 } else {
                     // Scrolling down
                     view.setVisibility(View.VISIBLE);
-                    view.animate()
-                            .setDuration(300)
-                            .translationY(0);
+//                    view.animate()
+//                            .setDuration(100)
+//                            .scaleX(1.0f)
+//                            .scaleY(1.0f);
                 }
             }
         });
+    }
+
+    private void setActionSwipeContainer() {
+        binding.srRefresh.setOnRefreshListener(() -> {
+            viewModel.initializeDrinking(true)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> {
+                        binding.srRefresh.setRefreshing(false);
+                    });
+        });
+
+        binding.srRefresh.setColorSchemeResources(R.color.holoBlueBright,
+                R.color.holoGreenLight,
+                R.color.holoOrangeLight,
+                R.color.holoRedLight);
     }
 }

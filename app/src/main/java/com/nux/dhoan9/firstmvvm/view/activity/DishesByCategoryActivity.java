@@ -56,10 +56,7 @@ public class DishesByCategoryActivity extends AppCompatActivity {
         rvDish = binding.rvDish;
         GridLayoutManager manager =
                 new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
-        ItemDecorationAlbumColumns dividerItemDecoration =
-                new ItemDecorationAlbumColumns(2, 2);
         rvDish.setAdapter(adapter);
-        rvDish.addItemDecoration(dividerItemDecoration);
         rvDish.setLayoutManager(manager);
 
         binding.setViewModel(viewModel);

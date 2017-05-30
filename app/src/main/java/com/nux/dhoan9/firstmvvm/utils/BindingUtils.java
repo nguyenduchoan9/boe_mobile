@@ -2,17 +2,15 @@ package com.nux.dhoan9.firstmvvm.utils;
 
 import android.databinding.BindingAdapter;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.signature.StringSignature;
+import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
-import com.nux.dhoan9.firstmvvm.view.custom.IntegerVersionSignature;
 import com.nux.dhoan9.firstmvvm.view.custom.TextChange;
 import com.nux.dhoan9.firstmvvm.view.custom.TextChangeAdapter;
 
@@ -68,6 +66,8 @@ public class BindingUtils {
 //                .into(imageView);
         Glide.with(imageView.getContext())
                 .load(Constant.API_ENDPOINT + url)
+                .placeholder(R.drawable.dish_placeholder)
+                .centerCrop()
                 .signature(new StringSignature(key + url))
                 .into(imageView);
     }

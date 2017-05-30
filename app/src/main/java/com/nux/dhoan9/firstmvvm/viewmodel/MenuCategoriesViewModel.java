@@ -24,4 +24,8 @@ public class MenuCategoriesViewModel {
     public DishListViewModel getDishViewModels() {
         return dishViewModels;
     }
+
+    public Category getCategory(){
+        return category;
+    }
 }

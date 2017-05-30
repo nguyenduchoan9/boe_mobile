@@ -14,3 +14,5 @@
 
 # for DexGuard only
 -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+-keep class com.wang.avi.** { *; }
+-keep class com.wang.avi.indicators.** { *; }

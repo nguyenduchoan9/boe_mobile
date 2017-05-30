@@ -191,8 +191,8 @@ public class CustomerActivity extends BaseActivity {
         replaceContent(drinkingFragment, false, "DrinkingFragment");
         replaceContent(orderFragment, false, "OrderFragment");
         replaceContent(historyFragment, false, "HistoryFragment");
-        fragmentPos = 1;
-        showFragmentPosition(fragmentPos);
+//        showFragmentPosition(fragmentPos=3);
+        showFragmentPosition(fragmentPos=0);
     }
 
     private void replaceContent(Fragment fragment, boolean exist, String tag) {
