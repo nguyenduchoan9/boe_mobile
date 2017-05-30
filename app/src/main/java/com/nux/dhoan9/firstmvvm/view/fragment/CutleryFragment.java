@@ -9,19 +9,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import com.bumptech.glide.Glide;
 import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentCutleryBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
+import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.MenuCategoryListAdapter;
 import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
-import java.util.concurrent.locks.ReentrantLock;
 import javax.inject.Inject;
 import javax.inject.Named;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
 
 public class CutleryFragment extends BaseFragment {
     FragmentCutleryBinding binding;
@@ -89,6 +92,9 @@ public class CutleryFragment extends BaseFragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {});
+        Glide.with(this)
+                .load(Constant.API_ENDPOINT + "/images/1.jpg")
+                .into(binding.ivBackground);
     }
 
     private void initView() {
@@ -102,21 +108,21 @@ public class CutleryFragment extends BaseFragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                NavigationBottom view = ((CustomerActivity) getActivity()).getNavigationBottom();
+                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
                 if (dy > 0) {
-                    // Scrolling up
-                    view.animate()
-                            .setDuration(100)
-                            .scaleX(0)
-                            .scaleY(0);
-//                    view.setVisibility(View.GONE);
+//                    // Scrolling up
+//                    view.animate()
+//                            .setDuration(100)
+//                            .scaleX(0)
+//                            .scaleY(0);
+                    view.setVisibility(View.GONE);
                 } else {
                     // Scrolling down
-//                    view.setVisibility(View.VISIBLE);
-                    view.animate()
-                            .setDuration(100)
-                            .scaleX(1.0f)
-                            .scaleY(1.0f);
+                    view.setVisibility(View.VISIBLE);
+//                    view.animate()
+//                            .setDuration(100)
+//                            .scaleX(1.0f)
+//                            .scaleY(1.0f);
                 }
             }
         });

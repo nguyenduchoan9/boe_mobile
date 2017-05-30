@@ -1,18 +1,19 @@
 package com.nux.dhoan9.firstmvvm.utils;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.content.ContextCompat;
-import com.nux.dhoan9.firstmvvm.BuildConfig;
 import java.io.IOException;
-import java.net.InetSocketAddress;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.URL;
 
 /**
@@ -31,14 +32,17 @@ public class Utils {
         Runtime runtime = Runtime.getRuntime();
         try {
             Process ipProcess = runtime.exec("/system/bin/ping -c 1 " + getHost(Constant.API_ENDPOINT));
-            int     exitValue = ipProcess.waitFor();
+            int exitValue = ipProcess.waitFor();
             return (exitValue == 0);
-        } catch (IOException e)          { e.printStackTrace(); }
-        catch (InterruptedException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
-    private static String getHost(String url){
+    private static String getHost(String url) {
         URL parseUrl = null;
         try {
             parseUrl = new URL(url);
@@ -48,6 +52,23 @@ public class Utils {
         return parseUrl.getHost();
     }
 
+    public static Drawable drawableFromUrl(Resources resources, String url) {
+        Bitmap x = null;
+
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            x = BitmapFactory.decodeStream(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            connection.disconnect();
+        }
+
+        return new BitmapDrawable(resources, x);
+    }
     public static Drawable changeDrawableColor(Drawable drawable, int newColor) {
 //        Drawable mDrawable = ContextCompat.getDrawable(context, icon).mutate();
         drawable.setColorFilter(new PorterDuffColorFilter(newColor, PorterDuff.Mode.SRC_IN));

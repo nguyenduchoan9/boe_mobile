@@ -1,0 +1,50 @@
+<layout>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/rlProcessing"
+                    android:visibility="gone"
+                    android:background="#50000000"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:padding="4dp"
+            app:cardBackgroundColor="#FFF"
+            app:cardElevation="4dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp">
+
+                <com.wang.avi.AVLoadingIndicatorView
+                    android:id="@+id/avi"
+                    style="@style/AVLoadingIndicatorView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:indicatorColor="@color/colorAccent"
+                    app:indicatorName="BallTrianglePathIndicator"
+                    />
+
+                <TextView
+                    android:id="@+id/tvProcessingTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/avi"
+                    android:layout_alignTop="@+id/avi"
+                    android:layout_marginLeft="24dp"
+                    android:layout_toRightOf="@+id/avi"
+                    android:gravity="center|left"
+                    android:text="12asdasdas"
+                    android:textSize="16sp"/>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    </RelativeLayout>
+</layout>

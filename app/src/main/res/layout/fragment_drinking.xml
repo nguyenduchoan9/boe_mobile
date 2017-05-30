@@ -1,15 +1,35 @@
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
 
+        <import type="com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel"/>
+
+        <variable
+            name="viewModel"
+            type="MenuCateListViewModel"/>
+    </data>
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvDish"
+        <com.flaviofaria.kenburnsview.KenBurnsView
+            android:id="@+id/ivBackground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="8dp"/>
+            android:scaleType="centerCrop"/>
 
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/srRefresh"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvDish"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                app:listBinder="@{viewModel.menuListBinder}"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
     </FrameLayout>
 
 </layout>

@@ -10,11 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
 import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentDrinkingBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
+import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.MenuCategoryListAdapter;
 import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
@@ -52,7 +55,6 @@ public class DrinkingFragment extends Fragment {
         ((Application) getActivity().getApplication()).getComponent()
                 .plus(new ActivityModule(getActivity()))
                 .inject(this);
-        Log.i(log, "onCreate");
     }
 
     @Override
@@ -64,41 +66,40 @@ public class DrinkingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_drinking, container, false);
-        Log.i(log, "onCreatView");
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.i(log, "onViewCreated");
         initView();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.i(log, "onStart");
         initializerData();
         ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
     }
 
-    private String log = "zzzzzz-Droinking_TAG";
-
     @Override
     public void onStop() {
-        Log.i(log, "onStop");
         super.onStop();
     }
 
     private void initializerData() {
-        viewModel.initializeDrinking()
+        binding.setViewModel(viewModel);
+        viewModel.initializeDrinking(false)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {});
+        Glide.with(this)
+                .load(Constant.API_ENDPOINT + "/images/1.jpg")
+                .into(binding.ivBackground);
     }
 
     private void initView() {
+        setActionSwipeContainer();
         LinearLayoutManager manager =
                 new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvDish = binding.rvDish;
@@ -108,21 +109,39 @@ public class DrinkingFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                NavigationBottom view = ((CustomerActivity) getActivity()).getNavigationBottom();
+                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
                 if (dy > 0) {
                     // Scrolling up
-                    view.animate()
-                            .setDuration(300)
-                            .translationY(view.getHeight() * 1.5F);
+//                    view.animate()
+//                            .setDuration(100)
+//                            .scaleX(0)
+//                            .scaleY(0);
                     view.setVisibility(View.GONE);
                 } else {
                     // Scrolling down
                     view.setVisibility(View.VISIBLE);
-                    view.animate()
-                            .setDuration(300)
-                            .translationY(0);
+//                    view.animate()
+//                            .setDuration(100)
+//                            .scaleX(1.0f)
+//                            .scaleY(1.0f);
                 }
             }
         });
+    }
+
+    private void setActionSwipeContainer() {
+        binding.srRefresh.setOnRefreshListener(() -> {
+            viewModel.initializeDrinking(true)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> {
+                        binding.srRefresh.setRefreshing(false);
+                    });
+        });
+
+        binding.srRefresh.setColorSchemeResources(R.color.holoBlueBright,
+                R.color.holoGreenLight,
+                R.color.holoOrangeLight,
+                R.color.holoRedLight);
     }
 }

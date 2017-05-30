@@ -26,7 +26,7 @@
 
     <style name="LoginButton">
         <item name="android:gravity">center</item>
-        <item name="android:padding">@dimen/medium_space</item>
+        <item name="android:padding">@dimen/tiny_space</item>
         <item name="android:textSize">@dimen/size_medium_text</item>
         <item name="android:background">@drawable/login_button</item>
         <item name="android:textColor">@android:color/white</item>
@@ -35,7 +35,7 @@
 
     <style name="RegisterButton">
         <item name="android:gravity">center</item>
-        <item name="android:padding">@dimen/medium_space</item>
+        <item name="android:padding">@dimen/tiny_space</item>
         <item name="android:textSize">@dimen/size_medium_text</item>
         <item name="android:background">@drawable/register_button</item>
         <item name="android:textColor">@android:color/white</item>

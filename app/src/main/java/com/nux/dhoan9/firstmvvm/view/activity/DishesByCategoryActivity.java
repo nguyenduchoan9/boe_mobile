@@ -17,6 +17,7 @@ import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityDishesByCategoryBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.DishByCategoryModule;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ForSecondActivity;
+import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.view.adapter.DishesByCategoryAdapter;
 import com.nux.dhoan9.firstmvvm.view.custom.ItemDecorationAlbumColumns;
@@ -24,7 +25,7 @@ import com.nux.dhoan9.firstmvvm.viewmodel.DishListViewModel;
 
 import javax.inject.Inject;
 
-public class DishesByCategoryActivity extends AppCompatActivity {
+public class DishesByCategoryActivity extends BaseActivity {
     ActivityDishesByCategoryBinding binding;
 
     RecyclerView rvDish;
@@ -43,6 +44,11 @@ public class DishesByCategoryActivity extends AppCompatActivity {
         ((Application) getApplication()).getComponent()
                 .plus(new DishByCategoryModule(this))
                 .inject(this);
+    }
+
+    @Override
+    protected void setProcessing() {
+
     }
 
     @Override
@@ -80,5 +86,10 @@ public class DishesByCategoryActivity extends AppCompatActivity {
 
     public int getIdCategory() {
         return getIntent().getIntExtra(Constant.KEY_ID_CATEGORY, 1);
+    }
+
+    @Override
+    protected void setPreference(PreferencesManager preference) {
+        super.setPreference(this.preferencesManager);
     }
 }

@@ -61,8 +61,16 @@ public class MenuCateListViewModel extends BaseViewModel {
                         }));
     }
 
-    public Observable<Void> initializeDrinking() {
-        menuCategoriesViewModels = new ArrayList<>();
+    public Observable<Void> initializeDrinking(boolean isRefresh) {
+        if (isRefresh) {
+            for (MenuCategoriesViewModel menu : menuCategoriesViewModels) {
+                menu.dishViewModels.removeAllData();
+            }
+            menuCategoriesViewModels.clear();
+            menuListBinder.notifyDataChange(menuCategoriesViewModels);
+        } else {
+            menuCategoriesViewModels = new ArrayList<>();
+        }
         return Observable.create(subscriber -> dishRepo.getMenuDrinking()
                 .compose(withScheduler())
                 .subscribe(menu -> {
