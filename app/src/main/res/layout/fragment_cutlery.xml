@@ -4,7 +4,13 @@
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
+        <com.flaviofaria.kenburnsview.KenBurnsView
+            android:id="@+id/ivBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/cover_profile"
+            />
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvDish"
             android:layout_width="match_parent"

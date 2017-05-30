@@ -101,7 +101,7 @@ public class CustomerActivity extends BaseActivity {
 
     private void selectDrawerItem(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.nav_your_profile:
+            case R.id.profile:
                 startActivity(ProfileActivity.newInstance(this));
                 break;
             case R.id.logOut:

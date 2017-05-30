@@ -49,7 +49,6 @@ public class DrinkingFragment extends Fragment {
         ((Application) getActivity().getApplication()).getComponent()
                 .plus(new ActivityModule(getActivity()))
                 .inject(this);
-        Log.i(log, "onCreate");
     }
 
     @Override
@@ -61,28 +60,24 @@ public class DrinkingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_drinking, container, false);
-        Log.i(log, "onCreatView");
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.i(log, "onViewCreated");
         initView();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.i(log, "onStart");
         initializerData();
         ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
     }
-    private String log = "zzzzzz-Droinking_TAG";
+
     @Override
     public void onStop() {
-        Log.i(log, "onStop");
         super.onStop();
     }
 
