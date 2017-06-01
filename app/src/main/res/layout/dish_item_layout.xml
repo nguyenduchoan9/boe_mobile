@@ -45,6 +45,7 @@
             android:fontFamily="sans-serif"
             android:textColor="@color/whiteDark"
             android:gravity="left"
+            android:textStyle="bold"
             android:text='@{String.valueOf(viewModel.price)}'
             android:textSize="@dimen/size_small_text"
             tools:text="100000"/>

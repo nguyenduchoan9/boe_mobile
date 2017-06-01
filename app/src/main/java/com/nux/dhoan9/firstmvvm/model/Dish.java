@@ -27,7 +27,7 @@ public class Dish {
     }
 
     public float getPrice() {
-        return 10000;
+        return price;
     }
 
     public String getImage() {

@@ -45,4 +45,16 @@ public abstract class BaseFragment extends Fragment {
     public void hideProcessing() {
         ((CustomerActivity) getActivity()).hideProcessing();
     }
+
+    protected void setTotal(String total){
+        ((CustomerActivity)getActivity()).setTotalOrder(total);
+    }
+
+    protected void setOrderToolBar(){
+        ((CustomerActivity)getActivity()).setOrderToolBar();
+    }
+
+    protected void setDishToolBar(){
+        ((CustomerActivity)getActivity()).setDishToolBar();
+    }
 }

@@ -5,6 +5,7 @@
     <data>
 
         <import type="com.nux.dhoan9.firstmvvm.viewmodel.DishDetailViewModel"/>
+
         <variable
             name="viewModel"
             type="DishDetailViewModel"/>
@@ -15,7 +16,7 @@
         android:id="@+id/dishDetailActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
+        android:background="@color/white"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:padding="0dp"
@@ -42,19 +43,53 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#dddddd"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
+                android:padding="16dp"
                 android:paddingBottom="50dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.name}"/>
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="@dimen/medium_space"
+                    android:layout_marginRight="@dimen/medium_space"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center"
+                    android:text="@{viewModel.name}"
+                    android:textSize="@dimen/size_x_large_text"/>
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.description}"/>
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="sans-serif"
+                    android:text="@{viewModel.description}"
+                    android:textSize="@dimen/size_medium_text"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/btnCancel"
+                        style="@style/DetailButton.CancelButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="cancel"/>
+
+                    <Button
+                        android:id="@+id/btnOrder"
+                        style="@style/DetailButton.OrderButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="order"/>
+
+                </RelativeLayout>
+
+
             </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
@@ -64,7 +99,10 @@
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:background="@drawable/action_bar"
-            android:fitsSystemWindows="true"
-            app:title=" "/>
+            android:fitsSystemWindows="true"/>
+
+        <include
+            android:id="@+id/processingContainer"
+            layout="@layout/layout_processing"/>
     </com.nux.dhoan9.firstmvvm.view.custom.ElasticDragDismissFrameLayout>
 </layout>

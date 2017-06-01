@@ -17,6 +17,7 @@
     <color name="aqua">#6BBAA7</color>
     <color name="gray_light">#dfdfdf</color>
     <color name="blur_white">#66ffffff</color>
+    <color name="order_green">#00cc00</color>
 
     <color name="holoBlueBright">@android:color/holo_blue_bright</color>
     <color name="holoGreenLight">@android:color/holo_green_light</color>

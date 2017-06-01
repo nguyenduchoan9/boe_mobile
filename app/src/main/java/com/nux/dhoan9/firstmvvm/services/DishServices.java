@@ -26,4 +26,5 @@ public interface DishServices {
     @GET("dishes/by_category")
     Observable<List<Dish>> getDishByCategory(@Query("id") int id);
 
+
 }

@@ -6,9 +6,11 @@ import java.util.Map;
  */
 
 public interface CartManager {
-    void plus(int idDish);
+    void plus(int dishId, int quantity);
 
-    void minus(int idDish);
+    void minus(int dishId, int quantity);
+
+    int getItamTotal();
 
     void clear();
 

@@ -44,4 +44,12 @@ public class DishDetailViewModel extends BaseViewModel {
         this.price.set(String.valueOf(dish.getPrice()));
         this.image.set(dish.getImage());
     }
+
+    public void onOrderClick(){
+        cartManager.plus(id, 1);
+    }
+
+    public void onCancelClick(){
+        cartManager.minus(id, 1);
+    }
 }

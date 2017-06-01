@@ -2,11 +2,16 @@ package com.nux.dhoan9.firstmvvm.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.repacked.google.thirdparty.publicsuffix.PublicSuffixPatterns;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.nux.dhoan9.firstmvvm.Manifest;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 
@@ -27,10 +32,44 @@ public class QRCodeScanActivity extends AppCompatActivity implements ZBarScanner
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mScannerView = new ZBarScannerView(this);
-        mScannerView.setAutoFocus(true);
-        mScannerView.setFormats(getBarcodeFormat());
-        setContentView(mScannerView);
+    }
+
+    private final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 4;
+
+    private void checkPermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA);
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            // should we show explanation
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.READ_CONTACTS)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.READ_CONTACTS},
+                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_CONTACTS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mScannerView = new ZBarScannerView(this);
+                    mScannerView.setAutoFocus(true);
+                    mScannerView.setFormats(getBarcodeFormat());
+                    setContentView(mScannerView);
+                } else {
+
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     private List<BarcodeFormat> getBarcodeFormat() {
@@ -90,6 +129,5 @@ public class QRCodeScanActivity extends AppCompatActivity implements ZBarScanner
         setResult(RESULT_OK, data);
         finish();
     }
-
 
 }

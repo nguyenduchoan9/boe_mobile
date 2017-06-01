@@ -1,4 +1,4 @@
-<layout xmlns:card_view="http://schemas.android.com/apk/res-auto">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -12,18 +12,14 @@
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginBottom="8dp"
-                                        android:layout_marginLeft="4dp"
-                                        android:layout_marginRight="4dp"
-                                        card_view:cardCornerRadius="1dp"
                                         android:orientation="vertical"
-                                        card_view:cardElevation="4dp">
+                                        app:cardBackgroundColor="#ffffff"
+                                        app:cardCornerRadius="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -35,64 +31,81 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_below="@+id/tvCancel"
+                    android:layout_marginRight="8dp"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/chocolate_ball"/>
+                    app:setImage="@{viewModel.image}"/>
 
                 <TextView
                     android:id="@+id/tvDishName"
-                    android:layout_width="136dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvCancel"
                     android:layout_toRightOf="@+id/ivCover"
+                    android:ellipsize="end"
                     android:fontFamily="serif-monospace"
+                    android:maxLines="1"
                     android:text="@{viewModel.name}"
-                    android:textSize="@dimen/size_medium_text"/>
+                    android:textSize="@dimen/size_medium_text"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tvPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvDishName"
+                    android:layout_marginTop="4dp"
+                    android:layout_toRightOf="@+id/ivCover"
+                    android:fontFamily="serif-monospace"
+                    android:textSize="@dimen/size_medium_text"
+                    android:text='@{"$ " + String.valueOf(viewModel.price)}'
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tvQuantity"
+                    android:layout_alignRight="@+id/tvPrice"
                     android:layout_width="wrap_content"
+                    android:gravity="end"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvCancel"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginRight="12dp"
-                    android:layout_toLeftOf="@+id/ivPlus"
+                    android:layout_below="@+id/tvPrice"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@+id/ivCover"
                     android:fontFamily="serif-monospace"
-                    android:text="@{viewModel.quantityView}"
-                    android:textSize="@dimen/size_medium_text"/>
+                    android:text='@{"x " + viewModel.quantityView}'
+                    android:textSize="@dimen/size_medium_text"
+                    android:textStyle="bold"/>
 
                 <ImageView
                     android:id="@+id/ivPlus"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_alignBottom="@+id/tvQuantity"
                     android:layout_alignParentRight="true"
+                    android:layout_marginRight="16dp"
                     android:layout_alignTop="@+id/tvQuantity"
-                    android:layout_below="@+id/tvCancel"
-                    android:onClick="@{() -> viewModel.onPlusClick()}"
                     android:src="@drawable/ic_add"/>
 
                 <ImageView
                     android:id="@+id/ivMinus"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_alignBottom="@+id/tvQuantity"
                     android:layout_alignTop="@+id/tvQuantity"
-                    android:layout_below="@+id/tvCancel"
-                    android:layout_toLeftOf="@+id/tvQuantity"
-                    android:onClick="@{() -> viewModel.onMinusClick()}"
+                    android:layout_marginRight="24dp"
+                    android:layout_toLeftOf="@+id/ivPlus"
                     android:src="@drawable/ic_minus"/>
 
                 <TextView
                     android:id="@+id/tvResult"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/ivCover"
-                    android:layout_toRightOf="@id/tvDishName"
+                    android:layout_below="@+id/tvQuantity"
+                    android:layout_marginTop="4dp"
+                    android:layout_toRightOf="@+id/ivCover"
                     android:fontFamily="serif-monospace"
-                    android:gravity="end"
-                    android:text='@{String.valueOf(viewModel.price) + " x " + viewModel.quantityView}'
-                    android:textAlignment="textEnd"
+                    android:text='@{"$ " + viewModel.totalView}'
+                    android:textAlignment="textStart"
                     android:textSize="@dimen/size_medium_text"/>
 
                 <TextView
@@ -105,31 +118,6 @@
                     android:textAllCaps="true"
                     android:textColor="@android:color/holo_red_light"
                     android:textSize="@dimen/size_medium_text"
-                    android:textStyle="bold"/>
-            </RelativeLayout>
-
-            <include layout="@layout/devider_layout"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="serif-monospace"
-                    android:text="@string/item_cart_sum"
-                    android:textSize="@dimen/size_large_text"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:fontFamily="serif-monospace"
-                    android:text='@{"$ " + viewModel.totalView}'
-                    android:textSize="@dimen/size_large_text"
                     android:textStyle="bold"/>
             </RelativeLayout>
         </LinearLayout>

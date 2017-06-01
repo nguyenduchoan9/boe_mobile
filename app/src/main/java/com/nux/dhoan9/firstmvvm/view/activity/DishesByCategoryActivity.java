@@ -36,6 +36,8 @@ public class DishesByCategoryActivity extends BaseActivity {
     DishListViewModel viewModel;
     @Inject
     DishRepo dishRepo;
+    @Inject
+    PreferencesManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

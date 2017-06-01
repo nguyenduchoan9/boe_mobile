@@ -27,7 +27,52 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:contentInsetStart="0dp"
-                    app:popupTheme="@style/AppTheme.PopupOverlay"/>
+                    app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                        <RelativeLayout
+                            android:id="@+id/rlOrderInfo"
+                            android:visibility="gone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/svSearch"
+                            android:layout_alignTop="@+id/svSearch"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/tvContinues"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginRight="32dp"
+                                android:textSize="16sp"
+                                android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
+                                android:gravity="center"
+                                android:text="Continues"/>
+
+                            <TextView
+                                android:id="@+id/tvTotal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="16dp"
+                                android:textSize="16sp"
+                                android:layout_toLeftOf="@+id/tvContinues"
+                                android:text="asdadasdasd"
+                                android:gravity="end"/>
+                        </RelativeLayout>
+
+                        <android.support.v7.widget.SearchView
+                            android:id="@+id/svSearch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="64dp"
+                            android:visibility="visible"/>
+                    </RelativeLayout>
+                </android.support.v7.widget.Toolbar>
 
                 <!--<android.support.design.widget.TabLayout-->
                 <!--android:id="@+id/tabLayout"-->
@@ -42,27 +87,17 @@
             <include
                 android:id="@+id/content"
                 layout="@layout/home_content_layout_customer"/>
-            <!--<android.support.design.widget.FloatingActionButton-->
-            <!--android:id="@+id/fab"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="bottom|end"-->
-            <!--android:layout_margin="16dp"-->
-            <!--app:backgroundTint="@color/colorPrimaryDark"-->
-            <!--app:borderWidth="0dp"-->
-            <!--app:fabSize="normal"-->
-            <!--app:elevation="8dp"-->
-            <!--app:layout_behavior="com.vnwarriors.advancedui.appcore.common.ScrollAwareFABBehavior"-->
-            <!--app:srcCompat="@drawable/ic_edit_white_24dp" />-->
+
         </LinearLayout>
-        <com.andremion.floatingnavigationview.FloatingNavigationView
-            android:id="@+id/floating_navigation_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            app:layout_anchor="@id/toolbar"
-            app:layout_anchorGravity="bottom"
-            app:drawMenuBelowFab="true"
-            app:menu="@menu/drawer_menu_customer" />
+
+        <!--<com.andremion.floatingnavigationview.FloatingNavigationView-->
+        <!--android:id="@+id/floating_navigation_view"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="24dp"-->
+        <!--app:drawMenuBelowFab="true"-->
+        <!--app:layout_anchor="@id/toolbar"-->
+        <!--app:layout_anchorGravity="bottom|left"-->
+        <!--app:menu="@menu/drawer_menu_customer"/>-->
     </android.support.design.widget.CoordinatorLayout>
 </layout>

@@ -37,32 +37,46 @@ public class CartItemViewModel extends DishViewModel {
         return super.equals(obj);
     }
 
-    public Observable<Float> onPlusClick() {
+    public Observable<Oops> onPlusClick() {
         quantity += 1;
+        Oops oops = new Oops(id, price);
         quantityView.set(String.valueOf(quantity));
         totalView.set(String.valueOf(price * quantity));
-        return Observable.create(new Observable.OnSubscribe<Float>() {
-            @Override
-            public void call(Subscriber<? super Float> subscriber) {
-                subscriber.onNext(price);
-                subscriber.onCompleted();
-            }
+        return Observable.create(subscriber -> {
+            subscriber.onNext(oops);
+            subscriber.onCompleted();
         });
     }
 
-    public Observable<Float> onMinusClick() {
+    public Observable<Oops> onMinusClick() {
+        Oops oops = new Oops(id, 0);
         if (0 == quantity) {
             return Observable.create(subscriber -> {
-                subscriber.onNext(0F);
+                subscriber.onNext(oops);
                 subscriber.onCompleted();
             });
         }
         quantity -= 1;
         quantityView.set(String.valueOf(quantity));
         totalView.set(String.valueOf(price * quantity));
+        oops.price = quantity;
         return Observable.create(subscriber -> {
-            subscriber.onNext(price);
+            subscriber.onNext(oops);
             subscriber.onCompleted();
         });
     }
+
+    public class Oops {
+        public int dishId;
+        public float price;
+
+        public Oops(int dishId, float price) {
+            this.dishId = dishId;
+            this.price = price;
+        }
+    }
+
+//    public String getImage(){
+//        return image;
+//    }
 }

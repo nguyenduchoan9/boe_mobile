@@ -41,4 +41,8 @@ public class Constant {
     public final static String KEY_DISH_DETAIL = "KEY_DISH_DETAIL";
     public final static String KEY_ID_CATEGORY = "KEY_ID_CATEGORY";
 
+    public final static String KEY_TOTAL_PAYMENT= "KEY_TOTAL_PAYMENT";
+    public final static String KEY_ORDER_NAME = "KEY_ORDER_NAME";
+    public final static String KEY_ORDER_ITEM_TOTAL = "KEY_ORDER_ITEM_TOTAL";
+
 }

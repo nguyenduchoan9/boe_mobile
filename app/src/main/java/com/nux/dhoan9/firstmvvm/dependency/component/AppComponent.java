@@ -9,6 +9,7 @@ import com.nux.dhoan9.firstmvvm.dependency.module.RepoModule;
 import com.nux.dhoan9.firstmvvm.dependency.module.UserModule;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.ChefActivity;
+import com.nux.dhoan9.firstmvvm.view.activity.PaypalActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.SlashActivity;
 import com.nux.dhoan9.firstmvvm.view.fragment.EndpointDialogFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.QRCodeFragment;
@@ -36,4 +37,5 @@ public interface AppComponent {
     void inject(EndpointDialogFragment endpointDialogFragment);
 
     void inject(Application application);
+    void inject(PaypalActivity paypalActivity);
 }

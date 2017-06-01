@@ -66,6 +66,7 @@ public class CutleryFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.i(log, "viewCreated");
+
         initView();
     }
 
@@ -73,6 +74,7 @@ public class CutleryFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
         Log.i(log, "onStart");
+        setDishToolBar();
         initializerData();
         ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
     }

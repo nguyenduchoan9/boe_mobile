@@ -14,6 +14,9 @@ import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import rx.Observable;
+import rx.Subscriber;
 
 /**
  * Created by hoang on 12/05/2017.
@@ -44,10 +47,27 @@ public class CartItemListViewModel extends BaseViewModel {
         return cartItems;
     }
 
-    public void initialize() {
-        List<CartItemRequest> cartItemRequests = toCartItemRequests(cartManager.getCart());
-        cartItems.addAll(toCartItemViewModels(cartRepo.getCart(cartItemRequests)));
+    public Observable<Void> initialize() {
+        cartItems.clear();
         listBinder.notifyDataChange(cartItems);
+        if (0 == cartManager.getCart().size()) {
+            return Observable.create(subscriber -> {
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            });
+        } else {
+            return Observable.create(subscriber ->
+                    cartRepo.getCart(cartManager.getCart())
+                            .debounce(300, TimeUnit.MILLISECONDS)
+                            .compose(withScheduler())
+                            .subscribe(dishCart -> {
+                                cartItems.addAll(toCartItemViewModels(dishCart));
+                                listBinder.notifyDataChange(cartItems);
+                                subscriber.onNext(null);
+                                subscriber.onCompleted();
+                            })
+            );
+        }
     }
 
     private List<CartItemRequest> toCartItemRequests(Map<Integer, Integer> cart) {

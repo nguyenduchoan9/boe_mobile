@@ -14,10 +14,10 @@ public class CartManagerImpl implements CartManager {
     }
 
     @Override
-    public void plus(int idDish) {
+    public void plus(int idDish, int quantity) {
         if (cart.containsKey(idDish)) {
             int currentQuantity = cart.get(idDish);
-            cart.replace(idDish, currentQuantity, currentQuantity + 1);
+            cart.put(idDish, currentQuantity + 1);
         } else {
             cart.put(idDish, 1);
         }
@@ -25,14 +25,14 @@ public class CartManagerImpl implements CartManager {
     }
 
     @Override
-    public void minus(int idDish) {
+    public void minus(int idDish, int quantity) {
         if (cart.containsKey(idDish)) {
             int currentQuantity = cart.get(idDish);
             if (1 == currentQuantity) {
                 cart.remove(idDish);
                 return;
             }
-            cart.replace(idDish, currentQuantity, currentQuantity - 1);
+            cart.put(idDish, currentQuantity - 1);
         }
     }
 
@@ -45,4 +45,6 @@ public class CartManagerImpl implements CartManager {
     public Map<Integer, Integer> getCart() {
         return cart;
     }
+
+    public int getItamTotal(){return cart.size();}
 }

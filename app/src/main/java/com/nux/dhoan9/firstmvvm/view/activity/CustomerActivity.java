@@ -13,9 +13,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.andremion.floatingnavigationview.FloatingNavigationView;
 import com.nux.dhoan9.firstmvvm.Application;
@@ -23,6 +26,7 @@ import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.repo.UserRepo;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityCustomerBinding;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
+import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.view.fragment.CutleryFragment;
@@ -32,9 +36,11 @@ import com.nux.dhoan9.firstmvvm.view.fragment.HistoryFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.OrderFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.QRCodeFragment;
 
+import org.w3c.dom.Text;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import static com.nux.dhoan9.firstmvvm.utils.Constant.KEY_TOTAL_PAYMENT;
 
 public class CustomerActivity extends BaseActivity {
     private NavigationBottom navigationBottom;
@@ -44,6 +50,10 @@ public class CustomerActivity extends BaseActivity {
     private final int HISTORY_POS = 3;
     private FloatingNavigationView fnv;
     private RelativeLayout navigationContainer;
+    private Toolbar toolbar;
+    private SearchView svSearch;
+    private TextView tvTotal;
+    private TextView tvContinues;
     @Inject
     PreferencesManager preferencesManager;
     @Inject
@@ -85,12 +95,19 @@ public class CustomerActivity extends BaseActivity {
     }
 
     private void initDrawerMenu() {
-        View headerLayout = binding.navView.getHeaderView(0);
+
     }
 
     private void initToolbar() {
+        toolbar = binding.actionBarContent.toolbar;
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        svSearch = (SearchView) toolbar.findViewById(R.id.svSearch);
+        tvTotal = (TextView) toolbar.findViewById(R.id.tvTotal);
+        tvContinues = (TextView) toolbar.findViewById(R.id.tvContinues);
         binding.navView.inflateMenu(R.menu.drawer_menu_customer);
-        setSupportActionBar(binding.actionBarContent.toolbar);
         binding.navView.setNavigationItemSelectedListener(item -> {
             selectDrawerItem(item);
             return false;
@@ -140,22 +157,6 @@ public class CustomerActivity extends BaseActivity {
                 .inject(this);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        switch (itemId) {
-            case R.id.logout:
-                logout();
-                break;
-            case R.id.changeColor:
-                startActivity(ColorChangeActivity.newInstance(this));
-                break;
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void initView() {
         navigationContainer = binding.actionBarContent.content.bottomNavigationContent.navigationContainer;
         navigationBottom = binding.actionBarContent.content.bottomNavigationContent.bottomNavigation;
@@ -183,11 +184,12 @@ public class CustomerActivity extends BaseActivity {
             }
         });
 
-        initFloatActionNavigation();
+        onContinuesClick();
+//        initFloatActionNavigation();
     }
 
     private void initFloatActionNavigation() {
-        fnv = binding.actionBarContent.floatingNavigationView;
+//        fnv = binding.actionBarContent.floatingNavigationView;
         fnv.setOnClickListener( v -> fnv.open());
         fnv.setNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -244,15 +246,15 @@ public class CustomerActivity extends BaseActivity {
     }
 
     private void showFragment(Fragment fragment) {
-        if (fragment instanceof CutleryFragment) {
-            getSupportActionBar().setTitle(R.string.cutlery_fragment);
-        } else if (fragment instanceof DrinkingFragment) {
-            getSupportActionBar().setTitle(R.string.drinking_fragment);
-        } else if (fragment instanceof OrderFragment) {
-            getSupportActionBar().setTitle(R.string.order_fragment);
-        } else if (fragment instanceof HistoryFragment) {
-            getSupportActionBar().setTitle(R.string.history_fragment);
-        }
+//        if (fragment instanceof CutleryFragment) {
+//            getSupportActionBar().setTitle(R.string.cutlery_fragment);
+//        } else if (fragment instanceof DrinkingFragment) {
+//            getSupportActionBar().setTitle(R.string.drinking_fragment);
+//        } else if (fragment instanceof OrderFragment) {
+//            getSupportActionBar().setTitle(R.string.order_fragment);
+//        } else if (fragment instanceof HistoryFragment) {
+//            getSupportActionBar().setTitle(R.string.history_fragment);
+//        }
         getSupportFragmentManager().beginTransaction().show(fragment).commit();
         getSupportFragmentManager().executePendingTransactions();
     }
@@ -300,5 +302,32 @@ public class CustomerActivity extends BaseActivity {
     @Override
     protected void setPreference(PreferencesManager preference) {
         super.setPreference(this.preferencesManager);
+    }
+
+    public void setTotalOrder(String total){
+        tvTotal.setText(total);
+    }
+
+    public void setOrderToolBar(){
+        binding.actionBarContent.rlOrderInfo.setVisibility(View.VISIBLE);
+        svSearch.setVisibility(View.GONE);
+    }
+
+    public void setDishToolBar(){
+        binding.actionBarContent.rlOrderInfo.setVisibility(View.GONE);
+        svSearch.setVisibility(View.VISIBLE);
+    }
+
+    private void onContinuesClick(){
+        tvContinues.setOnClickListener(v -> {
+            float total = orderFragment.getTotalPayment();
+            Intent i = new Intent(this, PaypalActivity.class);
+            i.putExtra(Constant.KEY_TOTAL_PAYMENT, total);
+            i.putExtra(Constant.KEY_ORDER_NAME, "Hello");
+            i.putExtra(Constant.KEY_ORDER_ITEM_TOTAL, orderFragment.getItemtotal());
+
+            startActivity(i);
+        });
+
     }
 }

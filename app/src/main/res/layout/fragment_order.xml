@@ -24,31 +24,5 @@
             android:layout_height="match_parent"
             app:listBinder="@{viewModel.listBinder}"/>
 
-        <TextView
-            android:id="@+id/tvClearAll"
-            style="@style/ClearOrderTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/tvTotalPayment"
-            android:text="@string/text_clear_all"/>
-
-        <TextView
-            android:id="@+id/tvContinues"
-            style="@style/ContinuesButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/tvClearAll"
-            android:layout_marginTop="16dp"
-            android:text="Continues"/>
-
-        <TextView
-            android:id="@+id/tvTotalPayment"
-            style="@style/TotalPaymentTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:text="$ 9000"/>
     </RelativeLayout>
 </layout>

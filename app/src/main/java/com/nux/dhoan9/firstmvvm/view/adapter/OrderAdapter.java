@@ -18,6 +18,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import static com.nux.dhoan9.firstmvvm.viewmodel.CartItemViewModel.*;
+
 /**
  * Created by hoang on 12/05/2017.
  */
@@ -46,6 +51,28 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
     @Override
     public void onBindViewHolder(CartItemViewHolder holder, int position) {
         CartItemViewModel cartItemViewModel = getCartItems().get(position);
+        holder.binding.ivMinus.setOnClickListener(v -> {
+            cartItemViewModel.onMinusClick()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(oops -> {
+                        if(null != listener){
+                            listener.onDecrementQuantity(oops);
+                        }
+                    });
+        });
+
+        holder.binding.ivPlus.setOnClickListener(v -> {
+            cartItemViewModel.onPlusClick()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(oops -> {
+                        if(null != listener){
+                            listener.onIncrementQuantity(oops);
+                        }
+                    });
+        });
+
         holder.binding.setViewModel(cartItemViewModel);
         holder.binding.executePendingBindings();
     }
@@ -65,9 +92,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
     }
 
     public interface CartListener {
-        void onIncrementQuantity(Observable<Float> subscribe);
+        void onIncrementQuantity(CartItemViewModel.Oops oops);
 
-        void onDecrementQuantity(Observable<Float> subscribe);
+        void onDecrementQuantity(CartItemViewModel.Oops oops);
     }
 
     private CartListener listener;

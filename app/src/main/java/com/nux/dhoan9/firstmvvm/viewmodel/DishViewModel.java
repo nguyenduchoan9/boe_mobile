@@ -8,7 +8,7 @@ import com.nux.dhoan9.firstmvvm.model.Dish;
 public class DishViewModel {
     public final int id;
     public final String name;
-    public final float price=1000;
+    public final float price;
     public final String image;
     public final String description;
 
@@ -17,6 +17,7 @@ public class DishViewModel {
         this.name = dish.getName();
         this.image = dish.getImage();
         this.description = dish.getDescription();
+        this.price = dish.getPrice();
     }
 
     public Dish toModel(DishViewModel viewModel) {

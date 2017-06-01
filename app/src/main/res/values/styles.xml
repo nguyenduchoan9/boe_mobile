@@ -42,6 +42,24 @@
         <item name="android:elevation" tools:targetApi="lollipop">4dp</item>
     </style>
 
+    <style name="DetailButton">
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/tiny_space</item>
+        <item name="android:textSize">@dimen/size_medium_text</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:elevation" tools:targetApi="lollipop">4dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="DetailButton.OrderButton" parent="DetailButton">
+        <item name="android:background">@drawable/order_button</item>
+    </style>
+
+    <style name="DetailButton.CancelButton" parent="DetailButton">
+        <item name="android:background">@drawable/cancel_button</item>
+    </style>
+
     <style name="TotalPaymentTextView">
         <item name="android:gravity">center</item>
         <item name="android:textSize">@dimen/size_medium_text</item>
@@ -113,6 +131,7 @@
         <item name="android:maxLines">2</item>
         <item name="android:textColor">@color/whiteDark</item>
         <item name="android:layout_marginTop">8dp</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:lines">2</item>
         <item name="android:ellipsize">end</item>
         <item name="android:gravity">left</item>

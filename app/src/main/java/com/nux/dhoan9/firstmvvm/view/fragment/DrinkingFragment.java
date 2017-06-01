@@ -29,7 +29,7 @@ import javax.inject.Named;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class DrinkingFragment extends Fragment {
+public class DrinkingFragment extends BaseFragment {
     FragmentDrinkingBinding binding;
     private RecyclerView rvDish;
 
@@ -72,12 +72,14 @@ public class DrinkingFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         initView();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        setDishToolBar();
         initializerData();
         ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
     }

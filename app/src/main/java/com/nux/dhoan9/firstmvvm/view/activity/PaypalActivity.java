@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.TextView;
+import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
+import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
@@ -16,21 +19,37 @@ import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 import org.json.JSONException;
 import java.math.BigDecimal;
+import java.util.Date;
+import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class PaypalActivity extends AppCompatActivity {
+    @BindView(R.id.tvAmount)
+    TextView tvAmount;
+    @BindView(R.id.tvDinerName)
+    TextView tvDinerName;
+    @BindView(R.id.tvOrderDate)
+    TextView tvOrderDate;
+    @BindView(R.id.tvItemQuantity)
+    TextView tvItemQuantity;
     private final int REQUEST_PAYMENT_CODE = 4;
     private final String LOG_TAG = PaypalActivity.class.getSimpleName();
     @BindView(R.id.btnPay)
     Button btnPay;
 
+    @Inject
+    PreferencesManager preferencesManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initDependency();
         setContentView(R.layout.activity_paypal);
         ButterKnife.bind(this);
-
+        tvAmount.setText(String.valueOf(new BigDecimal(getTotal())));
+        tvDinerName.setText(getDinerName());
+        tvOrderDate.setText(String.valueOf(new Date()));
+        tvItemQuantity.setText(String.valueOf(getItemTotal()) + " item");
         Intent intent = new Intent(this, PayPalService.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, configuration);
         startService(intent);
@@ -38,9 +57,14 @@ public class PaypalActivity extends AppCompatActivity {
         btnPay.setOnClickListener(v -> onOkPress());
     }
 
+    private void initDependency() {
+        ((Application) getApplication()).getComponent()
+                .inject(this);
+    }
+
     private void onOkPress() {
-        PayPalPayment payment = new PayPalPayment(new BigDecimal(1000),
-                "USD", "Order", PayPalPayment.PAYMENT_INTENT_SALE);
+        PayPalPayment payment = new PayPalPayment(new BigDecimal(getTotal()),
+                "USD", getOrderName(), PayPalPayment.PAYMENT_INTENT_SALE);
 
         Intent i = new Intent(this, PaymentActivity.class);
         i.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, configuration);
@@ -83,5 +107,21 @@ public class PaypalActivity extends AppCompatActivity {
     public static Intent newInstance(Context context) {
         Intent i = new Intent(context, PaypalActivity.class);
         return i;
+    }
+
+    public float getTotal() {
+        return getIntent().getFloatExtra(Constant.KEY_TOTAL_PAYMENT, 0);
+    }
+
+    public String getOrderName() {
+        return getIntent().getStringExtra(Constant.KEY_ORDER_NAME);
+    }
+
+    public int getItemTotal() {
+        return getIntent().getIntExtra(Constant.KEY_ORDER_ITEM_TOTAL, 0);
+    }
+
+    public String getDinerName(){
+        return preferencesManager.getUser().getFullName();
     }
 }

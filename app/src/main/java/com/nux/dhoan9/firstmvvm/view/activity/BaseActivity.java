@@ -12,7 +12,7 @@ import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 public abstract class BaseActivity extends AppCompatActivity {
     TextView tvProcessingTitle;
     RelativeLayout rlProcessing;
-    PreferencesManager preferencesManager;
+    private PreferencesManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
