@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ActivityScope;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ForActivity;
+import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.utils.ThreadScheduler;
 import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
 import com.nux.dhoan9.firstmvvm.view.adapter.DishesByCategoryAdapter;
@@ -17,6 +18,7 @@ import com.nux.dhoan9.firstmvvm.viewmodel.DishViewModel;
 
 import dagger.Module;
 import dagger.Provides;
+
 /**
  * Created by hoang on 13/05/2017.
  */
@@ -50,8 +52,9 @@ public class DishByCategoryModule {
     public DishListViewModel provideDishListViewModel(@NonNull ListBinder<DishViewModel> dishListBinder,
                                                       @NonNull DishRepo dishRepo,
                                                       @NonNull Resources resources,
-                                                      @NonNull ThreadScheduler threadSchedulert) {
-        return new DishListViewModel(dishListBinder, dishRepo, resources, threadSchedulert);
+                                                      @NonNull ThreadScheduler threadSchedulert,
+                                                      @NonNull CartManager cartManager) {
+        return new DishListViewModel(dishListBinder, dishRepo, resources, threadSchedulert, cartManager);
     }
 
     @Provides

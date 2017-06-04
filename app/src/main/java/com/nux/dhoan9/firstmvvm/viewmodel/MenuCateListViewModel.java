@@ -3,6 +3,7 @@ package com.nux.dhoan9.firstmvvm.viewmodel;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
+import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.model.MenuCategories;
 import com.nux.dhoan9.firstmvvm.utils.ThreadScheduler;
 import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
@@ -20,16 +21,19 @@ public class MenuCateListViewModel extends BaseViewModel {
     private final ListBinder<DishViewModel> listBinder;
     private final ListBinder<MenuCategoriesViewModel> menuListBinder;
     private final DishRepo dishRepo;
+    private final CartManager cartManager;
 
     public MenuCateListViewModel(@NonNull ThreadScheduler threadScheduler,
                                  @NonNull Resources resources,
                                  @NonNull ListBinder<DishViewModel> listBinder,
                                  @NonNull DishRepo dishRepo,
-                                 @NonNull ListBinder<MenuCategoriesViewModel> menuListBinder) {
+                                 @NonNull ListBinder<MenuCategoriesViewModel> menuListBinder,
+                                 @NonNull CartManager cartManager) {
         super(threadScheduler, resources);
         this.listBinder = listBinder;
         this.dishRepo = dishRepo;
         this.menuListBinder = menuListBinder;
+        this.cartManager = cartManager;
     }
 
     public Observable<Void> initialize(boolean isRefresh) {
@@ -48,7 +52,8 @@ public class MenuCateListViewModel extends BaseViewModel {
                         .compose(withScheduler())
                         .subscribe(menu -> {
                             for (MenuCategories menuCategories : menu) {
-                                DishListViewModel dishListViewModel = new DishListViewModel(listBinder, dishRepo, resources, threadScheduler);
+                                DishListViewModel dishListViewModel = new DishListViewModel(listBinder,
+                                        dishRepo, resources, threadScheduler, cartManager);
                                 MenuCategoriesViewModel menuCategoriesViewModel =
                                         new MenuCategoriesViewModel(dishListViewModel, menuCategories.getCategory());
 
@@ -75,7 +80,8 @@ public class MenuCateListViewModel extends BaseViewModel {
                 .compose(withScheduler())
                 .subscribe(menu -> {
                     for (MenuCategories menuCategories : menu) {
-                        DishListViewModel dishListViewModel = new DishListViewModel(listBinder, dishRepo, resources, threadScheduler);
+                        DishListViewModel dishListViewModel = new DishListViewModel(listBinder,
+                                dishRepo, resources, threadScheduler, cartManager);
                         MenuCategoriesViewModel menuCategoriesViewModel =
                                 new MenuCategoriesViewModel(dishListViewModel, menuCategories.getCategory());
 

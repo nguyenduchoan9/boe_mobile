@@ -1,6 +1,9 @@
 package com.nux.dhoan9.firstmvvm.viewmodel;
 
+import android.databinding.ObservableField;
+import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.model.Dish;
+
 /**
  * Created by hoang on 08/05/2017.
  */
@@ -11,13 +14,17 @@ public class DishViewModel {
     public final float price;
     public final String image;
     public final String description;
+    public ObservableField<Boolean> isOrder = new ObservableField<>(false);
+    private CartManager cartManager;
 
-    public DishViewModel(Dish dish) {
+    public DishViewModel(Dish dish, CartManager cartManager) {
         this.id = dish.getId();
         this.name = dish.getName();
         this.image = dish.getImage();
         this.description = dish.getDescription();
         this.price = dish.getPrice();
+        this.cartManager = cartManager;
+        isOrder.set(isInCart());
     }
 
     public Dish toModel(DishViewModel viewModel) {
@@ -31,5 +38,27 @@ public class DishViewModel {
             return other.id == this.id;
         }
         return super.equals(obj);
+    }
+
+    private boolean isInCart() {
+        return cartManager.isInCart(this.id);
+    }
+
+    private void removeOutOfCart() {
+        cartManager.removeOutOfCart(this.id);
+        isOrder.set(false);
+    }
+
+    private void addToCart() {
+        cartManager.plus(this.id, 1);
+        isOrder.set(true);
+    }
+
+    public void onOrderClick() {
+        if (isOrder.get()) {
+            removeOutOfCart();
+        } else {
+            addToCart();
+        }
     }
 }

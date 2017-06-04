@@ -10,7 +10,11 @@ public interface CartManager {
 
     void minus(int dishId, int quantity);
 
-    int getItamTotal();
+    int getItemTotal();
+
+    boolean isInCart(int id);
+
+    void removeOutOfCart(int id);
 
     void clear();
 

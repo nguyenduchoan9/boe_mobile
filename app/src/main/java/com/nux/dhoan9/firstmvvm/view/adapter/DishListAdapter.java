@@ -27,6 +27,7 @@ import com.nux.dhoan9.firstmvvm.viewmodel.DishViewModel;
 import java.util.List;
 
 import javax.inject.Inject;
+
 /**
  * Created by hoang on 08/05/2017.
  */
@@ -75,15 +76,14 @@ public class DishListAdapter extends Adapter<RecyclerView.ViewHolder> {
             DishViewModel viewModel = getDishes().get(position - 1);
             ((DishViewHolder) holder).binding.setViewModel(viewModel);
             ((DishViewHolder) holder).binding.executePendingBindings();
-            holder.itemView.setOnClickListener(v -> {
+            holder.itemView.setOnClickListener(v -> viewModel.onOrderClick());
+            holder.itemView.setOnLongClickListener(v -> {
                 Intent intent = new Intent(mContext, DishDetailActivity.class);
                 intent.putExtra(Constant.KEY_DISH_DETAIL, viewModel.id);
-//                ActivityOptions ops = ActivityOptions.makeSceneTransitionAnimation((Activity) holder.itemView.getContext(),
-//                        Pair.create(((DishViewHolder) holder).binding.ivImage,
-//                                holder.itemView.getContext().getString(R.string.item_image_transition))
-//                );
                 mContext.startActivity(intent);
+                return true;
             });
+
         }
     }
 
@@ -102,7 +102,7 @@ public class DishListAdapter extends Adapter<RecyclerView.ViewHolder> {
     }
 
     private boolean isPositionFooter(int pos) {
-        return pos == getItemCount() -1;
+        return pos == getItemCount() - 1;
     }
 
     private List<DishViewModel> getDishes() {

@@ -5,23 +5,16 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.DishCartItemBinding;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ActivityScope;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ForActivity;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemViewModel;
-
 import java.util.List;
-
 import javax.inject.Inject;
-
-import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import static com.nux.dhoan9.firstmvvm.viewmodel.CartItemViewModel.*;
 
 /**
  * Created by hoang on 12/05/2017.

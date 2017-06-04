@@ -26,19 +26,19 @@ public class LoginValidator extends BaseValidator {
 
     public String validateUsername(String email) {
         String error = null;
-        if(email.trim().length() < 8 || email.trim().length() > 40){
-            error = Constant.INVALID_USERNAME_ERROR;
-        }
-        pushError(EMAIL_ERROR_KEY, error);
+//        if(email.trim().length() < 8 || email.trim().length() > 40){
+//            error = Constant.INVALID_USERNAME_ERROR;
+//        }
+//        pushError(EMAIL_ERROR_KEY, error);
         return error;
     }
 
     public String validatePassword(String password) {
         String error = null;
-        if (password.trim().length() < 6 || password.trim().length() > 40) {
-            error = Constant.INVALID_PASSWORD_LENGTH_ERROR;
-        }
-        pushError(PASSWORD_ERROR_KEY, error);
+//        if (password.trim().length() < 6 || password.trim().length() > 40) {
+//            error = Constant.INVALID_PASSWORD_LENGTH_ERROR;
+//        }
+//        pushError(PASSWORD_ERROR_KEY, error);
         return error;
     }
 

@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
@@ -67,7 +69,7 @@ public class LoginFragment extends BaseFragment {
         binding.btnLogin.setOnClickListener(v -> {
             EspressoIdlingResource.increment();
             loginViewModel.login()
-                    .compose(RxUtils.withLoading(binding.pbLoading))
+                    .compose(RxUtils.withLoading(binding.processingContainer.rlProcessing))
                     .subscribe(loginResponse -> {
                         navigateFlow(loginResponse);
                         EspressoIdlingResource.decrement();
@@ -85,16 +87,7 @@ public class LoginFragment extends BaseFragment {
 //                        }
 //                    });
         });
-        binding.tvEndpoint.setOnClickListener(v -> {
-            showEndpointDialog();
-        });
         binding.executePendingBindings();
-    }
-
-    private void showEndpointDialog() {
-        EndpointDialogFragment.newInstance()
-                .show(getFragmentManager(),
-                        EndpointDialogFragment.class.getSimpleName());
     }
 
     public void navigateFlow(Response<User> loginResponse) {
@@ -109,5 +102,11 @@ public class LoginFragment extends BaseFragment {
         loginViewModel.toast()
                 .takeUntil(preDestroyView())
                 .subscribe(v -> ToastUtils.toastLongMassage(getContext(), v));
+    }
+
+    @Override
+    protected void setProcessing(RelativeLayout rlProcessing, TextView tvProcessingTitle) {
+        super.setProcessing(binding.processingContainer.rlProcessing,
+                binding.processingContainer.tvProcessingTitle);
     }
 }

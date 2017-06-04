@@ -4,9 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.nux.dhoan9.firstmvvm.view.activity.BaseActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
+import org.w3c.dom.Text;
 import rx.subjects.PublishSubject;
 
 /**
@@ -46,15 +49,20 @@ public abstract class BaseFragment extends Fragment {
         ((CustomerActivity) getActivity()).hideProcessing();
     }
 
-    protected void setTotal(String total){
-        ((CustomerActivity)getActivity()).setTotalOrder(total);
+    protected void setTotal(String total) {
+        ((CustomerActivity) getActivity()).setTotalOrder(total);
     }
 
-    protected void setOrderToolBar(){
-        ((CustomerActivity)getActivity()).setOrderToolBar();
+    protected void setOrderToolBar() {
+        ((CustomerActivity) getActivity()).setOrderToolBar();
     }
 
-    protected void setDishToolBar(){
-        ((CustomerActivity)getActivity()).setDishToolBar();
+    protected void setDishToolBar() {
+        ((CustomerActivity) getActivity()).setDishToolBar();
+    }
+
+    protected void setProcessing(RelativeLayout rlProcessing, TextView tvProcessingTitle) {
+        ((BaseActivity) getActivity()).rlProcessing = rlProcessing;
+        ((BaseActivity) getActivity()).tvProcessingTitle = tvProcessingTitle;
     }
 }

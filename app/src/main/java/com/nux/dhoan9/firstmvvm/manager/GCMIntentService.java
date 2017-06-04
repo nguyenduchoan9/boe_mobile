@@ -20,11 +20,12 @@ public class GCMIntentService extends GcmListenerService {
         PendingIntent pIntent = PendingIntent.getActivity(
                 this,
                 (int) System.currentTimeMillis(),
-                SlashActivity.newInstance(this, data.getString("body")),
-                0
+                SlashActivity.newInstance(this, "body"),
+                PendingIntent.FLAG_ONE_SHOT
         );
         String message = data.getString("message");
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_add)
                 .setContentTitle("Test")

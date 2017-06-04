@@ -58,7 +58,7 @@ public class QRCodeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        binding.ivScanner.setOnClickListener(v -> {
+        binding.tvScanner.setOnClickListener(v -> {
             startActivityForResult(QRCodeScanActivity.newInstace(getContext()), REQUEST_CODE);
         });
     }

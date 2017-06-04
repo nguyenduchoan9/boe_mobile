@@ -1,6 +1,5 @@
 package com.nux.dhoan9.firstmvvm.view.fragment;
 
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -60,6 +59,19 @@ public class EndpointDialogFragment extends DialogFragment {
     @OnClick(R.id.btnSubmit)
     public void onSubmit() {
         endpointManager.setEndpoint(edtEndpoint.getText().toString());
+        if (null != listener) {
+            listener.onFinish();
+        }
         dismiss();
+    }
+
+    public interface ProcessListener {
+        void onFinish();
+    }
+
+    private ProcessListener listener;
+
+    public void setListener(ProcessListener listener) {
+        this.listener = listener;
     }
 }

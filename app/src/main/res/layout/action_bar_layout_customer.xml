@@ -13,6 +13,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             android:orientation="vertical">
 
             <android.support.design.widget.AppBarLayout
@@ -20,6 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="8dp"
+                android:fitsSystemWindows="true"
                 android:theme="@style/AppTheme.AppBarOverlay">
 
                 <android.support.v7.widget.Toolbar
@@ -27,6 +29,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:contentInsetStart="0dp"
+                    app:layout_scrollFlags="scroll|enterAlways"
                     app:popupTheme="@style/AppTheme.PopupOverlay">
 
                     <RelativeLayout
@@ -36,12 +39,12 @@
 
                         <RelativeLayout
                             android:id="@+id/rlOrderInfo"
-                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignBottom="@+id/svSearch"
                             android:layout_alignTop="@+id/svSearch"
-                            android:gravity="center_vertical">
+                            android:gravity="center_vertical"
+                            android:visibility="gone">
 
                             <TextView
                                 android:id="@+id/tvContinues"
@@ -49,27 +52,26 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
                                 android:layout_marginRight="32dp"
-                                android:textSize="16sp"
                                 android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
                                 android:gravity="center"
-                                android:text="Continues"/>
+                                android:text="Continues"
+                                android:textSize="16sp"/>
 
                             <TextView
                                 android:id="@+id/tvTotal"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="16dp"
-                                android:textSize="16sp"
                                 android:layout_toLeftOf="@+id/tvContinues"
+                                android:gravity="end"
                                 android:text="asdadasdasd"
-                                android:gravity="end"/>
+                                android:textSize="16sp"/>
                         </RelativeLayout>
 
                         <android.support.v7.widget.SearchView
                             android:id="@+id/svSearch"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="64dp"
                             android:visibility="visible"/>
                     </RelativeLayout>
                 </android.support.v7.widget.Toolbar>

@@ -2,6 +2,8 @@ package com.nux.dhoan9.firstmvvm.viewmodel;
 
 import android.databinding.ObservableField;
 
+import com.google.android.gms.wallet.Cart;
+import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.model.CartItem;
 import com.nux.dhoan9.firstmvvm.model.Dish;
 
@@ -16,12 +18,14 @@ public class CartItemViewModel extends DishViewModel {
     public int quantity;
     public ObservableField<String> quantityView = new ObservableField<>();
     public ObservableField<String> totalView = new ObservableField<>();
+    private CartManager cartManager;
 
-    public CartItemViewModel(Dish dish, int quantity) {
-        super(dish);
+    public CartItemViewModel(Dish dish, int quantity, CartManager cartManager) {
+        super(dish, null);
         this.quantity = quantity;
         quantityView.set(String.valueOf(quantity));
         totalView.set(String.valueOf(price * quantity));
+        this.cartManager = cartManager;
     }
 
     public CartItem toModel() {

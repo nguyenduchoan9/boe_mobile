@@ -29,14 +29,18 @@ public class SlashActivity extends AppCompatActivity {
         ((Application) getApplication()).getComponent()
                 .inject(this);
         if (checkGooglePlayService()) {
-            new Handler().postDelayed(() -> navigateUser(), 4000);
+            new Handler().postDelayed(() -> showEndpointDialog(), 4000);
+        } else {
+            finish();
         }
     }
 
     private void showEndpointDialog() {
-        EndpointDialogFragment.newInstance()
-                .show(getSupportFragmentManager(),
-                        EndpointDialogFragment.class.getSimpleName());
+        EndpointDialogFragment dialog = EndpointDialogFragment.newInstance();
+        dialog.setListener(() -> navigateUser());
+
+        dialog.show(getSupportFragmentManager(),
+                EndpointDialogFragment.class.getSimpleName());
     }
 
     //    https://stackoverflow.com/questions/31016722/googleplayservicesutil-vs-googleapiavailability
@@ -48,7 +52,8 @@ public class SlashActivity extends AppCompatActivity {
                 googleApi.getErrorDialog(this, resultCode,
                         PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
-                ToastUtils.toastLongMassage(this, "Google Play Services error");
+//                ToastUtils.toastLongMassage(this, "Google Play Services error");
+                ToastUtils.toastLongMassage(this, "This device dose not support Google Play Service");
             }
             return false;
         }

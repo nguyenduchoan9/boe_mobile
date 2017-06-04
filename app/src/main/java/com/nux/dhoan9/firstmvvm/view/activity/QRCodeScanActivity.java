@@ -32,6 +32,11 @@ public class QRCodeScanActivity extends AppCompatActivity implements ZBarScanner
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mScannerView = new ZBarScannerView(this);
+        mScannerView.setAutoFocus(true);
+        mScannerView.setFormats(getBarcodeFormat());
+        setContentView(mScannerView);
+//        checkPermission();
     }
 
     private final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 4;
@@ -59,10 +64,7 @@ public class QRCodeScanActivity extends AppCompatActivity implements ZBarScanner
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_READ_CONTACTS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mScannerView = new ZBarScannerView(this);
-                    mScannerView.setAutoFocus(true);
-                    mScannerView.setFormats(getBarcodeFormat());
-                    setContentView(mScannerView);
+
                 } else {
 
                 }

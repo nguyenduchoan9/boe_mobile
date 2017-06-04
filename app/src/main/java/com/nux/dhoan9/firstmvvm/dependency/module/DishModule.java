@@ -53,8 +53,9 @@ public class DishModule {
     public DishListViewModel provideDishListViewModel(@NonNull ListBinder<DishViewModel> dishListBinder,
                                                       @NonNull DishRepo dishRepo,
                                                       @NonNull Resources resources,
-                                                      @NonNull ThreadScheduler threadSchedulert) {
-        return new DishListViewModel(dishListBinder, dishRepo, resources, threadSchedulert);
+                                                      @NonNull ThreadScheduler threadSchedulert,
+                                                      @NonNull CartManager cartManager) {
+        return new DishListViewModel(dishListBinder, dishRepo, resources, threadSchedulert, cartManager);
     }
 
     @Provides
@@ -70,8 +71,9 @@ public class DishModule {
                                                                      @NonNull Resources resources,
                                                                      @NonNull ListBinder<DishViewModel> listBinder,
                                                                      @NonNull DishRepo dishRepo,
-                                                                     @NonNull ListBinder<MenuCategoriesViewModel> menuListBinder) {
-        return new MenuCateListViewModel(threadScheduler, resources, listBinder, dishRepo, menuListBinder);
+                                                                     @NonNull ListBinder<MenuCategoriesViewModel> menuListBinder,
+                                                                     @NonNull CartManager cartManager) {
+        return new MenuCateListViewModel(threadScheduler, resources, listBinder, dishRepo, menuListBinder, cartManager);
     }
 
     @Provides
@@ -81,8 +83,9 @@ public class DishModule {
                                                                       @NonNull Resources resources,
                                                                       @NonNull ListBinder<DishViewModel> listBinder,
                                                                       @NonNull DishRepo dishRepo,
-                                                                      @NonNull ListBinder<MenuCategoriesViewModel> menuListBinder) {
-        return new MenuCateListViewModel(threadScheduler, resources, listBinder, dishRepo, menuListBinder);
+                                                                      @NonNull ListBinder<MenuCategoriesViewModel> menuListBinder,
+                                                                      @NonNull CartManager cartManager) {
+        return new MenuCateListViewModel(threadScheduler, resources, listBinder, dishRepo, menuListBinder, cartManager);
     }
 
     @Provides

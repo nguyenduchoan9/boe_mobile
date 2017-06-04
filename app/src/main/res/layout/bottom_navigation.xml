@@ -31,7 +31,7 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_cutlery"/>
+                    android:src="@drawable/ic_cutlery_kitchen"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -63,7 +63,7 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_ordering"/>
+                    android:src="@drawable/ic_buying_on_smartphone"/>
             </RelativeLayout>
 
             <RelativeLayout

@@ -29,8 +29,7 @@
             android:layout_height="300dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            app:setImage='@{viewModel.image}'
-            tools:src="@drawable/chocolate_ball"/>
+            app:setImage='@{viewModel.image}'/>
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/nsScrollView"

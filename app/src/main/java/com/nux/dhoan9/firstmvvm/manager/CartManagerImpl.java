@@ -46,5 +46,15 @@ public class CartManagerImpl implements CartManager {
         return cart;
     }
 
-    public int getItamTotal(){return cart.size();}
+    public int getItemTotal(){return cart.size();}
+
+    @Override
+    public boolean isInCart(int id) {
+        return cart.containsKey(id);
+    }
+
+    @Override
+    public void removeOutOfCart(int id) {
+        cart.remove(id);
+    }
 }

@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
+import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.utils.ThreadScheduler;
@@ -25,14 +26,17 @@ public class DishListViewModel extends BaseViewModel {
     private final DishRepo dishRepo;
     private final List<DishViewModel> dishes = new ArrayList<>();
     private PublishSubject<Integer> scrollTo = PublishSubject.create();
+    private final CartManager cartManager;
 
     public DishListViewModel(@NonNull ListBinder<DishViewModel> listBinder,
                              @NonNull DishRepo dishRepo,
                              @NonNull Resources resources,
-                             @NonNull ThreadScheduler threadScheduler) {
+                             @NonNull ThreadScheduler threadScheduler,
+                             @NonNull CartManager cartManager) {
         super(threadScheduler, resources);
         this.listBinder = listBinder;
         this.dishRepo = dishRepo;
+        this.cartManager = cartManager;
     }
 
     public Observable<Integer> scrollTo() {
@@ -52,7 +56,7 @@ public class DishListViewModel extends BaseViewModel {
         listBinder.notifyDataChange(dishes);
     }
 
-    public void removeAllData(){
+    public void removeAllData() {
         dishes.clear();
         listBinder.notifyDataChange(dishes);
     }
@@ -70,7 +74,7 @@ public class DishListViewModel extends BaseViewModel {
     private List<DishViewModel> dishesViewModel(List<Dish> dishesData) {
         List<DishViewModel> dishViewModels = new ArrayList<>();
         for (Dish dish : dishesData) {
-            dishViewModels.add(new DishViewModel(dish));
+            dishViewModels.add(new DishViewModel(dish, cartManager));
         }
 
         return dishViewModels;

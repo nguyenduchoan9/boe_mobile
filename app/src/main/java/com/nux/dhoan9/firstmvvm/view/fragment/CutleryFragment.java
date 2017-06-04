@@ -74,7 +74,6 @@ public class CutleryFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
         Log.i(log, "onStart");
-        setDishToolBar();
         initializerData();
         ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
     }
@@ -95,7 +94,7 @@ public class CutleryFragment extends BaseFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {});
         Glide.with(this)
-                .load(Constant.API_ENDPOINT + "/images/1.jpg")
+                .load(Constant.API_ENDPOINT + "/images/background.jpg")
                 .into(binding.ivBackground);
     }
 
@@ -113,18 +112,10 @@ public class CutleryFragment extends BaseFragment {
                 RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
                 if (dy > 0) {
 //                    // Scrolling up
-//                    view.animate()
-//                            .setDuration(100)
-//                            .scaleX(0)
-//                            .scaleY(0);
                     view.setVisibility(View.GONE);
                 } else {
                     // Scrolling down
                     view.setVisibility(View.VISIBLE);
-//                    view.animate()
-//                            .setDuration(100)
-//                            .scaleX(1.0f)
-//                            .scaleY(1.0f);
                 }
             }
         });

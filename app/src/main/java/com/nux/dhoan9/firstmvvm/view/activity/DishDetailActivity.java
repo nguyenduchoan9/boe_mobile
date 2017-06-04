@@ -38,7 +38,6 @@ public class DishDetailActivity extends BaseActivity {
     @Inject
     PreferencesManager preferencesManager;
 
-
     private Button btnOrder;
     private Button btnCancel;
 
@@ -51,6 +50,11 @@ public class DishDetailActivity extends BaseActivity {
         }
         initDependencies();
         setSupportActionBar(binding.toolBar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar()
+                .setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
+        getSupportActionBar().setTitle("");
         initView();
     }
 
@@ -119,5 +123,11 @@ public class DishDetailActivity extends BaseActivity {
     @Override
     protected void setPreference(PreferencesManager preference) {
         super.setPreference(this.preferencesManager);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

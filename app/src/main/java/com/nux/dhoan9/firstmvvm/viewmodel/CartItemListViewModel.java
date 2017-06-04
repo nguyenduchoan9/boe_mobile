@@ -81,8 +81,9 @@ public class CartItemListViewModel extends BaseViewModel {
     private List<CartItemViewModel> toCartItemViewModels(List<CartItem> cartItems) {
         List<CartItemViewModel> cartItemViewModels = new ArrayList<>();
         for (CartItem cartItem : cartItems) {
-            Dish dish = new Dish(cartItem.getId(), cartItem.getName(), "des", cartItem.getPrice(), cartItem.getImage());
-            cartItemViewModels.add(new CartItemViewModel(dish, cartItem.getQuantity()));
+            Dish dish = new Dish(cartItem.getId(), cartItem.getName(),
+                    cartItem.getDescription(), cartItem.getPrice(), cartItem.getImage());
+            cartItemViewModels.add(new CartItemViewModel(dish, cartItem.getQuantity(), cartManager));
         }
 
         return cartItemViewModels;

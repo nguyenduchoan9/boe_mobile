@@ -96,7 +96,7 @@ public class DrinkingFragment extends BaseFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {});
         Glide.with(this)
-                .load(Constant.API_ENDPOINT + "/images/1.jpg")
+                .load(Constant.API_ENDPOINT + "/images/background.jpg")
                 .into(binding.ivBackground);
     }
 

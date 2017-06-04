@@ -4,13 +4,14 @@
     android:id="@+id/activity_slash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+                android:background="@color/colorPrimary"
     tools:context="com.nux.dhoan9.firstmvvm.view.activity.SlashActivity">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/kong"
-        android:scaleType="centerCrop"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/slash_bg"
+        android:layout_centerInParent="true"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

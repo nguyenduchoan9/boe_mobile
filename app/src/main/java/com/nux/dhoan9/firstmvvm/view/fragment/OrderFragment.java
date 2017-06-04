@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,26 +63,25 @@ public class OrderFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         initView();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        setOrderToolBar();
-
+        initializeData();
         ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
     }
-
+    private String log = "zzzzzz-Order_TAG";
     @Override
     public void onResume() {
+        Log.i(log, "onStop");
         super.onResume();
-        initializeData();
     }
 
     private void initializeData() {
         binding.setViewModel(cartItemListViewModel);
+        binding.executePendingBindings();
         cartItemListViewModel
                 .initialize()
                 .subscribeOn(Schedulers.io())
@@ -149,6 +149,6 @@ public class OrderFragment extends BaseFragment {
         return total;
     }
     public int getItemtotal(){
-        return cartManager.getItamTotal();
+        return cartManager.getItemTotal();
     }
 }
