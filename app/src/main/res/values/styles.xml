@@ -42,6 +42,15 @@
         <item name="android:elevation" tools:targetApi="lollipop">4dp</item>
     </style>
 
+    <style name="PayButton">
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/tiny_space</item>
+        <item name="android:textSize">@dimen/size_medium_text</item>
+        <item name="android:background">@drawable/pay_button</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:elevation" tools:targetApi="lollipop">4dp</item>
+    </style>
+
     <style name="DetailButton">
         <item name="android:gravity">center</item>
         <item name="android:padding">@dimen/tiny_space</item>

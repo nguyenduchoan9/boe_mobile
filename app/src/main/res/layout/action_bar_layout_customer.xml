@@ -55,7 +55,8 @@
                                 android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
                                 android:gravity="center"
                                 android:text="Continues"
-                                android:textSize="16sp"/>
+                                android:textColor="@color/white"
+                                android:textSize="20sp"/>
 
                             <TextView
                                 android:id="@+id/tvTotal"
@@ -64,8 +65,9 @@
                                 android:layout_marginRight="16dp"
                                 android:layout_toLeftOf="@+id/tvContinues"
                                 android:gravity="end"
-                                android:text="asdadasdasd"
-                                android:textSize="16sp"/>
+                                android:text=""
+                                android:textColor="@color/white"
+                                android:textSize="20sp"/>
                         </RelativeLayout>
 
                         <android.support.v7.widget.SearchView

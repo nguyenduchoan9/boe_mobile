@@ -28,4 +28,8 @@ public class MenuCategoriesViewModel {
     public Category getCategory(){
         return category;
     }
+
+    public void synCartInList(){
+        dishViewModels.syncAllCart();
+    }
 }

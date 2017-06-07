@@ -19,6 +19,7 @@ public class DishDetailViewModel extends BaseViewModel {
     public ObservableField<String> description = new ObservableField<>();
     public ObservableField<String> price = new ObservableField<>();
     public ObservableField<String> image = new ObservableField<>();
+    public ObservableField<Boolean> isOrder = new ObservableField<>(false);
     private final DishRepo dishRepo;
     private final CartManager cartManager;
 
@@ -43,6 +44,7 @@ public class DishDetailViewModel extends BaseViewModel {
         this.description.set(dish.getDescription());
         this.price.set(String.valueOf(dish.getPrice()));
         this.image.set(dish.getImage());
+        isOrder.set(cartManager.isInCart(dish.getId()));
     }
 
     public void onOrderClick(){
@@ -50,6 +52,6 @@ public class DishDetailViewModel extends BaseViewModel {
     }
 
     public void onCancelClick(){
-        cartManager.minus(id, 1);
+        cartManager.removeOutOfCart(id);
     }
 }

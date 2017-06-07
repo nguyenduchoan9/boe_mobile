@@ -4,6 +4,8 @@ import com.nux.dhoan9.firstmvvm.data.repo.CartRepo;
 import com.nux.dhoan9.firstmvvm.data.repo.CartRepoImpl;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepoImpl;
+import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
+import com.nux.dhoan9.firstmvvm.data.repo.OrderRepoImpl;
 import com.nux.dhoan9.firstmvvm.data.repo.TodoRepo;
 import com.nux.dhoan9.firstmvvm.data.repo.TodoRepoImpl;
 import com.nux.dhoan9.firstmvvm.data.repo.UserRepo;
@@ -39,5 +41,10 @@ public class RepoModule {
     @Provides
     public CartRepo provideCartRepo(Retrofit retrofit) {
         return new CartRepoImpl(retrofit);
+    }
+
+    @Provides
+    public OrderRepo provideOrderRepo(Retrofit retrofit) {
+        return new OrderRepoImpl(retrofit);
     }
 }

@@ -16,6 +16,7 @@ import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentOrderBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
+import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.OrderAdapter;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemListViewModel;
@@ -69,10 +70,17 @@ public class OrderFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
+        if (cartManager.getCart().isEmpty()) {
+            binding.rlEmptyMsg.setVisibility(View.VISIBLE);
+        } else {
+            binding.rlEmptyMsg.setVisibility(View.GONE);
+        }
         initializeData();
         ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
     }
+
     private String log = "zzzzzz-Order_TAG";
+
     @Override
     public void onResume() {
         Log.i(log, "onStop");
@@ -91,7 +99,7 @@ public class OrderFragment extends BaseFragment {
                 .subscribe(result -> {
                     initTotalPayment(cartItemListViewModel.getCartItems());
                 });
-
+        showProcessing("Loading...");
     }
 
     private void initTotalPayment(List<CartItemViewModel> cartItems) {
@@ -109,7 +117,10 @@ public class OrderFragment extends BaseFragment {
         adapter.setListener(new OrderAdapter.CartListener() {
             @Override
             public void onIncrementQuantity(CartItemViewModel.Oops oops) {
-                cartManager.plus(oops.dishId, 1);
+                if (oops.isUpperQuantityBound) {
+                    ToastUtils.toastLongMassage(getContext(), "The maximum of quantity is 15");
+                    return;
+                }
                 total += oops.price;
                 String textTotal = String.valueOf(total);
                 setTotal(textTotal);
@@ -117,8 +128,19 @@ public class OrderFragment extends BaseFragment {
 
             @Override
             public void onDecrementQuantity(CartItemViewModel.Oops oops) {
-                cartManager.minus(oops.dishId, 1);
-                total += oops.price;
+                if (oops.isLowerQuantityBound) {
+                    ToastUtils.toastLongMassage(getContext(), "The quantity must have at least 1");
+                    return;
+                }
+                total -= oops.price;
+                String textTotal = String.valueOf(total);
+                setTotal(textTotal);
+
+            }
+
+            @Override
+            public void onRemove(CartItemViewModel.Oops oops) {
+                total -= oops.price;
                 String textTotal = String.valueOf(total);
                 setTotal(textTotal);
             }
@@ -148,7 +170,8 @@ public class OrderFragment extends BaseFragment {
     public float getTotalPayment() {
         return total;
     }
-    public int getItemtotal(){
+
+    public int getItemtotal() {
         return cartManager.getItemTotal();
     }
 }

@@ -1,14 +1,23 @@
 package com.nux.dhoan9.firstmvvm.view.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
+import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
+import com.nux.dhoan9.firstmvvm.data.response.OrderResponse;
+import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
@@ -23,8 +32,11 @@ import java.util.Date;
 import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-public class PaypalActivity extends AppCompatActivity {
+public class PaypalActivity extends BaseActivity {
     @BindView(R.id.tvAmount)
     TextView tvAmount;
     @BindView(R.id.tvDinerName)
@@ -37,14 +49,29 @@ public class PaypalActivity extends AppCompatActivity {
     private final String LOG_TAG = PaypalActivity.class.getSimpleName();
     @BindView(R.id.btnPay)
     Button btnPay;
-
+    TextView tvGoToMenu;
+    @BindView(R.id.tvProcessingTitle)
+    TextView mTvProcessingTitle;
+    @BindView(R.id.rlProcessing)
+    RelativeLayout mRlProcessing;
     @Inject
     PreferencesManager preferencesManager;
+
+    @Inject
+    OrderRepo orderRepo;
+
+    @Inject
+    CartManager cartManager;
+    private boolean isSuccess = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initDependency();
         setContentView(R.layout.activity_paypal);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("THE BILL");
         ButterKnife.bind(this);
         tvAmount.setText(String.valueOf(new BigDecimal(getTotal())));
         tvDinerName.setText(getDinerName());
@@ -55,6 +82,18 @@ public class PaypalActivity extends AppCompatActivity {
         startService(intent);
 
         btnPay.setOnClickListener(v -> onOkPress());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setProcessing();
+    }
+
+    @Override
+    protected void setProcessing() {
+        tvProcessingTitle = mTvProcessingTitle;
+        rlProcessing = mRlProcessing;
     }
 
     private void initDependency() {
@@ -70,6 +109,12 @@ public class PaypalActivity extends AppCompatActivity {
         i.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, configuration);
         i.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
         startActivityForResult(i, REQUEST_PAYMENT_CODE);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     @Override
@@ -90,11 +135,12 @@ public class PaypalActivity extends AppCompatActivity {
                 if (null != confirmation) {
                     try {
                         Log.i(LOG_TAG, confirmation.toJSONObject().toString(4));
-                        ToastUtils.toastLongMassage(this, "Payment is successfully");
+                        handleSuccessfullyPayment();
+                        btnPay.setVisibility(View.GONE);
+                        isSuccess = true;
                     } catch (JSONException e) {
                         Log.i(LOG_TAG, "An extremely unlike failure occurred:", e);
                     }
-
                 }
             }
         } else if (resultCode == RESULT_CANCELED) {
@@ -102,6 +148,18 @@ public class PaypalActivity extends AppCompatActivity {
         } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
             Log.i(LOG_TAG, "An invalid Payment of PayPalConfiguration was submitted. Please see the docs.");
         }
+    }
+
+    private void handleSuccessfullyPayment() {
+        orderRepo.makeOrder(cartManager.getCart())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doOnNext(orderResponse -> showProcessing("Processing..."))
+                .doOnTerminate(() -> hideProcessing())
+                .subscribe(subscribe -> {
+                    cartManager.clear();
+                    showDialogInform();
+                });
     }
 
     public static Intent newInstance(Context context) {
@@ -121,7 +179,40 @@ public class PaypalActivity extends AppCompatActivity {
         return getIntent().getIntExtra(Constant.KEY_ORDER_ITEM_TOTAL, 0);
     }
 
-    public String getDinerName(){
+    public String getDinerName() {
         return preferencesManager.getUser().getFullName();
+    }
+
+    @Override
+    protected void setPreference() {
+        mPreferencesManager = this.preferencesManager;
+    }
+
+    private void showDialogInform() {
+        AlertDialog builder = new AlertDialog.Builder(this).create();
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.layout_dialog_order_ok, null);
+
+        builder.setView(dialogView);
+        tvGoToMenu = (TextView) dialogView.findViewById(R.id.tvGoToMenu);
+        tvGoToMenu.setOnClickListener(v -> {
+            startActivity(CustomerActivity.newInstance(PaypalActivity.this));
+            builder.dismiss();
+        });
+        builder.setCanceledOnTouchOutside(false);
+        builder.setOnKeyListener((dialog, keyCode, event) -> {
+            if(KeyEvent.KEYCODE_BACK == keyCode){
+                return true;
+            }
+            return false;
+        });
+        builder.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!isSuccess){
+            super.onBackPressed();
+        }
     }
 }

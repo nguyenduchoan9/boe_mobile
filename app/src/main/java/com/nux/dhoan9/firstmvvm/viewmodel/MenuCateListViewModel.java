@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
+import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.model.MenuCategories;
 import com.nux.dhoan9.firstmvvm.utils.ThreadScheduler;
 import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
@@ -66,6 +67,46 @@ public class MenuCateListViewModel extends BaseViewModel {
                         }));
     }
 
+    public Observable<List<MenuCategories>> onCutlerySearch(String keySearch) {
+        menuCategoriesViewModels.clear();
+        menuListBinder.notifyDataChange(menuCategoriesViewModels);
+
+        return dishRepo.getCutleryByKeySearch(keySearch)
+                .compose(withScheduler())
+                .doOnNext(menu -> {
+                    for (MenuCategories menuCategories : menu) {
+                        DishListViewModel dishListViewModel = new DishListViewModel(listBinder,
+                                dishRepo, resources, threadScheduler, cartManager);
+                        MenuCategoriesViewModel menuCategoriesViewModel =
+                                new MenuCategoriesViewModel(dishListViewModel, menuCategories.getCategory());
+
+                        menuCategoriesViewModels.add(menuCategoriesViewModel);
+                        dishListViewModel.initialize(menuCategories.getDish());
+                    }
+                    menuListBinder.notifyDataChange(menuCategoriesViewModels);
+                });
+    }
+
+    public Observable<List<MenuCategories>> onDrinkingSearch(String keySearch) {
+        menuCategoriesViewModels.clear();
+        menuListBinder.notifyDataChange(menuCategoriesViewModels);
+
+        return dishRepo.getDrinkingByKeySearch(keySearch)
+                .compose(withScheduler())
+                .doOnNext(menu -> {
+                    for (MenuCategories menuCategories : menu) {
+                        DishListViewModel dishListViewModel = new DishListViewModel(listBinder,
+                                dishRepo, resources, threadScheduler, cartManager);
+                        MenuCategoriesViewModel menuCategoriesViewModel =
+                                new MenuCategoriesViewModel(dishListViewModel, menuCategories.getCategory());
+
+                        menuCategoriesViewModels.add(menuCategoriesViewModel);
+                        dishListViewModel.initialize(menuCategories.getDish());
+                    }
+                    menuListBinder.notifyDataChange(menuCategoriesViewModels);
+                });
+    }
+
     public Observable<Void> initializeDrinking(boolean isRefresh) {
         if (isRefresh) {
             for (MenuCategoriesViewModel menu : menuCategoriesViewModels) {
@@ -116,5 +157,15 @@ public class MenuCateListViewModel extends BaseViewModel {
 
     public int getSize() {
         return menuCategoriesViewModels.size();
+    }
+
+    public void synCartInCate() {
+        if (null != menuCategoriesViewModels) {
+            for (MenuCategoriesViewModel menu : menuCategoriesViewModels) {
+                menu.synCartInList();
+            }
+            menuListBinder.notifyDataChange(menuCategoriesViewModels);
+        }
+
     }
 }

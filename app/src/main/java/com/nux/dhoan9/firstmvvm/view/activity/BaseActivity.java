@@ -22,27 +22,27 @@ public abstract class BaseActivity extends AppCompatActivity {
     private BroadcastReceiver mBroadcastReceiver;
     public TextView tvProcessingTitle;
     public RelativeLayout rlProcessing;
-    private PreferencesManager preferencesManager;
+    protected PreferencesManager mPreferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setBroadcastReceiver();
         setProcessing();
+        setPreference();
     }
 
-    protected void setBroadcastReceiver(){
+    protected void setBroadcastReceiver() {
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().endsWith(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
                     String token = intent.getStringExtra("token");
                     Log.v(GCM_TOKEN, token);
-                    ToastUtils.toastLongMassage(getApplicationContext(), token);
-                }else if(intent.getAction().endsWith(GCMRegistrationIntentService.REGISTRATION_ERROR)){
+                } else if (intent.getAction().endsWith(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
                     ToastUtils.toastLongMassage(getApplicationContext(),
                             "GCM registration error");
-                }else{
+                } else {
                     ToastUtils.toastShortMassage(getApplicationContext(), "Nothing");
                 }
             }
@@ -64,6 +64,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.i("ZZZZZZZ", "onPause");
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mBroadcastReceiver);
     }
 
@@ -83,13 +84,20 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("ZZZZZZZ", "onStop");
+    }
+
+    @Override
     protected void onDestroy() {
-        if (null != preferencesManager)
-            preferencesManager.setTableInfo(null);
+        Log.i("ZZZZZZZ", "onDestroy");
+        if (null != mPreferencesManager) {
+            Log.i("ZZZZZZZ", "onDestroy- pre");
+            mPreferencesManager.setTableInfo(null);
+        }
         super.onDestroy();
     }
 
-    protected void setPreference(PreferencesManager preference) {
-        this.preferencesManager = preference;
-    }
+    protected abstract void setPreference();
 }

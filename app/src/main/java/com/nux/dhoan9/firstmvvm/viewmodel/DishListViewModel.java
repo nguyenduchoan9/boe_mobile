@@ -71,6 +71,15 @@ public class DishListViewModel extends BaseViewModel {
 
     }
 
+    public void syncAllCart() {
+        if (null != dishes) {
+            for (DishViewModel dishViewModel : dishes) {
+                dishViewModel.syncCart();
+            }
+            listBinder.notifyDataChange(dishes);
+        }
+    }
+
     private List<DishViewModel> dishesViewModel(List<Dish> dishesData) {
         List<DishViewModel> dishViewModels = new ArrayList<>();
         for (Dish dish : dishesData) {

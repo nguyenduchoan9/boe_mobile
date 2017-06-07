@@ -60,14 +60,22 @@ public class DishDetailActivity extends BaseActivity {
 
     private void initView() {
         findView();
-        btnOrder.setOnClickListener(v -> {
-            viewModel.onOrderClick();
+        if (isFromCart()) {
             btnOrder.setVisibility(View.GONE);
-        });
-        btnCancel.setOnClickListener(v -> {
-            viewModel.onCancelClick();
+            btnCancel.setVisibility(View.GONE);
+        } else {
             btnOrder.setVisibility(View.VISIBLE);
-        });
+            btnCancel.setVisibility(View.VISIBLE);
+            btnOrder.setOnClickListener(v -> {
+                viewModel.onOrderClick();
+                btnOrder.setVisibility(View.GONE);
+            });
+            btnCancel.setOnClickListener(v -> {
+                viewModel.onCancelClick();
+                btnOrder.setVisibility(View.VISIBLE);
+            });
+        }
+
     }
 
     private void findView() {
@@ -121,13 +129,17 @@ public class DishDetailActivity extends BaseActivity {
     }
 
     @Override
-    protected void setPreference(PreferencesManager preference) {
-        super.setPreference(this.preferencesManager);
+    protected void setPreference() {
+        mPreferencesManager = this.preferencesManager;
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    public boolean isFromCart() {
+        return getIntent().getBooleanExtra(Constant.KEY_ORDER_ADAPTER, false);
     }
 }

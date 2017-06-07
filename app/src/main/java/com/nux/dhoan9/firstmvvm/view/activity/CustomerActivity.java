@@ -68,8 +68,8 @@ public class CustomerActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_customer);
-        super.onCreate(savedInstanceState);
         initDependency();
+        super.onCreate(savedInstanceState);
         initDrawer();
         initView();
     }
@@ -96,6 +96,7 @@ public class CustomerActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         svSearch = (SearchView) toolbar.findViewById(R.id.svSearch);
+        initSearchView();
         tvTotal = (TextView) toolbar.findViewById(R.id.tvTotal);
         tvContinues = (TextView) toolbar.findViewById(R.id.tvContinues);
         binding.navView.inflateMenu(R.menu.drawer_menu_customer);
@@ -106,6 +107,32 @@ public class CustomerActivity extends BaseActivity {
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.drawer,
                 binding.actionBarContent.toolbar, R.string.open, R.string.close);
         binding.drawer.addDrawerListener(actionBarDrawerToggle);
+    }
+
+    private void initSearchView() {
+        svSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                svSearch.clearFocus();
+                handleQuerySearchSubmit(query.trim());
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+    }
+
+    private void handleQuerySearchSubmit(String keySearch) {
+        if (fragmentPos == CUTLERY_POS) {
+            cutleryFragment.onSearchSubmit(keySearch);
+        } else if (fragmentPos == DRINKING_POS) {
+            drinkingFragment.onSearchSubmit(keySearch);
+        } else if (fragmentPos == HISTORY_POS) {
+
+        }
     }
 
     @Override
@@ -156,21 +183,33 @@ public class CustomerActivity extends BaseActivity {
         navigationBottom.setListener(new NavigationBottom.NavigationListener() {
             @Override
             public void onCutleryClick() {
+                if (fragmentPos == CUTLERY_POS) {
+                    return;
+                }
                 showFragmentPosition(CUTLERY_POS);
             }
 
             @Override
             public void onDrinkingClick() {
+                if (fragmentPos == DRINKING_POS) {
+                    return;
+                }
                 showFragmentPosition(DRINKING_POS);
             }
 
             @Override
             public void onOrderClick() {
+                if (fragmentPos == ORDER_POS) {
+                    return;
+                }
                 showFragmentPosition(ORDER_POS);
             }
 
             @Override
             public void onHistoryClick() {
+                if (fragmentPos == HISTORY_POS) {
+                    return;
+                }
                 showFragmentPosition(HISTORY_POS);
             }
         });
@@ -223,24 +262,27 @@ public class CustomerActivity extends BaseActivity {
         if (CUTLERY_POS == pos) {
             showFragment(cutleryFragment);
             setDishToolBar();
+            cutleryFragment.synTheCart();
             hideFragment(drinkingFragment);
             hideFragment(orderFragment);
             hideFragment(historyFragment);
         } else if (DRINKING_POS == pos) {
             showFragment(drinkingFragment);
             setDishToolBar();
+            drinkingFragment.synTheCart();
             hideFragment(cutleryFragment);
             hideFragment(orderFragment);
             hideFragment(historyFragment);
         } else if (ORDER_POS == pos) {
             showFragment(orderFragment);
+            orderFragment.onStart();
             setOrderToolBar();
             hideFragment(cutleryFragment);
             hideFragment(drinkingFragment);
             hideFragment(historyFragment);
         } else if (HISTORY_POS == pos) {
             showFragment(historyFragment);
-            setOrderToolBar();
+            setDishToolBar();
             hideFragment(cutleryFragment);
             hideFragment(drinkingFragment);
             hideFragment(orderFragment);
@@ -259,8 +301,8 @@ public class CustomerActivity extends BaseActivity {
     }
 
     @Override
-    protected void setPreference(PreferencesManager preference) {
-        super.setPreference(this.preferencesManager);
+    protected void setPreference() {
+        mPreferencesManager = this.preferencesManager;
     }
 
     public void setTotalOrder(String total) {
@@ -287,6 +329,6 @@ public class CustomerActivity extends BaseActivity {
 
             startActivity(i);
         });
-
     }
+
 }

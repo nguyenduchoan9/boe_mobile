@@ -91,7 +91,7 @@ public class DishesByCategoryActivity extends BaseActivity {
     }
 
     @Override
-    protected void setPreference(PreferencesManager preference) {
-        super.setPreference(this.preferencesManager);
+    protected void setPreference() {
+        mPreferencesManager = this.preferencesManager;
     }
 }

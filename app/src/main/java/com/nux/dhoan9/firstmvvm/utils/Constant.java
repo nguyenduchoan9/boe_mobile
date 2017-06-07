@@ -44,5 +44,6 @@ public class Constant {
     public final static String KEY_TOTAL_PAYMENT= "KEY_TOTAL_PAYMENT";
     public final static String KEY_ORDER_NAME = "KEY_ORDER_NAME";
     public final static String KEY_ORDER_ITEM_TOTAL = "KEY_ORDER_ITEM_TOTAL";
+    public final static String KEY_ORDER_ADAPTER = "KEY_ORDER_ADAPTER";
 
 }

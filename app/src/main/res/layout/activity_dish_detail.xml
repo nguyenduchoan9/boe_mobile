@@ -6,6 +6,8 @@
 
         <import type="com.nux.dhoan9.firstmvvm.viewmodel.DishDetailViewModel"/>
 
+        <import type="android.view.View"/>
+
         <variable
             name="viewModel"
             type="DishDetailViewModel"/>
@@ -77,6 +79,7 @@
                         style="@style/DetailButton.CancelButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:text="cancel"/>
 
                     <Button
@@ -84,7 +87,8 @@
                         style="@style/DetailButton.OrderButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="order"/>
+                        android:text="order"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
 

@@ -25,7 +25,6 @@ import javax.inject.Named;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-
 public class CutleryFragment extends BaseFragment {
     FragmentCutleryBinding binding;
     private RecyclerView rvDish;
@@ -92,7 +91,8 @@ public class CutleryFragment extends BaseFragment {
         viewModel.initialize(false)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {});
+                .subscribe(result -> {
+                });
         Glide.with(this)
                 .load(Constant.API_ENDPOINT + "/images/background.jpg")
                 .into(binding.ivBackground);
@@ -121,6 +121,10 @@ public class CutleryFragment extends BaseFragment {
         });
     }
 
+    public void synTheCart(){
+        viewModel.synCartInCate();
+    }
+
     private void setActionSwipeContainer() {
         binding.srRefresh.setOnRefreshListener(() -> {
             viewModel.initialize(true)
@@ -135,5 +139,14 @@ public class CutleryFragment extends BaseFragment {
                 R.color.holoGreenLight,
                 R.color.holoOrangeLight,
                 R.color.holoRedLight);
+    }
+
+    public void onSearchSubmit(String keySearch) {
+        viewModel.onCutlerySearch(keySearch)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(v -> showProcessing("Processing..."))
+                .doOnTerminate(() -> hideProcessing())
+                .subscribe(result -> {});
     }
 }

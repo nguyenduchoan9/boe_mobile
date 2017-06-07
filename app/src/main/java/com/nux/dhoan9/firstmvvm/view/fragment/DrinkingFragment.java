@@ -146,4 +146,18 @@ public class DrinkingFragment extends BaseFragment {
                 R.color.holoOrangeLight,
                 R.color.holoRedLight);
     }
+
+    public void onSearchSubmit(String keySearch) {
+        viewModel.onDrinkingSearch(keySearch)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(v -> showProcessing("Processing..."))
+                .doOnTerminate(() -> hideProcessing())
+                .subscribe(result -> {});
+    }
+
+
+    public void synTheCart(){
+        viewModel.synCartInCate();
+    }
 }

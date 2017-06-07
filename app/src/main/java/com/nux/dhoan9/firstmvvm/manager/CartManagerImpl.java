@@ -29,7 +29,6 @@ public class CartManagerImpl implements CartManager {
         if (cart.containsKey(idDish)) {
             int currentQuantity = cart.get(idDish);
             if (1 == currentQuantity) {
-                cart.remove(idDish);
                 return;
             }
             cart.put(idDish, currentQuantity - 1);

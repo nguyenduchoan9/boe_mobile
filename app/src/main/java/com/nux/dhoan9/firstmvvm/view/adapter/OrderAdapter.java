@@ -1,6 +1,7 @@
 package com.nux.dhoan9.firstmvvm.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +10,8 @@ import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.DishCartItemBinding;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ActivityScope;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ForActivity;
+import com.nux.dhoan9.firstmvvm.utils.Constant;
+import com.nux.dhoan9.firstmvvm.view.activity.DishDetailActivity;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemViewModel;
 import java.util.List;
@@ -49,7 +52,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(oops -> {
-                        if(null != listener){
+                        if (null != listener) {
                             listener.onDecrementQuantity(oops);
                         }
                     });
@@ -60,14 +63,32 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(oops -> {
-                        if(null != listener){
+                        if (null != listener) {
                             listener.onIncrementQuantity(oops);
                         }
                     });
         });
 
+        holder.binding.ivRemove.setOnClickListener(v -> {
+            cartItemViewModel.onRemoveClick()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(oops -> {
+                        if (null != listener) {
+                            listener.onRemove(oops);
+                        }
+                        viewModel.remove(position);
+                    });
+        });
+
         holder.binding.setViewModel(cartItemViewModel);
         holder.binding.executePendingBindings();
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(holder.itemView.getContext(), DishDetailActivity.class);
+            intent.putExtra(Constant.KEY_DISH_DETAIL, cartItemViewModel.id);
+            intent.putExtra(Constant.KEY_ORDER_ADAPTER, true);
+            holder.itemView.getContext().startActivity(intent);
+        });
     }
 
     @Override
@@ -88,6 +109,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
         void onIncrementQuantity(CartItemViewModel.Oops oops);
 
         void onDecrementQuantity(CartItemViewModel.Oops oops);
+
+        void onRemove(CartItemViewModel.Oops oops);
     }
 
     private CartListener listener;

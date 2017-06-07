@@ -88,4 +88,9 @@ public class CartItemListViewModel extends BaseViewModel {
 
         return cartItemViewModels;
     }
+
+    public void remove(int pos){
+        cartItems.remove(pos);
+        listBinder.notifyDataChange(cartItems);
+    }
 }

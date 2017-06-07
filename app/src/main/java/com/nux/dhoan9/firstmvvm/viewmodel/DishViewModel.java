@@ -61,4 +61,8 @@ public class DishViewModel {
             addToCart();
         }
     }
+
+    public void syncCart(){
+        isOrder.set(cartManager.isInCart(this.id));
+    }
 }
