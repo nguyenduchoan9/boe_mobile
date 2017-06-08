@@ -90,8 +90,4 @@ public class DishesByCategoryActivity extends BaseActivity {
         return getIntent().getIntExtra(Constant.KEY_ID_CATEGORY, 1);
     }
 
-    @Override
-    protected void setPreference() {
-        mPreferencesManager = this.preferencesManager;
-    }
 }

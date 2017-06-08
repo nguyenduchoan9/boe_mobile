@@ -232,7 +232,6 @@ public class CustomerActivity extends BaseActivity {
         replaceContent(drinkingFragment, false, "DrinkingFragment");
         replaceContent(orderFragment, false, "OrderFragment");
         replaceContent(historyFragment, false, "HistoryFragment");
-//        showFragmentPosition(fragmentPos=3);
         showFragmentPosition(fragmentPos = 0);
         setDishToolBar();
     }
@@ -298,11 +297,6 @@ public class CustomerActivity extends BaseActivity {
         EndpointDialogFragment.newInstance()
                 .show(getSupportFragmentManager(),
                         EndpointDialogFragment.class.getSimpleName());
-    }
-
-    @Override
-    protected void setPreference() {
-        mPreferencesManager = this.preferencesManager;
     }
 
     public void setTotalOrder(String total) {

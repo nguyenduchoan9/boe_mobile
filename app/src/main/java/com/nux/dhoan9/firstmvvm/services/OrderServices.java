@@ -1,6 +1,7 @@
 package com.nux.dhoan9.firstmvvm.services;
 
 import com.nux.dhoan9.firstmvvm.data.response.OrderResponse;
+import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
@@ -15,4 +16,6 @@ public interface OrderServices {
     @POST("orders")
     @FormUrlEncoded
     Observable<OrderResponse> makeOrder(@Field("order") String orderParams);
+    @POST
+    Call<OrderResponse> makeORder();
 }

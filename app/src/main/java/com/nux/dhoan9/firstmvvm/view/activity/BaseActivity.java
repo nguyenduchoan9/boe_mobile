@@ -29,7 +29,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setBroadcastReceiver();
         setProcessing();
-        setPreference();
     }
 
     protected void setBroadcastReceiver() {
@@ -88,16 +87,4 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onStop();
         Log.i("ZZZZZZZ", "onStop");
     }
-
-    @Override
-    protected void onDestroy() {
-        Log.i("ZZZZZZZ", "onDestroy");
-        if (null != mPreferencesManager) {
-            Log.i("ZZZZZZZ", "onDestroy- pre");
-            mPreferencesManager.setTableInfo(null);
-        }
-        super.onDestroy();
-    }
-
-    protected abstract void setPreference();
 }

@@ -139,8 +139,8 @@ public class OrderFragment extends BaseFragment {
             }
 
             @Override
-            public void onRemove(CartItemViewModel.Oops oops) {
-                total -= oops.price;
+            public void onRemove(float minus) {
+                total -= minus ;
                 String textTotal = String.valueOf(total);
                 setTotal(textTotal);
             }

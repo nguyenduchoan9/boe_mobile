@@ -129,11 +129,6 @@ public class DishDetailActivity extends BaseActivity {
     }
 
     @Override
-    protected void setPreference() {
-        mPreferencesManager = this.preferencesManager;
-    }
-
-    @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;

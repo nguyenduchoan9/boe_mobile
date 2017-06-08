@@ -21,6 +21,7 @@ import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
+import com.paypal.android.sdk.payments.PayPalAuthorization;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
@@ -108,6 +109,7 @@ public class PaypalActivity extends BaseActivity {
         Intent i = new Intent(this, PaymentActivity.class);
         i.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, configuration);
         i.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
+//        PayPalPayment.PAYMENT_INTENT_AUTHORIZE
         startActivityForResult(i, REQUEST_PAYMENT_CODE);
     }
 
@@ -156,7 +158,7 @@ public class PaypalActivity extends BaseActivity {
                 .subscribeOn(Schedulers.io())
                 .doOnNext(orderResponse -> showProcessing("Processing..."))
                 .doOnTerminate(() -> hideProcessing())
-                .subscribe(subscribe -> {
+                .subscribe(sub -> {
                     cartManager.clear();
                     showDialogInform();
                 });
@@ -183,11 +185,6 @@ public class PaypalActivity extends BaseActivity {
         return preferencesManager.getUser().getFullName();
     }
 
-    @Override
-    protected void setPreference() {
-        mPreferencesManager = this.preferencesManager;
-    }
-
     private void showDialogInform() {
         AlertDialog builder = new AlertDialog.Builder(this).create();
         LayoutInflater inflater = this.getLayoutInflater();
@@ -201,7 +198,7 @@ public class PaypalActivity extends BaseActivity {
         });
         builder.setCanceledOnTouchOutside(false);
         builder.setOnKeyListener((dialog, keyCode, event) -> {
-            if(KeyEvent.KEYCODE_BACK == keyCode){
+            if (KeyEvent.KEYCODE_BACK == keyCode) {
                 return true;
             }
             return false;
@@ -211,7 +208,7 @@ public class PaypalActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if(!isSuccess){
+        if (!isSuccess) {
             super.onBackPressed();
         }
     }

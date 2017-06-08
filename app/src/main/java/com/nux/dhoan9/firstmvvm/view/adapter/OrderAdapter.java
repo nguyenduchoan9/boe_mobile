@@ -67,20 +67,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
                             listener.onIncrementQuantity(oops);
                         }
                     });
-        });
 
-        holder.binding.ivRemove.setOnClickListener(v -> {
-            cartItemViewModel.onRemoveClick()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(oops -> {
-                        if (null != listener) {
-                            listener.onRemove(oops);
-                        }
-                        viewModel.remove(position);
-                    });
         });
-
         holder.binding.setViewModel(cartItemViewModel);
         holder.binding.executePendingBindings();
         holder.itemView.setOnClickListener(v -> {
@@ -102,6 +90,15 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
         public CartItemViewHolder(DishCartItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            setupListeners();
+        }
+
+        private void setupListeners() {
+            binding.ivRemove.setOnClickListener(v -> {
+                if (null != listener) {
+                    listener.onRemove(viewModel.remove(getAdapterPosition()));
+                }
+            });
         }
     }
 
@@ -110,7 +107,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
 
         void onDecrementQuantity(CartItemViewModel.Oops oops);
 
-        void onRemove(CartItemViewModel.Oops oops);
+        void onRemove(float minus);
     }
 
     private CartListener listener;

@@ -89,8 +89,13 @@ public class CartItemListViewModel extends BaseViewModel {
         return cartItemViewModels;
     }
 
-    public void remove(int pos){
+    public float remove(int pos) {
+        CartItemViewModel item = cartItems.get(pos);
+        float minus = item.price * item.quantity;
+        cartManager.removeOutOfCart(item.id);
         cartItems.remove(pos);
         listBinder.notifyDataChange(cartItems);
+        return minus;
     }
 }
+

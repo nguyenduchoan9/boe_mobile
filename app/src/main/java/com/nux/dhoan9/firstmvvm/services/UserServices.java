@@ -2,6 +2,7 @@ package com.nux.dhoan9.firstmvvm.services;
 
 import com.nux.dhoan9.firstmvvm.data.request.user.LoginUserParam;
 import com.nux.dhoan9.firstmvvm.data.request.user.UserRegisterParam;
+import com.nux.dhoan9.firstmvvm.data.response.NotificationResponse;
 import com.nux.dhoan9.firstmvvm.data.response.SessionDeleteResponse;
 import com.nux.dhoan9.firstmvvm.model.User;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
@@ -34,4 +35,7 @@ public interface UserServices {
 
     @DELETE("sessions/{id}")
     Observable<Response<SessionDeleteResponse>> logout(@Path("id") long id);
+
+    @POST("notifications/register_reg_token")
+    Observable<NotificationResponse> registerRegToken(@Field("reg_token") String regToken);
 }

@@ -54,7 +54,7 @@
                                 android:layout_marginRight="32dp"
                                 android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
                                 android:gravity="center"
-                                android:text="Continues"
+                                android:text="Checkout"
                                 android:textColor="@color/white"
                                 android:textSize="20sp"/>
 
