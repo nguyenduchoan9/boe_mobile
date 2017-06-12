@@ -1,16 +1,20 @@
 package com.nux.dhoan9.firstmvvm.view.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -20,8 +24,12 @@ import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.repo.UserRepo;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityCustomerBinding;
+import com.nux.dhoan9.firstmvvm.manager.GCMIntentService;
+import com.nux.dhoan9.firstmvvm.manager.GCMRegistrationIntentService;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
+import com.nux.dhoan9.firstmvvm.utils.RxUtils;
+import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.view.fragment.CutleryFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.DrinkingFragment;
@@ -33,6 +41,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class CustomerActivity extends BaseActivity {
+    private final static String GCM_TOKEN = "GCM_TOKEN";
+    private BroadcastReceiver mBroadcastReceiver;
 
     private NavigationBottom navigationBottom;
     private final int CUTLERY_POS = 0;
@@ -45,6 +55,8 @@ public class CustomerActivity extends BaseActivity {
     private SearchView svSearch;
     private TextView tvTotal;
     private TextView tvContinues;
+
+    private String searchQuery = "";
     @Inject
     PreferencesManager preferencesManager;
     @Inject
@@ -70,8 +82,60 @@ public class CustomerActivity extends BaseActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_customer);
         initDependency();
         super.onCreate(savedInstanceState);
+        setBroadcastReceiver();
         initDrawer();
         initView();
+    }
+
+    protected void setBroadcastReceiver() {
+        mBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().endsWith(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
+                    String token = intent.getStringExtra("token");
+//                    userRepo.registerRegToken(token)
+//                            .compose(RxUtils.onProcessRequest())
+//                            .subscribe(subscribe -> {
+//                                if(true == subscribe.status){
+//                                    Log.v("GCM-register", "Success");
+//                                }else{
+//                                    Log.v("GCM-register", "fail");
+//                                }
+//                            });
+                    Log.v(GCM_TOKEN, token);
+                } else if (intent.getAction().endsWith(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
+                    ToastUtils.toastLongMassage(CustomerActivity.this,
+                            "GCM registration error");
+                } else if (intent.getAction().endsWith(GCMIntentService.MESSAGE_TO_DINER)) {
+                    String message = intent.getStringExtra("body");
+                    ToastUtils.toastLongMassage(CustomerActivity.this,
+                            message);
+                } else {
+                    ToastUtils.toastShortMassage(getApplicationContext(), "Nothing");
+                }
+            }
+        };
+
+        Intent intent = new Intent(getApplicationContext(), GCMRegistrationIntentService.class);
+        startService(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
+                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
+                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
+                new IntentFilter(GCMIntentService.MESSAGE_TO_DINER));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("ZZZZZZZ", "onPause");
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override
@@ -114,6 +178,7 @@ public class CustomerActivity extends BaseActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 svSearch.clearFocus();
+                searchQuery = query;
                 handleQuerySearchSubmit(query.trim());
                 return true;
             }
@@ -178,6 +243,8 @@ public class CustomerActivity extends BaseActivity {
     private void initView() {
         navigationContainer = binding.actionBarContent.content.bottomNavigationContent.navigationContainer;
         navigationBottom = binding.actionBarContent.content.bottomNavigationContent.bottomNavigation;
+        navigationBottom.showOrderBadge(12);
+        navigationBottom.showHisrotyBadge(12);
         initContent();
         navigationBottom.setPress(fragmentPos);
         navigationBottom.setListener(new NavigationBottom.NavigationListener() {
@@ -325,4 +392,7 @@ public class CustomerActivity extends BaseActivity {
         });
     }
 
+    public String getSearchQuery() {
+        return searchQuery;
+    }
 }

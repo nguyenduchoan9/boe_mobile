@@ -37,6 +37,15 @@ public class RetrofitUtils {
                 .build();
     }
 
+    public Retrofit parseError (){
+        return new Retrofit.Builder()
+                .baseUrl(Constant.API_ENDPOINT + "/api/")
+                .client(client())
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+    }
+
     public OkHttpClient client() {
         return new OkHttpClient.Builder()
                 .addInterceptor(headerInterceptor())

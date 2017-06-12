@@ -5,6 +5,7 @@ import android.util.Log;
 import com.nux.dhoan9.firstmvvm.data.request.user.LoginUserParam;
 import com.nux.dhoan9.firstmvvm.data.request.user.UserRegisterParam;
 import com.nux.dhoan9.firstmvvm.data.response.LoginResponse;
+import com.nux.dhoan9.firstmvvm.data.response.NotificationResponse;
 import com.nux.dhoan9.firstmvvm.data.response.SessionDeleteResponse;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.User;
@@ -114,6 +115,11 @@ public class UserRepoImpl implements UserRepo {
                         subscriber.onCompleted();
                     });
         });
+    }
+
+    @Override
+    public Observable<NotificationResponse> registerRegToken(String regToken) {
+        return services.registerRegToken(regToken);
     }
 
 }

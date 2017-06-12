@@ -9,5 +9,5 @@ import rx.Observable;
  */
 
 public interface OrderRepo {
-    Observable<OrderResponse> makeOrder(Map<Integer, Integer> cart);
+    Observable<OrderResponse> makeOrder(Map<Integer, Integer> cart, int tableNumber);
 }

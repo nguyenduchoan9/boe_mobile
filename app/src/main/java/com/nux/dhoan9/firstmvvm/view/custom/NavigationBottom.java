@@ -10,9 +10,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.utils.Utils;
+import org.w3c.dom.Text;
 
 /**
  * Created by hoang on 13/05/2017.
@@ -27,6 +29,8 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
     public ImageView ivDrinking;
     public ImageView ivOrder;
     public ImageView ivHistory;
+    public TextView tvOrderBadge;
+    public TextView tvHistoryBadge;
 
     public NavigationBottom(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -47,6 +51,8 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
         ivDrinking = (ImageView) findViewById(R.id.ivDrinking);
         ivOrder = (ImageView) findViewById(R.id.ivOrder);
         ivHistory = (ImageView) findViewById(R.id.ivHistory);
+        tvOrderBadge = (TextView) findViewById(R.id.tvOrderBadge);
+        tvHistoryBadge = (TextView) findViewById(R.id.tvHistoryBadge);
         initViewClick(R.id.rlCutlery);
         initViewClick(R.id.ivCutlery);
         initViewClick(R.id.rlDrinking);
@@ -158,5 +164,31 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
         void onOrderClick();
 
         void onHistoryClick();
+    }
+
+    public void showOrderBadge(int quantity) {
+        if (9 < quantity) {
+            tvOrderBadge.setText("+9");
+        } else {
+            tvOrderBadge.setText(String.valueOf(quantity));
+        }
+        tvOrderBadge.setVisibility(VISIBLE);
+    }
+
+    public void hideOrderBadge() {
+        tvOrderBadge.setVisibility(GONE);
+    }
+
+    public void showHisrotyBadge(int quantity) {
+        if (9 < quantity) {
+            tvHistoryBadge.setText("+9");
+        } else {
+            tvHistoryBadge.setText(String.valueOf(quantity));
+        }
+        tvHistoryBadge.setVisibility(VISIBLE);
+    }
+
+    public void hideHistoryBadge() {
+        tvHistoryBadge.setVisibility(GONE);
     }
 }

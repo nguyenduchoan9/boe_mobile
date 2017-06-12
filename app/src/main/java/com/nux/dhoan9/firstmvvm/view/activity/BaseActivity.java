@@ -18,8 +18,7 @@ import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 
 public abstract class BaseActivity extends AppCompatActivity {
-    private final static String GCM_TOKEN = "GCM_TOKEN";
-    private BroadcastReceiver mBroadcastReceiver;
+
     public TextView tvProcessingTitle;
     public RelativeLayout rlProcessing;
     protected PreferencesManager mPreferencesManager;
@@ -27,44 +26,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setBroadcastReceiver();
+
         setProcessing();
-    }
-
-    protected void setBroadcastReceiver() {
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().endsWith(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
-                    String token = intent.getStringExtra("token");
-                    Log.v(GCM_TOKEN, token);
-                } else if (intent.getAction().endsWith(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
-                    ToastUtils.toastLongMassage(getApplicationContext(),
-                            "GCM registration error");
-                } else {
-                    ToastUtils.toastShortMassage(getApplicationContext(), "Nothing");
-                }
-            }
-        };
-
-        Intent intent = new Intent(getApplicationContext(), GCMRegistrationIntentService.class);
-        startService(intent);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
-                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
-                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i("ZZZZZZZ", "onPause");
-        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mBroadcastReceiver);
     }
 
     protected abstract void setProcessing();

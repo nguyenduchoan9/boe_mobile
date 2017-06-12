@@ -24,6 +24,8 @@ public class MenuCateListViewModel extends BaseViewModel {
     private final DishRepo dishRepo;
     private final CartManager cartManager;
 
+    private String searchKey;
+
     public MenuCateListViewModel(@NonNull ThreadScheduler threadScheduler,
                                  @NonNull Resources resources,
                                  @NonNull ListBinder<DishViewModel> listBinder,

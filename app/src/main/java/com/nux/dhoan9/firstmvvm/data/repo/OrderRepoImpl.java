@@ -23,7 +23,7 @@ public class OrderRepoImpl implements OrderRepo {
     }
 
     @Override
-    public Observable<OrderResponse> makeOrder(Map<Integer, Integer> cart) {
+    public Observable<OrderResponse> makeOrder(Map<Integer, Integer> cart, int tableNumber) {
         StringBuilder cartParamsBuilder = new StringBuilder();
         for (Map.Entry<Integer, Integer> cartItem : cart.entrySet()) {
             cartParamsBuilder.append(String.valueOf(cartItem.getKey()))
@@ -32,6 +32,6 @@ public class OrderRepoImpl implements OrderRepo {
                     .append("_");
         }
         String orderParams = cartParamsBuilder.deleteCharAt(cartParamsBuilder.length() - 1).toString();
-        return services.makeOrder(orderParams);
+        return services.makeOrder(orderParams, tableNumber);
     }
 }

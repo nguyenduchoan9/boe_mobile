@@ -37,5 +37,6 @@ public interface UserServices {
     Observable<Response<SessionDeleteResponse>> logout(@Path("id") long id);
 
     @POST("notifications/register_reg_token")
+    @FormUrlEncoded
     Observable<NotificationResponse> registerRegToken(@Field("reg_token") String regToken);
 }

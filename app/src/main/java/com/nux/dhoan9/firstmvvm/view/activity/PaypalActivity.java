@@ -153,7 +153,7 @@ public class PaypalActivity extends BaseActivity {
     }
 
     private void handleSuccessfullyPayment() {
-        orderRepo.makeOrder(cartManager.getCart())
+        orderRepo.makeOrder(cartManager.getCart(), Integer.valueOf(preferencesManager.getTableInfo().table_number))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .doOnNext(orderResponse -> showProcessing("Processing..."))

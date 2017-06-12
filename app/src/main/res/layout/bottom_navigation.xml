@@ -6,14 +6,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@android:color/transparent"
-        android:paddingTop="1dp"
         android:elevation="4dp"
+        android:paddingTop="1dp"
         >
 
         <com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom
             android:id="@+id/bottomNavigation"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:background="#fff"
             android:orientation="horizontal"
             android:weightSum="4">
@@ -21,7 +21,7 @@
             <RelativeLayout
                 android:id="@+id/rlCutlery"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="8dp">
@@ -30,6 +30,7 @@
                     android:id="@+id/ivCutlery"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:layout_centerInParent="true"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_cutlery_kitchen"/>
             </RelativeLayout>
@@ -37,7 +38,7 @@
             <RelativeLayout
                 android:id="@+id/rlDrinking"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="8dp">
@@ -46,6 +47,7 @@
                     android:id="@+id/ivDrinking"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:layout_centerInParent="true"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_drinking_wine"/>
             </RelativeLayout>
@@ -53,33 +55,61 @@
             <RelativeLayout
                 android:id="@+id/rlOrder"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
                 android:padding="8dp">
 
                 <ImageView
                     android:id="@+id/ivOrder"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:layout_centerInParent="true"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_buying_on_smartphone"/>
+
+                <TextView
+                    android:id="@+id/tvOrderBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/ivOrder"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/clear_payment_bg"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="12"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/size_x_small_text"
+                    android:visibility="gone"/>
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/rlHistory"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
                 android:padding="8dp">
 
                 <ImageView
                     android:id="@+id/ivHistory"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:layout_centerInParent="true"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_history"/>
+
+                <TextView
+                    android:id="@+id/tvHistoryBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/ivHistory"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/clear_payment_bg"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="12"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/size_x_small_text"
+                    android:visibility="gone"/>
             </RelativeLayout>
         </com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom>
     </RelativeLayout>
