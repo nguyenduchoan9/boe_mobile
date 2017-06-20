@@ -24,7 +24,7 @@ public interface DishServices {
     Observable<Dish> getDishDetail(@Path("id") int id);
 
     @GET("dishes/by_category")
-    Observable<List<Dish>> getDishByCategory(@Query("id") int id);
+    Observable<List<Dish>> getDishByCategory(@Query("id") int id, @Query("search_key") String searchKey);
 
     @GET("dishes/search_cutlery")
     Observable<List<MenuCategories>> getCutleryByKeySearch(@Query("key_search") String keySearch);

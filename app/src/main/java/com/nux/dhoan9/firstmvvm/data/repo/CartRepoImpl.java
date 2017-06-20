@@ -32,15 +32,7 @@ public class CartRepoImpl implements CartRepo {
     }
 
     @Override
-    public Observable<List<CartItem>> getCart(Map<Integer, Integer> cart) {
-        StringBuilder cartParamsBuilder = new StringBuilder();
-        for(Map.Entry<Integer, Integer> cartItem : cart.entrySet()){
-            cartParamsBuilder.append(String.valueOf(cartItem.getKey()))
-                    .append("_")
-                    .append(String.valueOf(cartItem.getValue()))
-                    .append("_");
-        }
-        String cartParams = cartParamsBuilder.deleteCharAt(cartParamsBuilder.length() - 1).toString();
+    public Observable<List<CartItem>> getCart(String cartParams) {
         return Observable.create(subscriber -> {
             services.getDishAsCart(cartParams)
                     .compose(RxUtils.onProcessRequest())

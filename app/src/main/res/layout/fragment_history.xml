@@ -1,4 +1,13 @@
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.nux.dhoan9.firstmvvm.viewmodel.HistoryListViewModel"/>
+
+        <variable
+            name="vm"
+            type="HistoryListViewModel"/>
+    </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:tools="http://schemas.android.com/tools"
@@ -6,11 +15,25 @@
                     android:layout_height="match_parent"
                     tools:context="com.nux.dhoan9.firstmvvm.view.fragment.HistoryFragment">
 
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvHistory"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="history"/>
+            app:listBinder="@{vm.listBinder}"/>
+
+        <RelativeLayout
+            android:id="@+id/tvNoHistory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="No history"/>
+        </RelativeLayout>
 
     </RelativeLayout>
 </layout>

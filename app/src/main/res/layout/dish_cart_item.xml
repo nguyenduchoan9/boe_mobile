@@ -4,6 +4,8 @@
 
         <import type="com.nux.dhoan9.firstmvvm.viewmodel.CartItemViewModel"/>
 
+        <import type="java.math.BigDecimal"/>
+
         <variable
             name="viewModel"
             type="CartItemViewModel"/>
@@ -30,13 +32,13 @@
                     android:id="@+id/tvDishName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/ivMinus"
                     android:layout_toRightOf="@+id/ivCover"
                     android:ellipsize="end"
                     android:fontFamily="serif-monospace"
                     android:maxLines="1"
                     android:text="@{viewModel.name}"
-                    android:textSize="@dimen/size_large_text"
-                    android:textStyle="bold"/>
+                    android:textSize="@dimen/size_large_text"/>
 
                 <TextView
                     android:id="@+id/tvPrice"
@@ -46,40 +48,35 @@
                     android:layout_marginTop="4dp"
                     android:layout_toRightOf="@+id/ivCover"
                     android:fontFamily="serif-monospace"
-                    android:text='@{"$ " + String.valueOf(viewModel.price)}'
-                    android:textSize="@dimen/size_medium_text"
-                    android:textStyle="bold"/>
+                    android:text='@{viewModel.priceView}'
+                    android:textSize="@dimen/size_medium_text"/>
 
                 <TextView
                     android:id="@+id/tvQuantity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/tvPrice"
-                    android:layout_marginLeft="32dp"
                     android:layout_toRightOf="@+id/tvPrice"
                     android:fontFamily="serif-monospace"
                     android:gravity="end"
-                    android:text='@{"x " + viewModel.quantityView}'
-                    android:textSize="@dimen/size_medium_text"
-                    android:textStyle="bold"/>
+                    android:text='@{" x " + viewModel.quantityView}'
+                    android:textSize="@dimen/size_medium_text"/>
 
                 <ImageView
                     android:id="@+id/ivPlus"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:layout_alignBottom="@+id/tvPrice"
                     android:layout_alignParentRight="true"
-                    android:layout_below="@+id/tvPrice"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginRight="12dp"
                     android:src="@drawable/ic_add"/>
 
                 <ImageView
                     android:id="@+id/ivMinus"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_alignBottom="@+id/ivPlus"
-                    android:layout_marginRight="32dp"
+                    android:layout_alignBottom="@+id/tvPrice"
+                    android:layout_marginRight="24dp"
                     android:layout_toLeftOf="@+id/ivPlus"
                     android:src="@drawable/ic_minus"
                     />
@@ -91,19 +88,21 @@
                     android:layout_alignBottom="@+id/ivPlus"
                     android:layout_marginRight="32dp"
                     android:layout_toLeftOf="@+id/ivMinus"
-                    android:src="@drawable/ic_remove_from_cart"/>
+                    android:src="@drawable/ic_remove_from_cart"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/tvResult"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/tvQuantity"
+                    android:layout_marginRight="24dp"
+                    android:layout_toLeftOf="@+id/ivMinus"
                     android:layout_toRightOf="@+id/tvQuantity"
                     android:fontFamily="serif-monospace"
-                    android:text='@{"$ " + viewModel.totalView}'
-                    android:textAlignment="textEnd"
-                    android:textSize="@dimen/size_medium_text"
-                    android:textStyle="bold"/>
+                    android:text='@{" = " + viewModel.totalView + " VND"}'
+                    android:textAlignment="textStart"
+                    android:textSize="@dimen/size_medium_text"/>
 
             </RelativeLayout>
         </LinearLayout>

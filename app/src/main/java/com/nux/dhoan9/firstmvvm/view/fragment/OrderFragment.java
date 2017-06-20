@@ -21,10 +21,12 @@ import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.OrderAdapter;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemViewModel;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 
 public class OrderFragment extends BaseFragment {
     FragmentOrderBinding binding;
@@ -37,6 +39,8 @@ public class OrderFragment extends BaseFragment {
     CartManager cartManager;
     float total = 0F;
     RecyclerView rvCart;
+
+    public PublishSubject<Boolean> isCheckAvailable = PublishSubject.create();
 
     public OrderFragment() {
     }
@@ -52,6 +56,7 @@ public class OrderFragment extends BaseFragment {
         ((Application) getActivity().getApplication()).getComponent()
                 .plus(new ActivityModule(getActivity()))
                 .inject(this);
+        isCheckAvailable.observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
@@ -72,8 +77,10 @@ public class OrderFragment extends BaseFragment {
         super.onStart();
         if (cartManager.getCart().isEmpty()) {
             binding.rlEmptyMsg.setVisibility(View.VISIBLE);
+            isCheckAvailable.onNext(false);
         } else {
             binding.rlEmptyMsg.setVisibility(View.GONE);
+            isCheckAvailable.onNext(true);
         }
         initializeData();
         ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
@@ -94,7 +101,7 @@ public class OrderFragment extends BaseFragment {
                 .initialize()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(v -> showProcessing("Loading..."))
+                .doOnSubscribe(() -> showProcessing("Loading..."))
                 .doOnCompleted(() -> hideProcessing())
                 .subscribe(result -> {
                     initTotalPayment(cartItemListViewModel.getCartItems());
@@ -118,11 +125,11 @@ public class OrderFragment extends BaseFragment {
             @Override
             public void onIncrementQuantity(CartItemViewModel.Oops oops) {
                 if (oops.isUpperQuantityBound) {
-                    ToastUtils.toastLongMassage(getContext(), "The maximum of quantity is 15");
+                    ToastUtils.toastLongMassage(getContext(), "The maximum of quantity is 4");
                     return;
                 }
                 total += oops.price;
-                String textTotal = String.valueOf(total);
+                String textTotal = String.valueOf(String.valueOf(total));
                 setTotal(textTotal);
             }
 
@@ -133,15 +140,15 @@ public class OrderFragment extends BaseFragment {
                     return;
                 }
                 total -= oops.price;
-                String textTotal = String.valueOf(total);
+                String textTotal = String.valueOf(new BigDecimal(total));
                 setTotal(textTotal);
 
             }
 
             @Override
             public void onRemove(float minus) {
-                total -= minus ;
-                String textTotal = String.valueOf(total);
+                total -= minus;
+                String textTotal = String.valueOf(String.valueOf(total));
                 setTotal(textTotal);
             }
         });

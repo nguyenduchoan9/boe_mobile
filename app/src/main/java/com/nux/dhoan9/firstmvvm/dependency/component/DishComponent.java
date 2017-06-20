@@ -9,6 +9,7 @@ import com.nux.dhoan9.firstmvvm.view.activity.DishDetailActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.DishesByCategoryActivity;
 import com.nux.dhoan9.firstmvvm.view.fragment.CutleryFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.DrinkingFragment;
+import com.nux.dhoan9.firstmvvm.view.fragment.HistoryFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.OrderFragment;
 
 import dagger.Subcomponent;
@@ -22,6 +23,7 @@ public interface DishComponent {
     void inject(DrinkingFragment drinkingFragment);
     void inject(CutleryFragment cutleryFragment);
     void inject(OrderFragment orderFragment);
+    void inject(HistoryFragment historyFragment);
     void inject(CartActivity cartActivity);
     void inject(DishDetailActivity dishDetailActivity);
 }

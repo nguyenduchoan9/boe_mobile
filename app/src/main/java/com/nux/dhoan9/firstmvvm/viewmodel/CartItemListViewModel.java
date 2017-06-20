@@ -57,7 +57,7 @@ public class CartItemListViewModel extends BaseViewModel {
             });
         } else {
             return Observable.create(subscriber ->
-                    cartRepo.getCart(cartManager.getCart())
+                    cartRepo.getCart(getCartParams())
                             .debounce(300, TimeUnit.MILLISECONDS)
                             .compose(withScheduler())
                             .subscribe(dishCart -> {
@@ -68,6 +68,24 @@ public class CartItemListViewModel extends BaseViewModel {
                             })
             );
         }
+    }
+
+    private String getCartParams() {
+        StringBuilder cartParamsBuilder = new StringBuilder();
+        List<Integer> cartOrder = cartManager.getCartOrder();
+        for (int i = 0; i < cartOrder.size(); i++) {
+            int dishId = cartOrder.get(i);
+            for (Map.Entry<Integer, Integer> cartItem : cartManager.getCart().entrySet()) {
+                if (cartItem.getKey() == dishId) {
+                    cartParamsBuilder.append(String.valueOf(cartItem.getKey()))
+                            .append("_")
+                            .append(String.valueOf(cartItem.getValue()))
+                            .append("_");
+                }
+            }
+        }
+        String orderParams = cartParamsBuilder.deleteCharAt(cartParamsBuilder.length() - 1).toString();
+        return orderParams;
     }
 
     private List<CartItemRequest> toCartItemRequests(Map<Integer, Integer> cart) {

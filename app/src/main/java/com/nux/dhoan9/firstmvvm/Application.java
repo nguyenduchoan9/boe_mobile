@@ -34,9 +34,4 @@ public class Application extends android.app.Application {
         return daggerAppComponent;
     }
 
-    @Override
-    public void onTerminate() {
-        preferencesManager.setTableInfo(null);
-        super.onTerminate();
-    }
 }

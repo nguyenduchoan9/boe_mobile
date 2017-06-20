@@ -1,66 +1,149 @@
 package com.nux.dhoan9.firstmvvm.view.fragment;
 
-
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.RelativeLayout;
+import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
+import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
+import com.nux.dhoan9.firstmvvm.databinding.FragmentHistoryBinding;
+import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
+import com.nux.dhoan9.firstmvvm.manager.CartManager;
+import com.nux.dhoan9.firstmvvm.model.OrderInfoItem;
+import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
+import com.nux.dhoan9.firstmvvm.view.adapter.HistoryAdapter;
+import com.nux.dhoan9.firstmvvm.viewmodel.HistoryListViewModel;
+import java.util.List;
+import javax.inject.Inject;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HistoryFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class HistoryFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class HistoryFragment extends BaseFragment {
+    FragmentHistoryBinding binding;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    RecyclerView rv;
+    @Inject
+    HistoryListViewModel viewModel;
+    @Inject
+    HistoryAdapter adapter;
+    @Inject
+    OrderRepo orderRepo;
+    @Inject
+    CartManager cartManager;
 
     public HistoryFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HistoryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static HistoryFragment newInstance(String param1, String param2) {
         HistoryFragment fragment = new HistoryFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        ((Application) getActivity().getApplication()).getComponent()
+                .plus(new ActivityModule(getActivity()))
+                .inject(this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_history, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_history, container, false);
+        return binding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView();
+    }
+
+    private void initView() {
+        rv = binding.rvHistory;
+        RecyclerView.LayoutManager manager =
+                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        adapter.setLinstener(orderListId -> {
+            orderRepo.getOrderInfo(orderListId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(() -> showProcessing("Processing"))
+                    .doOnCompleted(() -> hideProcessing())
+                    .subscribe(orderInfo -> showDialog(orderInfo.getList()));
+        });
+        rv.setAdapter(adapter);
+        rv.setLayoutManager(manager);
+        rv.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
+                if (dy > 0) {
+                    // Scrolling up
+                    view.setVisibility(View.GONE);
+                } else {
+                    // Scrolling down\
+                    view.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+    private void showDialog(List<OrderInfoItem> infoItemList) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        OrderInfoDialog dialog = OrderInfoDialog.newInstance(infoItemList);
+        dialog.setListener(items -> {
+            for (OrderInfoItem item : items){
+                cartManager.plus(item.getId(), 1);
+            }
+            ((CustomerActivity)getActivity()).showOrderFragment();
+        });
+        dialog.show(fm, "eeee");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initializeData();
+        ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
+    }
+
+    private void initializeData() {
+        binding.setVm(viewModel);
+        binding.executePendingBindings();
+        viewModel.initialize()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> showProcessing("Loading..."))
+                .doOnCompleted(() -> hideProcessing())
+                .subscribe(v -> {
+                    if (v) {
+                        hideNoResult();
+                    } else {
+                        showNoResult();
+                    }
+                });
+    }
+
+    private void showNoResult() {
+        binding.rvHistory.setVisibility(View.GONE);
+        binding.tvNoHistory.setVisibility(View.VISIBLE);
+    }
+
+    private void hideNoResult() {
+        binding.rvHistory.setVisibility(View.VISIBLE);
+        binding.tvNoHistory.setVisibility(View.GONE);
+    }
 }

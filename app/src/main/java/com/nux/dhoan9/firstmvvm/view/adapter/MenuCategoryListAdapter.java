@@ -19,6 +19,7 @@ import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCategoriesViewModel;
 
 import javax.inject.Inject;
+
 /**
  * Created by hoang on 09/05/2017.
  */
@@ -26,6 +27,7 @@ public class MenuCategoryListAdapter extends RecyclerView.Adapter<MenuCategoryLi
     private final MenuCateListViewModel menuCateListViewModel;
     private final LayoutInflater inflater;
     private Context mContext;
+    private String keySearch = "";
 
     public MenuCategoryListAdapter(MenuCateListViewModel menuCateListViewModel, Context context) {
         this.menuCateListViewModel = menuCateListViewModel;
@@ -68,6 +70,7 @@ public class MenuCategoryListAdapter extends RecyclerView.Adapter<MenuCategoryLi
             binding.tvMore.setOnClickListener(v -> {
                 Intent i = DishesByCategoryActivity.newInstance(mContext);
                 i.putExtra(Constant.KEY_ID_CATEGORY, viewModel.category.getId());
+                i.putExtra(Constant.KEY_SEARCH, keySearch);
                 mContext.startActivity(i);
             });
             LinearLayoutManager manager =
@@ -81,5 +84,9 @@ public class MenuCategoryListAdapter extends RecyclerView.Adapter<MenuCategoryLi
             binding.setViewModel(viewModel);
             binding.setListBinder(menuCateListViewModel);
         }
+    }
+
+    public void setKeySearch(String keySearch) {
+        this.keySearch = keySearch;
     }
 }

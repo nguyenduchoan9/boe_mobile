@@ -30,6 +30,8 @@ import com.paypal.android.sdk.payments.PaymentConfirmation;
 import org.json.JSONException;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,7 +76,7 @@ public class PaypalActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("THE BILL");
         ButterKnife.bind(this);
-        tvAmount.setText(String.valueOf(new BigDecimal(getTotal())));
+        tvAmount.setText(String.valueOf(new BigDecimal(getTotal())) + " VND");
         tvDinerName.setText(getDinerName());
         tvOrderDate.setText(String.valueOf(new Date()));
         tvItemQuantity.setText(String.valueOf(getItemTotal()) + " item");
@@ -137,6 +139,7 @@ public class PaypalActivity extends BaseActivity {
                 if (null != confirmation) {
                     try {
                         Log.i(LOG_TAG, confirmation.toJSONObject().toString(4));
+                        showProcessing("Processing...");
                         handleSuccessfullyPayment();
                         btnPay.setVisibility(View.GONE);
                         isSuccess = true;
@@ -153,15 +156,32 @@ public class PaypalActivity extends BaseActivity {
     }
 
     private void handleSuccessfullyPayment() {
-        orderRepo.makeOrder(cartManager.getCart(), Integer.valueOf(preferencesManager.getTableInfo().table_number))
+        orderRepo.makeOrder(getCartParams(), Integer.valueOf(preferencesManager.getTableInfo().table_number))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .doOnNext(orderResponse -> showProcessing("Processing..."))
                 .doOnTerminate(() -> hideProcessing())
                 .subscribe(sub -> {
                     cartManager.clear();
                     showDialogInform();
                 });
+    }
+
+    private String getCartParams() {
+        StringBuilder cartParamsBuilder = new StringBuilder();
+        List<Integer> cartOrder = cartManager.getCartOrder();
+        for (int i = 0; i < cartOrder.size(); i++) {
+            int dishId = cartOrder.get(i);
+            for (Map.Entry<Integer, Integer> cartItem : cartManager.getCart().entrySet()) {
+                if (cartItem.getKey() == dishId) {
+                    cartParamsBuilder.append(String.valueOf(cartItem.getKey()))
+                            .append("_")
+                            .append(String.valueOf(cartItem.getValue()))
+                            .append("_");
+                }
+            }
+        }
+        String orderParams = cartParamsBuilder.deleteCharAt(cartParamsBuilder.length() - 1).toString();
+        return orderParams;
     }
 
     public static Intent newInstance(Context context) {

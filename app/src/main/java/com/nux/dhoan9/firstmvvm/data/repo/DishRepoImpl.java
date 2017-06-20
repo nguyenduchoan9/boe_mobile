@@ -103,9 +103,9 @@ public class DishRepoImpl implements DishRepo {
     }
 
     @Override
-    public Observable<List<Dish>> getDishesByCategory(int idCategory) {
+    public Observable<List<Dish>> getDishesByCategory(int idCategory, String keySeach) {
         return Observable.create(sub -> {
-            services.getDishByCategory(idCategory)
+            services.getDishByCategory(idCategory, keySeach)
                     .compose(RxUtils.onProcessRequest())
                     .subscribe(new Subscriber<List<Dish>>() {
                         @Override

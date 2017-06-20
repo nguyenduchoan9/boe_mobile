@@ -160,4 +160,12 @@ public class DrinkingFragment extends BaseFragment {
     public void synTheCart(){
         viewModel.synCartInCate();
     }
+
+    private void setAdapterSearchKey(String searchKey) {
+        adapter.setKeySearch(searchKey);
+    }
+
+    public void clearSearchKey(){
+        setAdapterSearchKey("");
+    }
 }

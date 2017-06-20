@@ -1,5 +1,6 @@
 package com.nux.dhoan9.firstmvvm.manager;
 
+import java.util.List;
 import java.util.Map;
 /**
  * Created by hoang on 12/05/2017.
@@ -19,4 +20,6 @@ public interface CartManager {
     void clear();
 
     Map<Integer, Integer> getCart();
+
+    List<Integer> getCartOrder();
 }

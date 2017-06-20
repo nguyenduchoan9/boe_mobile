@@ -68,7 +68,7 @@ public class DishesByCategoryActivity extends BaseActivity {
         rvDish.setLayoutManager(manager);
 
         binding.setViewModel(viewModel);
-        viewModel.initializeCategory(getIdCategory());
+        viewModel.initializeCategory(getIdCategory(), getKeySearch());
     }
 
     private void enableBackButton() {
@@ -86,8 +86,12 @@ public class DishesByCategoryActivity extends BaseActivity {
         return true;
     }
 
-    public int getIdCategory() {
+    private int getIdCategory() {
         return getIntent().getIntExtra(Constant.KEY_ID_CATEGORY, 1);
+    }
+
+    private String getKeySearch() {
+        return getIntent().getStringExtra(Constant.KEY_SEARCH);
     }
 
 }

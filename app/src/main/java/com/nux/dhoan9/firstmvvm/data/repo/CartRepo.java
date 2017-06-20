@@ -13,5 +13,5 @@ import rx.Observable;
  */
 
 public interface CartRepo {
-    Observable<List<CartItem>> getCart(Map<Integer, Integer> cart);
+    Observable<List<CartItem>> getCart(String cartParams);
 }

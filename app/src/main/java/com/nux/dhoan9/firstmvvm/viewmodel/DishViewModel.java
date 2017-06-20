@@ -3,6 +3,7 @@ package com.nux.dhoan9.firstmvvm.viewmodel;
 import android.databinding.ObservableField;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.model.Dish;
+import java.math.BigDecimal;
 
 /**
  * Created by hoang on 08/05/2017.
@@ -15,6 +16,7 @@ public class DishViewModel {
     public final String image;
     public final String description;
     public ObservableField<Boolean> isOrder = new ObservableField<>(false);
+    public ObservableField<String> priceView = new ObservableField<>();
     private CartManager cartManager;
 
     public DishViewModel(Dish dish, CartManager cartManager) {
@@ -25,6 +27,7 @@ public class DishViewModel {
         this.price = dish.getPrice();
         this.cartManager = cartManager;
         isOrder.set(isInCart());
+        priceView.set(String.valueOf(new BigDecimal(price)));
     }
 
     public Dish toModel(DishViewModel viewModel) {
@@ -62,7 +65,7 @@ public class DishViewModel {
         }
     }
 
-    public void syncCart(){
+    public void syncCart() {
         isOrder.set(cartManager.isInCart(this.id));
     }
 }

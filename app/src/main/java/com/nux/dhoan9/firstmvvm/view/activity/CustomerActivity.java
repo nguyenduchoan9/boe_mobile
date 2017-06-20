@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,8 +23,10 @@ import android.widget.TextView;
 import com.andremion.floatingnavigationview.FloatingNavigationView;
 import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
+import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
 import com.nux.dhoan9.firstmvvm.data.repo.UserRepo;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityCustomerBinding;
+import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.manager.GCMIntentService;
 import com.nux.dhoan9.firstmvvm.manager.GCMRegistrationIntentService;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
@@ -61,6 +64,10 @@ public class CustomerActivity extends BaseActivity {
     PreferencesManager preferencesManager;
     @Inject
     UserRepo userRepo;
+    @Inject
+    CartManager cartManager;
+    @Inject
+    OrderRepo orderRepo;
     CutleryFragment cutleryFragment = new CutleryFragment();
     DrinkingFragment drinkingFragment = new DrinkingFragment();
     OrderFragment orderFragment = new OrderFragment();
@@ -177,6 +184,9 @@ public class CustomerActivity extends BaseActivity {
         svSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                if (query.length() == 0) {
+                    return true;
+                }
                 svSearch.clearFocus();
                 searchQuery = query;
                 handleQuerySearchSubmit(query.trim());
@@ -243,8 +253,8 @@ public class CustomerActivity extends BaseActivity {
     private void initView() {
         navigationContainer = binding.actionBarContent.content.bottomNavigationContent.navigationContainer;
         navigationBottom = binding.actionBarContent.content.bottomNavigationContent.bottomNavigation;
-        navigationBottom.showOrderBadge(12);
-        navigationBottom.showHisrotyBadge(12);
+//        navigationBottom.showOrderBadge(12);
+//        navigationBottom.showHisrotyBadge(12);
         initContent();
         navigationBottom.setPress(fragmentPos);
         navigationBottom.setListener(new NavigationBottom.NavigationListener() {
@@ -282,6 +292,13 @@ public class CustomerActivity extends BaseActivity {
         });
 
         onContinuesClick();
+        orderFragment.isCheckAvailable
+                .takeUntil(destroyView)
+                .subscribe(isAvailable ->
+                        tvContinues.setTextColor(isAvailable ?
+                                ContextCompat.getColor(CustomerActivity.this, R.color.white) :
+                                ContextCompat.getColor(CustomerActivity.this, R.color.colorTextNavigation))
+                );
     }
 
     private void logout() {
@@ -328,14 +345,18 @@ public class CustomerActivity extends BaseActivity {
         if (CUTLERY_POS == pos) {
             showFragment(cutleryFragment);
             setDishToolBar();
+            clearSearchBox();
             cutleryFragment.synTheCart();
+            cutleryFragment.clearSearchKey();
             hideFragment(drinkingFragment);
             hideFragment(orderFragment);
             hideFragment(historyFragment);
         } else if (DRINKING_POS == pos) {
             showFragment(drinkingFragment);
             setDishToolBar();
+            clearSearchBox();
             drinkingFragment.synTheCart();
+            drinkingFragment.clearSearchKey();
             hideFragment(cutleryFragment);
             hideFragment(orderFragment);
             hideFragment(historyFragment);
@@ -348,7 +369,8 @@ public class CustomerActivity extends BaseActivity {
             hideFragment(historyFragment);
         } else if (HISTORY_POS == pos) {
             showFragment(historyFragment);
-            setDishToolBar();
+            historyFragment.onStart();
+            hideToolbar();
             hideFragment(cutleryFragment);
             hideFragment(drinkingFragment);
             hideFragment(orderFragment);
@@ -383,16 +405,54 @@ public class CustomerActivity extends BaseActivity {
     private void onContinuesClick() {
         tvContinues.setOnClickListener(v -> {
             float total = orderFragment.getTotalPayment();
-            Intent i = new Intent(this, PaypalActivity.class);
-            i.putExtra(Constant.KEY_TOTAL_PAYMENT, total);
-            i.putExtra(Constant.KEY_ORDER_NAME, "Hello");
-            i.putExtra(Constant.KEY_ORDER_ITEM_TOTAL, orderFragment.getItemtotal());
+            if (0F == total) {
+                return;
+            }
+            orderRepo.isAvailable()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(() -> showProcessing("Processing..."))
+                    .doOnTerminate(() -> hideProcessing())
+                    .subscribe(isAvailable -> {
+                        if(isAvailable.isAvailable()){
+                            Intent i = new Intent(this, PaypalActivity.class);
+                            i.putExtra(Constant.KEY_TOTAL_PAYMENT, total);
+                            i.putExtra(Constant.KEY_ORDER_NAME, "Hello");
+                            i.putExtra(Constant.KEY_ORDER_ITEM_TOTAL, orderFragment.getItemtotal());
 
-            startActivity(i);
+                            startActivity(i);
+                        }else {
+                            ToastUtils.toastLongMassage(CustomerActivity.this, "Order time is over.");
+                        }
+                    });
+
         });
     }
 
     public String getSearchQuery() {
         return searchQuery;
+    }
+
+    private void clearSearchBox() {
+        svSearch.setQuery("", false);
+        svSearch.clearFocus();
+        svSearch.setIconified(true);
+    }
+
+    private void hideToolbar() {
+        binding.actionBarContent.rlOrderInfo.setVisibility(View.GONE);
+        svSearch.setVisibility(View.GONE);
+    }
+
+    public void showOrderFragment() {
+        navigationBottom.setPress(ORDER_POS);
+        showFragmentPosition(ORDER_POS);
+    }
+
+    @Override
+    protected void onDestroy() {
+        cartManager.clear();
+        preferencesManager.setTableInfo(null);
+        super.onDestroy();
     }
 }

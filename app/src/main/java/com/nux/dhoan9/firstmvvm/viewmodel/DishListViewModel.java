@@ -61,8 +61,8 @@ public class DishListViewModel extends BaseViewModel {
         listBinder.notifyDataChange(dishes);
     }
 
-    public void initializeCategory(int idCategory) {
-        dishRepo.getDishesByCategory(idCategory)
+    public void initializeCategory(int idCategory, String keySearch) {
+        dishRepo.getDishesByCategory(idCategory, keySearch)
                 .compose(withScheduler())
                 .subscribe(dishesResult -> {
                     dishes.addAll(dishesViewModel(dishesResult));

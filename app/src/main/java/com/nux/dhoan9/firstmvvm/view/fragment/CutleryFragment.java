@@ -90,6 +90,8 @@ public class CutleryFragment extends BaseFragment {
         binding.executePendingBindings();
         viewModel.initialize(false)
                 .subscribeOn(Schedulers.io())
+                .doOnSubscribe(() ->showProcessing("Processing"))
+                .doOnCompleted(() -> hideProcessing())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                 });
@@ -121,7 +123,7 @@ public class CutleryFragment extends BaseFragment {
         });
     }
 
-    public void synTheCart(){
+    public void synTheCart() {
         viewModel.synCartInCate();
     }
 
@@ -130,6 +132,7 @@ public class CutleryFragment extends BaseFragment {
             viewModel.initialize(true)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(v -> clearSearchKey())
                     .subscribe(result -> {
                         binding.srRefresh.setRefreshing(false);
                     });
@@ -145,8 +148,18 @@ public class CutleryFragment extends BaseFragment {
         viewModel.onCutlerySearch(keySearch)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(action -> setAdapterSearchKey(keySearch))
                 .doOnNext(v -> showProcessing("Processing..."))
                 .doOnTerminate(() -> hideProcessing())
-                .subscribe(result -> {});
+                .subscribe(result -> {
+                });
+    }
+
+    private void setAdapterSearchKey(String searchKey) {
+        adapter.setKeySearch(searchKey);
+    }
+
+    public void clearSearchKey() {
+        setAdapterSearchKey("");
     }
 }

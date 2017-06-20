@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.DishCartItemBinding;
@@ -14,6 +15,7 @@ import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.view.activity.DishDetailActivity;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemViewModel;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
@@ -94,10 +96,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
         }
 
         private void setupListeners() {
-            binding.ivRemove.setOnClickListener(v -> {
+            itemView.setOnLongClickListener(v -> {
                 if (null != listener) {
                     listener.onRemove(viewModel.remove(getAdapterPosition()));
                 }
+                return true;
             });
         }
     }

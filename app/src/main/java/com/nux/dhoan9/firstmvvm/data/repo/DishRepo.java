@@ -17,7 +17,7 @@ public interface DishRepo {
 
     Observable<Dish> getDishDetail(int id);
 
-    Observable<List<Dish>> getDishesByCategory(int idCategory);
+    Observable<List<Dish>> getDishesByCategory(int idCategory, String keySeach);
     Observable<List<MenuCategories>> getDrinkingByKeySearch(String keySearch);
     Observable<List<MenuCategories>> getCutleryByKeySearch(String keySearch);
 }

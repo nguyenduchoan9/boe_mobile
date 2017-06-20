@@ -24,7 +24,7 @@ public class MenuCateListViewModel extends BaseViewModel {
     private final DishRepo dishRepo;
     private final CartManager cartManager;
 
-    private String searchKey;
+    private String searchKey = "";
 
     public MenuCateListViewModel(@NonNull ThreadScheduler threadScheduler,
                                  @NonNull Resources resources,
@@ -40,6 +40,7 @@ public class MenuCateListViewModel extends BaseViewModel {
     }
 
     public Observable<Void> initialize(boolean isRefresh) {
+        searchKey = "";
         if (isRefresh) {
             for (MenuCategoriesViewModel menu : menuCategoriesViewModels) {
                 menu.dishViewModels.removeAllData();
@@ -90,6 +91,7 @@ public class MenuCateListViewModel extends BaseViewModel {
     }
 
     public Observable<List<MenuCategories>> onDrinkingSearch(String keySearch) {
+        searchKey = keySearch;
         menuCategoriesViewModels.clear();
         menuListBinder.notifyDataChange(menuCategoriesViewModels);
 
@@ -110,6 +112,7 @@ public class MenuCateListViewModel extends BaseViewModel {
     }
 
     public Observable<Void> initializeDrinking(boolean isRefresh) {
+        searchKey = "";
         if (isRefresh) {
             for (MenuCategoriesViewModel menu : menuCategoriesViewModels) {
                 menu.dishViewModels.removeAllData();
@@ -169,5 +172,9 @@ public class MenuCateListViewModel extends BaseViewModel {
             menuListBinder.notifyDataChange(menuCategoriesViewModels);
         }
 
+    }
+
+    public String getSearchKey() {
+        return searchKey;
     }
 }
