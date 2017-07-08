@@ -28,6 +28,25 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp">
 
+                <ImageView
+                    android:id="@+id/ivPlus"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignBottom="@+id/tvPrice"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="12dp"
+                    android:src="@drawable/ic_add"/>
+
+                <ImageView
+                    android:id="@+id/ivMinus"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignBottom="@+id/tvPrice"
+                    android:layout_marginRight="24dp"
+                    android:layout_toLeftOf="@+id/ivPlus"
+                    android:src="@drawable/ic_minus"
+                    />
+
                 <TextView
                     android:id="@+id/tvDishName"
                     android:layout_width="match_parent"
@@ -62,24 +81,7 @@
                     android:text='@{" x " + viewModel.quantityView}'
                     android:textSize="@dimen/size_medium_text"/>
 
-                <ImageView
-                    android:id="@+id/ivPlus"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_alignBottom="@+id/tvPrice"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="12dp"
-                    android:src="@drawable/ic_add"/>
 
-                <ImageView
-                    android:id="@+id/ivMinus"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_alignBottom="@+id/tvPrice"
-                    android:layout_marginRight="24dp"
-                    android:layout_toLeftOf="@+id/ivPlus"
-                    android:src="@drawable/ic_minus"
-                    />
 
                 <ImageView
                     android:id="@+id/ivRemove"

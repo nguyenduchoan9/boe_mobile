@@ -1,6 +1,6 @@
 package com.nux.dhoan9.firstmvvm.dependency.component;
 
-import com.nux.dhoan9.firstmvvm.Application;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.dependency.module.AppModule;
 import com.nux.dhoan9.firstmvvm.dependency.module.OrderModule;
@@ -36,6 +36,6 @@ public interface AppComponent {
     void inject(QRCodeFragment qrCodeFragment);
     void inject(EndpointDialogFragment endpointDialogFragment);
 
-    void inject(Application application);
+    void inject(BoeApplication application);
     void inject(PaypalActivity paypalActivity);
 }

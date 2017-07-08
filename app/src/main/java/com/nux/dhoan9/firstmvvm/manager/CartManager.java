@@ -22,4 +22,6 @@ public interface CartManager {
     Map<Integer, Integer> getCart();
 
     List<Integer> getCartOrder();
+
+    int getQuantityById(int dishId);
 }

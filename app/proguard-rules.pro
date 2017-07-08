@@ -16,3 +16,6 @@
 -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 -keep class com.wang.avi.** { *; }
 -keep class com.wang.avi.indicators.** { *; }
+-keep class org.json.* { ; }
+-keep interface org.json.* { ; }
+-keep enum org.json.* { ; }

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nux.dhoan9.firstmvvm.Application;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentLoginBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.UserModule;
@@ -18,9 +18,6 @@ import com.nux.dhoan9.firstmvvm.model.User;
 import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.nux.dhoan9.firstmvvm.utils.test.EspressoIdlingResource;
-import com.nux.dhoan9.firstmvvm.view.activity.ChefActivity;
-import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
-import com.nux.dhoan9.firstmvvm.view.activity.LoginActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.QRCodeActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.RegisterActivity;
 import com.nux.dhoan9.firstmvvm.viewmodel.LoginViewModel;
@@ -28,8 +25,6 @@ import com.nux.dhoan9.firstmvvm.viewmodel.LoginViewModel;
 import javax.inject.Inject;
 
 import retrofit2.Response;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class LoginFragment extends BaseFragment {
 
@@ -48,7 +43,7 @@ public class LoginFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((Application) getActivity().getApplication()).getComponent()
+        ((BoeApplication) getActivity().getApplication()).getComponent()
                 .plus(new UserModule())
                 .inject(this);
     }

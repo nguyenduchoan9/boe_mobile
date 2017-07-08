@@ -59,6 +59,15 @@ public class CartManagerImpl implements CartManager {
         return listOrder;
     }
 
+    @Override
+    public int getQuantityById(int dishId) {
+        int pos = -1;
+        if (cart.containsKey(dishId)) {
+            pos = cart.get(dishId);
+        }
+        return pos;
+    }
+
     public int getItemTotal() {
         return cart.size();
     }

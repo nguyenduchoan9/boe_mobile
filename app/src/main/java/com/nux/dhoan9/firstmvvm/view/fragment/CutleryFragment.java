@@ -9,16 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import com.bumptech.glide.Glide;
-import com.nux.dhoan9.firstmvvm.Application;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentCutleryBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.MenuCategoryListAdapter;
-import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -47,7 +45,7 @@ public class CutleryFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((Application) getActivity().getApplication()).getComponent()
+        ((BoeApplication) getActivity().getApplication()).getComponent()
                 .plus(new ActivityModule(getActivity()))
                 .inject(this);
         Log.i(log, "onCreate");
@@ -90,7 +88,7 @@ public class CutleryFragment extends BaseFragment {
         binding.executePendingBindings();
         viewModel.initialize(false)
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(() ->showProcessing("Processing"))
+                .doOnSubscribe(() ->showProcessing(getString(R.string.text_processing)))
                 .doOnCompleted(() -> hideProcessing())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -107,20 +105,20 @@ public class CutleryFragment extends BaseFragment {
         rvDish = binding.rvDish;
         rvDish.setAdapter(adapter);
         rvDish.setLayoutManager(manager);
-        rvDish.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
-                if (dy > 0) {
-//                    // Scrolling up
-                    view.setVisibility(View.GONE);
-                } else {
-                    // Scrolling down
-                    view.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+//        rvDish.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
+//                if (dy > 0) {
+////                    // Scrolling up
+//                    view.setVisibility(View.GONE);
+//                } else {
+//                    // Scrolling down
+//                    view.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
     }
 
     public void synTheCart() {
@@ -149,7 +147,7 @@ public class CutleryFragment extends BaseFragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(action -> setAdapterSearchKey(keySearch))
-                .doOnNext(v -> showProcessing("Processing..."))
+                .doOnNext(v -> showProcessing(getString(R.string.text_processing)))
                 .doOnTerminate(() -> hideProcessing())
                 .subscribe(result -> {
                 });

@@ -9,10 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.nux.dhoan9.firstmvvm.Application;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentQrcodeBinding;
-import com.nux.dhoan9.firstmvvm.dependency.module.UserModule;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.QRCodeTableInfo;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
@@ -43,7 +42,7 @@ public class QRCodeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((Application) getActivity().getApplication()).getComponent()
+        ((BoeApplication) getActivity().getApplication()).getComponent()
                 .inject(this);
     }
 

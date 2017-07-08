@@ -11,6 +11,7 @@ public class User {
     @SerializedName("full_name")
     private String fullName;
     private String avatar;
+//    private Image avatar;
     private String phone;
     private String role;
     private String provider;
@@ -48,9 +49,9 @@ public class User {
         return avatar;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
+//    public void setAvatar(Image avatar) {
+//        this.avatar = avatar;
+//    }
 
     public String getPhone() {
         return phone;

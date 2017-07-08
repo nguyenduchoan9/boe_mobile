@@ -15,7 +15,7 @@
         android:protectionLevel="signature"/>
 
     <application
-        android:name=".Application"
+        android:name=".BoeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -52,6 +52,11 @@
             android:exported="false">
         </service>
 
+        <service
+            android:name=".manager.LocalServices"
+            android:stopWithTask="false">
+        </service>
+
         <activity
             android:name=".view.activity.SlashActivity"
             android:screenOrientation="portrait"
@@ -82,7 +87,7 @@
         <activity
             android:name=".view.activity.CustomerActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar.NoStatusBar"/>
         <activity android:name=".view.activity.QRCodeScanActivity">
         </activity>
         <activity

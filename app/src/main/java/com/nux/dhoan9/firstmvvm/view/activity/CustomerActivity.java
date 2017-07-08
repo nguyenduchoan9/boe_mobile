@@ -21,17 +21,23 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.andremion.floatingnavigationview.FloatingNavigationView;
-import com.nux.dhoan9.firstmvvm.Application;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
+import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
 import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
 import com.nux.dhoan9.firstmvvm.data.repo.UserRepo;
+import com.nux.dhoan9.firstmvvm.data.response.CanOrder;
+import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityCustomerBinding;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.manager.GCMIntentService;
 import com.nux.dhoan9.firstmvvm.manager.GCMRegistrationIntentService;
+import com.nux.dhoan9.firstmvvm.manager.LocalServices;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
+import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
-import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.view.fragment.CutleryFragment;
@@ -39,12 +45,17 @@ import com.nux.dhoan9.firstmvvm.view.fragment.DrinkingFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.EndpointDialogFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.HistoryFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.OrderFragment;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class CustomerActivity extends BaseActivity {
     private final static String GCM_TOKEN = "GCM_TOKEN";
+    private final static String LOG_TAG = "CUSTOMER";
     private BroadcastReceiver mBroadcastReceiver;
 
     private NavigationBottom navigationBottom;
@@ -68,6 +79,8 @@ public class CustomerActivity extends BaseActivity {
     CartManager cartManager;
     @Inject
     OrderRepo orderRepo;
+    @Inject
+    DishRepo dishRepo;
     CutleryFragment cutleryFragment = new CutleryFragment();
     DrinkingFragment drinkingFragment = new DrinkingFragment();
     OrderFragment orderFragment = new OrderFragment();
@@ -92,6 +105,21 @@ public class CustomerActivity extends BaseActivity {
         setBroadcastReceiver();
         initDrawer();
         initView();
+        startService(new Intent(getBaseContext(), LocalServices.class));
+    }
+
+    private String KEY_SAVE_INSTANCE = "KEY_SAVE_INSTANCE";
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_SAVE_INSTANCE, fragmentPos);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        savedInstanceState.getInt(KEY_SAVE_INSTANCE, 0);
     }
 
     protected void setBroadcastReceiver() {
@@ -115,6 +143,13 @@ public class CustomerActivity extends BaseActivity {
                             "GCM registration error");
                 } else if (intent.getAction().endsWith(GCMIntentService.MESSAGE_TO_DINER)) {
                     String message = intent.getStringExtra("body");
+                    if (message.length() > 0) {
+                        Gson gson = new Gson();
+                        List<Dish> dishes = gson.fromJson(message, new TypeToken<List<Dish>>() {
+                        }.getType());
+                        ToastUtils.toastLongMassage(CustomerActivity.this,
+                                dishes.size() + "");
+                    }
                     ToastUtils.toastLongMassage(CustomerActivity.this,
                             message);
                 } else {
@@ -136,12 +171,26 @@ public class CustomerActivity extends BaseActivity {
                 new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
                 new IntentFilter(GCMIntentService.MESSAGE_TO_DINER));
+        showToolBar(fragmentPos);
+    }
+
+    private void showToolBar(int pos) {
+        if (CUTLERY_POS == pos) {
+            setDishToolBar();
+            clearSearchBox();
+        } else if (DRINKING_POS == pos) {
+            setDishToolBar();
+        } else if (ORDER_POS == pos) {
+            setOrderToolBar();
+        } else if (HISTORY_POS == pos) {
+            hideToolbar();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("ZZZZZZZ", "onPause");
+        Log.i(LOG_TAG, "onPause");
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mBroadcastReceiver);
     }
 
@@ -246,7 +295,7 @@ public class CustomerActivity extends BaseActivity {
     }
 
     private void initDependency() {
-        ((Application) getApplication()).getComponent()
+        ((BoeApplication) getApplication()).getComponent()
                 .inject(this);
     }
 
@@ -413,16 +462,45 @@ public class CustomerActivity extends BaseActivity {
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe(() -> showProcessing("Processing..."))
                     .doOnTerminate(() -> hideProcessing())
-                    .subscribe(isAvailable -> {
-                        if(isAvailable.isAvailable()){
+                    .flatMap(new Func1<CanOrder, Observable<List<CartDishAvailable>>>() {
+                        @Override
+                        public Observable<List<CartDishAvailable>> call(CanOrder canOrder) {
+                            if (canOrder.isAvailable()) {
+                                return dishRepo.checkDishCartAvailable(getIdDishInCart())
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread());
+                            }
+                            return null;
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(dishNotAvailable -> {
+//                        if (isAvailable.isAvailable()) {
+//                            Intent i = new Intent(this, PaypalActivity.class);
+//                            i.putExtra(Constant.KEY_TOTAL_PAYMENT, total);
+//                            i.putExtra(Constant.KEY_ORDER_NAME, "Hello");
+//                            i.putExtra(Constant.KEY_ORDER_ITEM_TOTAL, orderFragment.getItemtotal());
+//
+//                            startActivity(i);
+//                        } else {
+//                            ToastUtils.toastLongMassage(CustomerActivity.this, "Order time is over.");
+//                        }
+                        if (null == dishNotAvailable) {
+                            ToastUtils.toastLongMassage(CustomerActivity.this, "Order time is over.");
+                        } else if (0 == dishNotAvailable.size()) {
                             Intent i = new Intent(this, PaypalActivity.class);
                             i.putExtra(Constant.KEY_TOTAL_PAYMENT, total);
                             i.putExtra(Constant.KEY_ORDER_NAME, "Hello");
                             i.putExtra(Constant.KEY_ORDER_ITEM_TOTAL, orderFragment.getItemtotal());
 
                             startActivity(i);
-                        }else {
-                            ToastUtils.toastLongMassage(CustomerActivity.this, "Order time is over.");
+                        } else if (0 < dishNotAvailable.size()) {
+                            orderFragment.showDialog(dishNotAvailable);
+//                            String s = "";
+//                            for (CartDishAvailable item : dishNotAvailable) {
+//                                s = s + item.getName() + "-";
+//                            }
+//                            ToastUtils.toastLongMassage(CustomerActivity.this, s + " is not available");
                         }
                     });
 
@@ -450,9 +528,23 @@ public class CustomerActivity extends BaseActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(LOG_TAG, "onStop");
+    }
+
+    @Override
     protected void onDestroy() {
-        cartManager.clear();
-        preferencesManager.setTableInfo(null);
+        Log.i(LOG_TAG, "onDestroy");
         super.onDestroy();
+    }
+
+    private String getIdDishInCart() {
+        StringBuilder ids = new StringBuilder();
+        for (Map.Entry<Integer, Integer> cartItem : cartManager.getCart().entrySet()) {
+            ids.append(String.valueOf(cartItem.getKey()))
+                    .append("_");
+        }
+        return ids.deleteCharAt(ids.length() - 1).toString();
     }
 }

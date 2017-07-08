@@ -1,11 +1,10 @@
 package com.nux.dhoan9.firstmvvm.view.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -13,15 +12,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.nux.dhoan9.firstmvvm.Application;
+import com.google.gson.Gson;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
-import com.nux.dhoan9.firstmvvm.data.response.OrderResponse;
+import com.nux.dhoan9.firstmvvm.data.request.PaypalPartialReq;
+import com.nux.dhoan9.firstmvvm.data.response.Amount;
+import com.nux.dhoan9.firstmvvm.data.response.FullRefundResponse;
+import com.nux.dhoan9.firstmvvm.data.response.PartialRefundResponse;
+import com.nux.dhoan9.firstmvvm.data.response.PaypalDetailResponse;
+import com.nux.dhoan9.firstmvvm.data.response.PaypalInvoiceInfoResponse;
+import com.nux.dhoan9.firstmvvm.data.response.StatusResponse;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
+import com.nux.dhoan9.firstmvvm.model.Dish;
+import com.nux.dhoan9.firstmvvm.model.OrderCreateResponse;
+import com.nux.dhoan9.firstmvvm.model.PaypalInvoiceResp;
+import com.nux.dhoan9.firstmvvm.services.PaypalServices;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
+import com.nux.dhoan9.firstmvvm.utils.CurrencyUtil;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
-import com.paypal.android.sdk.payments.PayPalAuthorization;
+import com.nux.dhoan9.firstmvvm.view.fragment.PaypalInfoDialog;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
@@ -29,17 +40,23 @@ import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 import org.json.JSONException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class PaypalActivity extends BaseActivity {
+    private PaypalInvoiceResp invoiceResp;
+    private OrderCreateResponse orderCreateResponse;
     @BindView(R.id.tvAmount)
     TextView tvAmount;
     @BindView(R.id.tvDinerName)
@@ -74,17 +91,33 @@ public class PaypalActivity extends BaseActivity {
         setContentView(R.layout.activity_paypal);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("THE BILL");
+        getSupportActionBar().setTitle(R.string.bill_text);
         ButterKnife.bind(this);
         tvAmount.setText(String.valueOf(new BigDecimal(getTotal())) + " VND");
         tvDinerName.setText(getDinerName());
-        tvOrderDate.setText(String.valueOf(new Date()));
-        tvItemQuantity.setText(String.valueOf(getItemTotal()) + " item");
+        Date orderDate = new Date();
+        tvOrderDate.setText(convertDateToVietNam(orderDate));
+        tvItemQuantity.setText(String.valueOf(getItemTotal()) + " món");
         Intent intent = new Intent(this, PayPalService.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, configuration);
         startService(intent);
 
         btnPay.setOnClickListener(v -> onOkPress());
+    }
+
+    private String convertDateToVietNam(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DATE);
+        int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int minute = cal.get(Calendar.MINUTE);
+        int seconds = cal.get(Calendar.SECOND);
+
+        String sf = String.format("%s/%s/%s %s:%s:%s", day, month, year, hour, minute, seconds);
+        return sf.toString();
     }
 
     @Override
@@ -100,19 +133,27 @@ public class PaypalActivity extends BaseActivity {
     }
 
     private void initDependency() {
-        ((Application) getApplication()).getComponent()
+        ((BoeApplication) getApplication()).getComponent()
                 .inject(this);
     }
 
     private void onOkPress() {
-        PayPalPayment payment = new PayPalPayment(new BigDecimal(getTotal()),
-                "USD", getOrderName(), PayPalPayment.PAYMENT_INTENT_SALE);
+        CurrencyUtil.convertVNDToUSD(getTotal())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> showProcessing(null))
+                .doOnTerminate(() -> hideProcessing())
+                .subscribe(usdMoney -> {
+                    PayPalPayment payment = new PayPalPayment(new BigDecimal(usdMoney),
+                            "USD", getOrderName(), PayPalPayment.PAYMENT_INTENT_SALE);
+//        LOCALEC
 
-        Intent i = new Intent(this, PaymentActivity.class);
-        i.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, configuration);
-        i.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
+                    Intent i = new Intent(this, PaymentActivity.class);
+                    i.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, configuration);
+                    i.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
 //        PayPalPayment.PAYMENT_INTENT_AUTHORIZE
-        startActivityForResult(i, REQUEST_PAYMENT_CODE);
+                    startActivityForResult(i, REQUEST_PAYMENT_CODE);
+                });
+
     }
 
     @Override
@@ -128,6 +169,10 @@ public class PaypalActivity extends BaseActivity {
     }
 
     private static PayPalConfiguration configuration = new PayPalConfiguration()
+            .acceptCreditCards(false)
+            .languageOrLocale("en_US")
+            .merchantName("BOE")
+            .rememberUser(true)
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
             .clientId("AetzVQhJh6kV_v_GDex0IynGO_6ky0VLzvF0D3akJ7YDCVGYSrgTpIW-FAq-AdYlVW0TMJ7XdYpbCPz-");
 
@@ -138,7 +183,10 @@ public class PaypalActivity extends BaseActivity {
                 PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
                 if (null != confirmation) {
                     try {
-                        Log.i(LOG_TAG, confirmation.toJSONObject().toString(4));
+                        String res = confirmation.toJSONObject().toString(4);
+                        Gson gson = new Gson();
+                        invoiceResp = gson.fromJson(res, PaypalInvoiceResp.class);
+                        Log.i(LOG_TAG, invoiceResp.toString());
                         showProcessing("Processing...");
                         handleSuccessfullyPayment();
                         btnPay.setVisibility(View.GONE);
@@ -160,9 +208,20 @@ public class PaypalActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .doOnTerminate(() -> hideProcessing())
-                .subscribe(sub -> {
-                    cartManager.clear();
-                    showDialogInform();
+                .subscribe(orderCreateRes -> {
+                    orderCreateResponse = orderCreateRes;
+                    if (orderCreateRes.getDish().size() > 0) {
+//                        String s = "";
+//                        for (Dish item : dishes) {
+//                            s = s + item.getName() + "-";
+//                        }
+//                        ToastUtils.toastLongMassage(PaypalActivity.this, s + " is not available");
+                        showDialogConfirmContinue(orderCreateRes.getDish());
+                    } else {
+                        cartManager.clear();
+                        showDialogInform();
+                    }
+
                 });
     }
 
@@ -232,4 +291,166 @@ public class PaypalActivity extends BaseActivity {
             super.onBackPressed();
         }
     }
+
+    public void showProcessing(String title) {
+        if (null != title) {
+            tvProcessingTitle.setText(title);
+        } else {
+            tvProcessingTitle.setText(R.string.text_processing);
+        }
+        rlProcessing.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProcessing() {
+        rlProcessing.setVisibility(View.GONE);
+    }
+
+    private void showDialogConfirmContinue(List<Dish> infoItemList) {
+        FragmentManager fm = getSupportFragmentManager();
+        PaypalInfoDialog dialog = PaypalInfoDialog.newInstance(infoItemList);
+        dialog.setListener(new PaypalInfoDialog.PaypalListener() {
+            @Override
+            public void onOkieClick(List<Dish> items) {
+                // tiep tuc va tru tien mon khong phuc vu
+                float total = 0;
+                for (Dish item : items) {
+                    int quantity = cartManager.getQuantityById(item.getId());
+                    total += (quantity * item.getPrice());
+                }
+                float finalTotal = total;
+                CurrencyUtil.convertVNDToUSD(total)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe(() -> showProcessing(null))
+                        .subscribe(usdMoney -> {
+                            PaypalServices.getCredential()
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(credential -> {
+                                        PaypalServices.getDetailByPaymentId(invoiceResp.getResponse().getId(), credential.getAccessToken())
+                                                .subscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .flatMap(new Func1<PaypalDetailResponse, Observable<PartialRefundResponse>>() {
+                                                    @Override
+                                                    public Observable<PartialRefundResponse> call(PaypalDetailResponse detail) {
+                                                        PaypalPartialReq req = new PaypalPartialReq();
+                                                        Amount amount = new Amount();
+                                                        amount.setCurrency("USD");
+                                                        amount.setTotal(String.valueOf(usdMoney));
+                                                        req.amount = amount;
+                                                        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+                                                        float standardMoney = Float.valueOf(decimalFormat.format(usdMoney));
+                                                        return PaypalServices.partialRefund(detail.getTransactions().get(0).getRelatedResource().get(0).getSale().getId(),
+                                                                credential.getAccessToken(), String.valueOf(standardMoney))
+                                                                .subscribeOn(Schedulers.io());
+                                                    }
+                                                })
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribe(res -> {
+                                                    StringBuilder dishList = new StringBuilder();
+                                                    for (Dish d : infoItemList) {
+                                                        dishList.append(String.valueOf(d.getId()))
+                                                                .append("_");
+                                                    }
+                                                    orderRepo.partialRefund(orderCreateResponse.getOrderId(),
+                                                            finalTotal, dishList.deleteCharAt(dishList.length() - 1).toString())
+                                                            .subscribeOn(Schedulers.io())
+                                                            .observeOn(AndroidSchedulers.mainThread())
+                                                            .doOnTerminate(() -> hideProcessing())
+                                                            .subscribe(new Subscriber<StatusResponse>() {
+                                                                @Override
+                                                                public void onCompleted() {
+
+                                                                }
+
+                                                                @Override
+                                                                public void onError(Throwable e) {
+
+                                                                }
+
+                                                                @Override
+                                                                public void onNext(StatusResponse partialRefundResponse) {
+                                                                    cartManager.clear();
+                                                                    startActivity(CustomerActivity.newInstance(PaypalActivity.this));
+                                                                }
+                                                            });
+                                                });
+                                    });
+                        });
+            }
+
+            @Override
+            public void onAngryClick() {
+                // Huy order
+//                ToastUtils.toastShortMassage(PaypalActivity.this, "on Angry click");
+//                Transa
+                PaypalServices.getCredential()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe(() -> showProcessing(null))
+                        .subscribe(credential -> {
+                            ToastUtils.toastShortMassage(PaypalActivity.this, "credential success");
+                            PaypalServices.getDetailByPaymentId(invoiceResp.getResponse().getId(), credential.getAccessToken())
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .flatMap(new Func1<PaypalDetailResponse, Observable<FullRefundResponse>>() {
+                                        @Override
+                                        public Observable<FullRefundResponse> call(PaypalDetailResponse detail) {
+                                            ToastUtils.toastShortMassage(PaypalActivity.this, "invoive number success");
+                                            PaypalPartialReq req = new PaypalPartialReq();
+                                            Amount amount = new Amount();
+                                            amount.setCurrency("USD");
+                                            req.amount = amount;
+
+                                            return PaypalServices.fullRefund(detail.getTransactions().get(0).getRelatedResource().get(0).getSale().getId(),
+                                                    credential.getAccessToken())
+                                                    .subscribeOn(Schedulers.io());
+                                        }
+                                    })
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Subscriber<FullRefundResponse>() {
+                                        @Override
+                                        public void onCompleted() {
+
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+
+                                        }
+
+                                        @Override
+                                        public void onNext(FullRefundResponse partialRefundResponse) {
+                                            ToastUtils.toastShortMassage(PaypalActivity.this, "fully success");
+                                            orderRepo.fullyRefund(orderCreateResponse.getOrderId())
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .doOnTerminate(() -> hideProcessing())
+                                                    .subscribe(new Subscriber<StatusResponse>() {
+                                                        @Override
+                                                        public void onCompleted() {
+
+                                                        }
+
+                                                        @Override
+                                                        public void onError(Throwable e) {
+
+                                                        }
+
+                                                        @Override
+                                                        public void onNext(StatusResponse statusResponse) {
+                                                            ToastUtils.toastShortMassage(PaypalActivity.this, " success");
+                                                            cartManager.clear();
+                                                            startActivity(CustomerActivity.newInstance(PaypalActivity.this));
+                                                        }
+                                                    });
+                                        }
+                                    });
+                        });
+
+            }
+        });
+        dialog.show(fm, "Paypal");
+    }
 }
+

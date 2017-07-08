@@ -83,6 +83,7 @@ public class DishListViewModel extends BaseViewModel {
     private List<DishViewModel> dishesViewModel(List<Dish> dishesData) {
         List<DishViewModel> dishViewModels = new ArrayList<>();
         for (Dish dish : dishesData) {
+
             dishViewModels.add(new DishViewModel(dish, cartManager));
         }
 

@@ -1,6 +1,8 @@
 package com.nux.dhoan9.firstmvvm.view.custom;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -31,6 +33,7 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
     public ImageView ivHistory;
     public TextView tvOrderBadge;
     public TextView tvHistoryBadge;
+    public TextView tvHistory, tvDrinking, tvOrder, tvCutlery;
 
     public NavigationBottom(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -53,6 +56,14 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
         ivHistory = (ImageView) findViewById(R.id.ivHistory);
         tvOrderBadge = (TextView) findViewById(R.id.tvOrderBadge);
         tvHistoryBadge = (TextView) findViewById(R.id.tvHistoryBadge);
+        tvHistory = (TextView) findViewById(R.id.tvHistory);
+        tvHistory.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+        tvCutlery = (TextView) findViewById(R.id.tvCutlery);
+        tvCutlery.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+        tvDrinking = (TextView) findViewById(R.id.tvDrinking);
+        tvDrinking.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+        tvOrder = (TextView) findViewById(R.id.tvOrder);
+        tvOrder.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
         initViewClick(R.id.rlCutlery);
         initViewClick(R.id.ivCutlery);
         initViewClick(R.id.rlDrinking);
@@ -79,6 +90,11 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
                 ContextCompat.getColor(getContext(), android.R.color.black));
         Utils.changeDrawableColor(ivHistory.getDrawable(),
                 ContextCompat.getColor(getContext(), android.R.color.black));
+
+        setInActive(foodIconContainer, tvCutlery);
+        setInActive(drinkIconContainer, tvDrinking);
+        setInActive(orderIconContainer, tvOrder);
+        setInActive(historyIconContainer, tvHistory);
     }
 
     public void setPress(int pos) {
@@ -87,18 +103,22 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
             case 0:
                 Utils.changeDrawableColor(ivCutlery.getDrawable(),
                         ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+                setActive(foodIconContainer, tvCutlery);
                 break;
             case 1:
                 Utils.changeDrawableColor(ivDrinking.getDrawable(),
                         ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+                setActive(drinkIconContainer, tvDrinking);
                 break;
             case 2:
                 Utils.changeDrawableColor(ivOrder.getDrawable(),
                         ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+                setActive(orderIconContainer, tvOrder);
                 break;
             case 3:
                 Utils.changeDrawableColor(ivHistory.getDrawable(),
                         ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+                setActive(historyIconContainer, tvHistory);
                 break;
             default:
                 Utils.changeDrawableColor(ivCutlery.getDrawable(),
@@ -190,5 +210,29 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
 
     public void hideHistoryBadge() {
         tvHistoryBadge.setVisibility(GONE);
+    }
+
+    private void setInActive(View container, TextView label) {
+        // padding top 6 & 10dp under text
+        container.setPadding(0, 8, 0, 10);
+        // text size roboto regular 12
+        label.setVisibility(GONE);
+    }
+
+    private void setActive(View container, TextView label) {
+        // padding top 8
+        container.setPadding(0, 6, 0, 10);
+        label.setVisibility(VISIBLE);
+        //10dp under text
+        // text size roboto regular 14
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        Paint p = new Paint();
+        p.setColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+        p.setStrokeWidth(1F);
+        canvas.drawLine(0,0, this.getWidth(), 0, p);
     }
 }

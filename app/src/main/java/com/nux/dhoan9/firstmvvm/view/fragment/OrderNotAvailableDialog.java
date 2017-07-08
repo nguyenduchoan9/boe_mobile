@@ -15,7 +15,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import com.nux.dhoan9.firstmvvm.R;
+import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
 import com.nux.dhoan9.firstmvvm.model.OrderInfoItem;
+import com.nux.dhoan9.firstmvvm.view.adapter.DishNotAvailableInfoAdapter;
 import com.nux.dhoan9.firstmvvm.view.adapter.OrderInfoAdapter;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +26,17 @@ import java.util.List;
  * Created by hoang on 14/06/2017.
  */
 
-public class OrderInfoDialog extends DialogFragment {
-    OrderInfoAdapter adapter;
+public class OrderNotAvailableDialog extends DialogFragment {
+    DishNotAvailableInfoAdapter adapter;
     RecyclerView rvList;
     Button btnCancel;
     Button btnOrder;
 
-    public OrderInfoDialog() {
+    public OrderNotAvailableDialog() {
     }
 
-    public static OrderInfoDialog newInstance(List<OrderInfoItem> items) {
-        OrderInfoDialog dialog = new OrderInfoDialog();
+    public static OrderNotAvailableDialog newInstance(List<CartDishAvailable> items) {
+        OrderNotAvailableDialog dialog = new OrderNotAvailableDialog();
         Bundle args = new Bundle();
         args.putParcelableArrayList("list", (ArrayList<? extends Parcelable>) items);
         dialog.setArguments(args);
@@ -50,7 +52,8 @@ public class OrderInfoDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+//        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setTitle("Hiện tại chúng tôi không còn phục vụ các món sau");
 
         return dialog;
     }
@@ -65,10 +68,8 @@ public class OrderInfoDialog extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvList = (RecyclerView) view.findViewById(R.id.rvList);
-        List<OrderInfoItem> items = getArguments().getParcelableArrayList("list");
+        List<CartDishAvailable> items = getArguments().getParcelableArrayList("list");
         setOrderInfoList(items);
-        btnCancel = (Button) view.findViewById(R.id.btnCancel);
-        btnCancel.setOnClickListener(v -> dismiss());
         btnOrder = (Button) view.findViewById(R.id.btnOrder);
         btnOrder.setOnClickListener(v -> {
             listener.onOrderClick(getArguments().getParcelableArrayList("list"));
@@ -77,8 +78,8 @@ public class OrderInfoDialog extends DialogFragment {
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    private void setOrderInfoList(List<OrderInfoItem> items) {
-        adapter = new OrderInfoAdapter(getActivity(), items);
+    private void setOrderInfoList(List<CartDishAvailable> items) {
+        adapter = new DishNotAvailableInfoAdapter(getActivity(), items);
         RecyclerView.LayoutManager manager =
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         DividerItemDecoration decoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
@@ -94,14 +95,14 @@ public class OrderInfoDialog extends DialogFragment {
         // Assign window properties to fill the parent
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
         params.height = WindowManager.LayoutParams.MATCH_PARENT;
-        getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+        getDialog().getWindow().setAttributes((WindowManager.LayoutParams) params);
         // Call super onResume after sizing
 
         super.onResume();
     }
 
     public interface OrderInfoListener {
-        void onOrderClick(List<OrderInfoItem> items);
+        void onOrderClick(List<CartDishAvailable> items);
     }
 
     private OrderInfoListener listener;

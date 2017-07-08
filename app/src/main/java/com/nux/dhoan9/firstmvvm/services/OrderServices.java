@@ -2,6 +2,9 @@ package com.nux.dhoan9.firstmvvm.services;
 
 import com.nux.dhoan9.firstmvvm.data.response.CanOrder;
 import com.nux.dhoan9.firstmvvm.data.response.OrderResponse;
+import com.nux.dhoan9.firstmvvm.data.response.StatusResponse;
+import com.nux.dhoan9.firstmvvm.model.Dish;
+import com.nux.dhoan9.firstmvvm.model.OrderCreateResponse;
 import com.nux.dhoan9.firstmvvm.model.OrderInfo;
 import com.nux.dhoan9.firstmvvm.model.OrderView;
 import java.util.List;
@@ -20,8 +23,8 @@ public interface OrderServices {
 
     @POST("orders")
     @FormUrlEncoded
-    Observable<OrderResponse> makeOrder(@Field("order") String orderParams,
-                                        @Field("table_number") int tableNumber);
+    Observable<OrderCreateResponse> makeOrder(@Field("order") String orderParams,
+                                              @Field("table_number") int tableNumber);
 
     @GET("orders")
     Observable<List<OrderView>> getOrder();
@@ -32,4 +35,13 @@ public interface OrderServices {
     @GET("orders/is_in_time_order")
     Observable<CanOrder> canOrder();
 
+    @POST("orders/fully_refund")
+    @FormUrlEncoded
+    Observable<StatusResponse> fullyRefund(@Field("orderId") int id);
+
+    @POST("orders/partial_refund")
+    @FormUrlEncoded
+    Observable<StatusResponse> partialRefund(@Field("orderId") int id,
+                                             @Field("total") float total,
+                                             @Field("dishes") String dishList);
 }

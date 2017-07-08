@@ -3,27 +3,22 @@ package com.nux.dhoan9.firstmvvm.view.fragment;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
-import com.nux.dhoan9.firstmvvm.Application;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentDrinkingBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.MenuCategoryListAdapter;
-import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
 
-import java.util.concurrent.locks.ReentrantLock;
 import javax.inject.Inject;
 import javax.inject.Named;
 import rx.android.schedulers.AndroidSchedulers;
@@ -52,7 +47,7 @@ public class DrinkingFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((Application) getActivity().getApplication()).getComponent()
+        ((BoeApplication) getActivity().getApplication()).getComponent()
                 .plus(new ActivityModule(getActivity()))
                 .inject(this);
     }
@@ -107,28 +102,28 @@ public class DrinkingFragment extends BaseFragment {
         rvDish = binding.rvDish;
         rvDish.setAdapter(adapter);
         rvDish.setLayoutManager(manager);
-        rvDish.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
-                if (dy > 0) {
-                    // Scrolling up
-//                    view.animate()
-//                            .setDuration(100)
-//                            .scaleX(0)
-//                            .scaleY(0);
-                    view.setVisibility(View.GONE);
-                } else {
-                    // Scrolling down
-                    view.setVisibility(View.VISIBLE);
-//                    view.animate()
-//                            .setDuration(100)
-//                            .scaleX(1.0f)
-//                            .scaleY(1.0f);
-                }
-            }
-        });
+//        rvDish.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
+//                if (dy > 0) {
+//                    // Scrolling up
+////                    view.animate()
+////                            .setDuration(100)
+////                            .scaleX(0)
+////                            .scaleY(0);
+//                    view.setVisibility(View.GONE);
+//                } else {
+//                    // Scrolling down
+//                    view.setVisibility(View.VISIBLE);
+////                    view.animate()
+////                            .setDuration(100)
+////                            .scaleX(1.0f)
+////                            .scaleY(1.0f);
+//                }
+//            }
+//        });
     }
 
     private void setActionSwipeContainer() {
@@ -151,7 +146,7 @@ public class DrinkingFragment extends BaseFragment {
         viewModel.onDrinkingSearch(keySearch)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(v -> showProcessing("Processing..."))
+                .doOnNext(v -> showProcessing(getString(R.string.text_processing)))
                 .doOnTerminate(() -> hideProcessing())
                 .subscribe(result -> {});
     }

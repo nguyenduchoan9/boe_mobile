@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.nux.dhoan9.firstmvvm.Application;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityCartBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
@@ -31,7 +31,7 @@ public class CartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_cart);
-        ((Application) getApplication()).getComponent()
+        ((BoeApplication) getApplication()).getComponent()
                 .plus(new ActivityModule(this))
                 .inject(this);
     }

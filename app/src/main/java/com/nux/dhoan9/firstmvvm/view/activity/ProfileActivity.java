@@ -6,7 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.nux.dhoan9.firstmvvm.Application;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityProfileBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.UserModule;
@@ -24,7 +24,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((Application) getApplication()).getComponent()
+        ((BoeApplication) getApplication()).getComponent()
                 .plus(new UserModule())
                 .inject(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);

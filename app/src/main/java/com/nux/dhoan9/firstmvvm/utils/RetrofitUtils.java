@@ -14,6 +14,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Created by hoang on 29/04/2017.
@@ -37,7 +38,27 @@ public class RetrofitUtils {
                 .build();
     }
 
-    public Retrofit parseError (){
+    public static Retrofit create(String endPoint) {
+        return new Retrofit.Builder()
+                .baseUrl(endPoint)
+                .client(clientX())
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+    }
+
+    public static OkHttpClient clientX() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptorLevelHeadersX())
+                .addInterceptor(loggingInterceptorLevelBodyX())
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .build();
+    }
+
+    public Retrofit parseError() {
         return new Retrofit.Builder()
                 .baseUrl(Constant.API_ENDPOINT + "/api/")
                 .client(client())
@@ -65,6 +86,18 @@ public class RetrofitUtils {
     }
 
     private HttpLoggingInterceptor loggingInterceptorLevelBody() {
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        return httpLoggingInterceptor;
+    }
+
+    private static HttpLoggingInterceptor loggingInterceptorLevelHeadersX() {
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+        return httpLoggingInterceptor;
+    }
+
+    private static HttpLoggingInterceptor loggingInterceptorLevelBodyX() {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         return httpLoggingInterceptor;

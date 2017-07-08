@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.nux.dhoan9.firstmvvm.Application;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.QRCodeTableInfo;
@@ -26,7 +26,7 @@ public class SlashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slash);
-        ((Application) getApplication()).getComponent()
+        ((BoeApplication) getApplication()).getComponent()
                 .inject(this);
         if (checkGooglePlayService()) {
             new Handler().postDelayed(() -> showEndpointDialog(), 4000);

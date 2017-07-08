@@ -13,7 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.nux.dhoan9.firstmvvm.Application;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityHomeBinding;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
@@ -105,7 +105,7 @@ public class ChefActivity extends AppCompatActivity {
     }
 
     private void initDependency() {
-        ((Application) getApplication()).getComponent()
+        ((BoeApplication) getApplication()).getComponent()
                 .inject(this);
     }
 

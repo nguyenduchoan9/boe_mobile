@@ -2,24 +2,20 @@ package com.nux.dhoan9.firstmvvm.view.activity;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import com.google.android.gms.dynamic.LifecycleDelegate;
-import com.nux.dhoan9.firstmvvm.Application;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityDishDetailBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
-import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
-import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 import com.nux.dhoan9.firstmvvm.view.custom.DragDismissDelegate;
 import com.nux.dhoan9.firstmvvm.viewmodel.DishDetailViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -90,7 +86,7 @@ public class DishDetailActivity extends BaseActivity {
     }
 
     private void initDependencies() {
-        ((Application) getApplication()).getComponent()
+        ((BoeApplication) getApplication()).getComponent()
                 .plus(new ActivityModule(this))
                 .inject(this);
     }

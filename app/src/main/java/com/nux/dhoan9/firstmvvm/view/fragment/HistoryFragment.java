@@ -10,8 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import com.nux.dhoan9.firstmvvm.Application;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentHistoryBinding;
@@ -51,7 +50,7 @@ public class HistoryFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((Application) getActivity().getApplication()).getComponent()
+        ((BoeApplication) getActivity().getApplication()).getComponent()
                 .plus(new ActivityModule(getActivity()))
                 .inject(this);
     }
@@ -78,32 +77,32 @@ public class HistoryFragment extends BaseFragment {
             orderRepo.getOrderInfo(orderListId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(() -> showProcessing("Processing"))
+                    .doOnSubscribe(() -> showProcessing(getString(R.string.text_processing)))
                     .doOnCompleted(() -> hideProcessing())
                     .subscribe(orderInfo -> showDialog(orderInfo.getList()));
         });
         rv.setAdapter(adapter);
         rv.setLayoutManager(manager);
         rv.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
-                if (dy > 0) {
-                    // Scrolling up
-                    view.setVisibility(View.GONE);
-                } else {
-                    // Scrolling down\
-                    view.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+//        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
+//                if (dy > 0) {
+//                    // Scrolling up
+//                    view.setVisibility(View.GONE);
+//                } else {
+//                    // Scrolling down\
+//                    view.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
     }
 
     private void showDialog(List<OrderInfoItem> infoItemList) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        OrderInfoDialog dialog = OrderInfoDialog.newInstance(infoItemList);
+        HistoryInfoDialog dialog = HistoryInfoDialog.newInstance(infoItemList);
         dialog.setListener(items -> {
             for (OrderInfoItem item : items){
                 cartManager.plus(item.getId(), 1);
@@ -126,7 +125,7 @@ public class HistoryFragment extends BaseFragment {
         viewModel.initialize()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> showProcessing("Loading..."))
+                .doOnSubscribe(() -> showProcessing(getString(R.string.text_loading)))
                 .doOnCompleted(() -> hideProcessing())
                 .subscribe(v -> {
                     if (v) {

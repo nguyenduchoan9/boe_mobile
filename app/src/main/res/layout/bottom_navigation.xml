@@ -7,7 +7,6 @@
         android:layout_alignParentBottom="true"
         android:background="@android:color/transparent"
         android:elevation="4dp"
-        android:paddingTop="1dp"
         >
 
         <com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom
@@ -23,16 +22,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:padding="8dp">
+                android:gravity="center">
 
-                <ImageView
-                    android:id="@+id/ivCutlery"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_cutlery_kitchen"/>
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/ivCutlery"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerInParent="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_cutlery_kitchen"/>
+
+                    <TextView
+                        android:id="@+id/tvCutlery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ivHistory"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Món ăn"
+                        android:textSize="14sp"
+                        android:visibility="gone"/>
+                </LinearLayout>
             </RelativeLayout>
 
             <RelativeLayout
@@ -40,38 +58,75 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:padding="8dp">
+                android:gravity="center">
 
-                <ImageView
-                    android:id="@+id/ivDrinking"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_drinking_wine"/>
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/ivDrinking"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerInParent="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_drinking_wine"/>
+
+                    <TextView
+                        android:id="@+id/tvDrinking"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ivHistory"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Nước"
+                        android:textSize="14sp"
+                        android:visibility="gone"/>
+                </LinearLayout>
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/rlOrder"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="8dp">
+                android:layout_weight="1">
 
-                <ImageView
-                    android:id="@+id/ivOrder"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_buying_on_smartphone"/>
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/ivOrder"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerInParent="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_buying_on_smartphone"/>
+
+                    <TextView
+                        android:id="@+id/tvOrder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ivHistory"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Giỏ"
+                        android:textSize="14sp"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/tvOrderBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/ivOrder"
                     android:layout_marginLeft="20dp"
                     android:background="@drawable/clear_payment_bg"
                     android:gravity="center"
@@ -86,22 +141,38 @@
                 android:id="@+id/rlHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="8dp">
+                android:layout_weight="1">
 
-                <ImageView
-                    android:id="@+id/ivHistory"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_history"/>
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/ivHistory"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_history"/>
+
+                    <TextView
+                        android:id="@+id/tvHistory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ivHistory"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Lịch sử"
+                        android:textSize="14sp"
+                        android:visibility="gone"/>
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tvHistoryBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/ivHistory"
                     android:layout_marginLeft="20dp"
                     android:background="@drawable/clear_payment_bg"
                     android:gravity="center"

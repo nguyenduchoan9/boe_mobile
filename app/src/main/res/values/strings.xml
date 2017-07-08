@@ -3,13 +3,13 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="login_text">Login</string>
-    <string name="register_text">Register</string>
+    <string name="login_text">Đăng nhập</string>
+    <string name="register_text">Đăng ký</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
 
     <string name="item_image_transition">item_image_transition</string>
-    <string name="item_cart_sum">Total:</string>
+    <string name="item_cart_sum">Tổng cộng:</string>
     <string name="scan_qr_code_fragment">Scan QR Code</string>
     <string name="cutlery_fragment">Cutlery</string>
     <string name="drinking_fragment">Drinking</string>
@@ -19,7 +19,17 @@
     <string name="text_clear_all"><u>Clear all</u></string>
     <string name="text_login_as_guest"><u>Login as guest</u></string>
     <string name="text_submit">Submit</string>
-    <string name="text_not_available_network">Your network is not available</string>
-    <string name="text_server_maintanance">The server is under maintenance</string>
-    <string name="text_processing">Processing...</string>
+    <string name="text_not_available_network">Kết nối của bạn không khả</string>
+    <string name="text_server_maintanance">Hệ thống đang bản tr</string>
+    <string name="text_processing">Đang xử lý...</string>
+    <string name="bill_text">Hóa đơn</string>
+    <string name="amount">Tổng cộng</string>
+    <string name="text_diner">Thực khách</string>
+    <string name="text_oreder_date">Ngày ăn</string>
+    <string name="text_items">Số món</string>
+    <string name="text_payment_method">Phương thức thanh toán</string>
+    <string name="nav_information">Thông tin</string>
+    <string name="nav_profile">Trang cá nhân</string>
+    <string name="nav_sign_out">Đăng xuất</string>
+    <string name="text_loading">Đang tải...</string>
 </resources>

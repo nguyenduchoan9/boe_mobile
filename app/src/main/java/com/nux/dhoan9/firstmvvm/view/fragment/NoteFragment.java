@@ -11,10 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.nux.dhoan9.firstmvvm.Application;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentNoteBinding;
-import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.view.adapter.TodoListAdapter;
 import com.nux.dhoan9.firstmvvm.viewmodel.TodoListViewModel;
 
@@ -43,7 +41,7 @@ public class NoteFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        ((Application)getActivity().getApplication()).getComponent()
+//        ((BoeApplication)getActivity().getApplication()).getComponent()
 //                .plus(new ActivityModule(getActivity()))
 //                .inject(this);
     }

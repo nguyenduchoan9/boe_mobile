@@ -1,7 +1,11 @@
 package com.nux.dhoan9.firstmvvm.data.repo;
 
 import com.nux.dhoan9.firstmvvm.data.response.CanOrder;
+import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
 import com.nux.dhoan9.firstmvvm.data.response.OrderResponse;
+import com.nux.dhoan9.firstmvvm.data.response.StatusResponse;
+import com.nux.dhoan9.firstmvvm.model.Dish;
+import com.nux.dhoan9.firstmvvm.model.OrderCreateResponse;
 import com.nux.dhoan9.firstmvvm.model.OrderInfo;
 import com.nux.dhoan9.firstmvvm.model.OrderView;
 import com.nux.dhoan9.firstmvvm.services.DishServices;
@@ -27,7 +31,7 @@ public class OrderRepoImpl implements OrderRepo {
     }
 
     @Override
-    public Observable<OrderResponse> makeOrder(String cart, int tableNumber) {
+    public Observable<OrderCreateResponse> makeOrder(String cart, int tableNumber) {
         return services.makeOrder(cart, tableNumber);
     }
 
@@ -45,4 +49,15 @@ public class OrderRepoImpl implements OrderRepo {
     public Observable<CanOrder> isAvailable() {
         return services.canOrder();
     }
+
+    @Override
+    public Observable<StatusResponse> fullyRefund(int id) {
+        return services.fullyRefund(id);
+    }
+
+    @Override
+    public Observable<StatusResponse> partialRefund(int id, float totla, String dishList) {
+        return services.partialRefund(id, totla, dishList);
+    }
+
 }

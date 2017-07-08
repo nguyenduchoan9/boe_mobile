@@ -2,6 +2,7 @@ package com.nux.dhoan9.firstmvvm.data.repo;
 
 import android.util.Log;
 import com.nux.dhoan9.firstmvvm.R;
+import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
 import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.model.MenuCategories;
 import com.nux.dhoan9.firstmvvm.services.DishServices;
@@ -169,6 +170,30 @@ public class DishRepoImpl implements DishRepo {
                         @Override
                         public void onNext(List<MenuCategories> menuCategories) {
                             subscriber.onNext(menuCategories);
+                        }
+                    });
+        });
+    }
+
+    @Override
+    public Observable<List<CartDishAvailable>> checkDishCartAvailable(String ids) {
+        return Observable.create(sub -> {
+            services.checkDishInCartAvailable(ids)
+                    .compose(RxUtils.onProcessRequest())
+                    .subscribe(new Subscriber<List<CartDishAvailable>>() {
+                        @Override
+                        public void onCompleted() {
+                            sub.onCompleted();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            sub.onError(e);
+                        }
+
+                        @Override
+                        public void onNext(List<CartDishAvailable> cartDishAvailables) {
+                            sub.onNext(cartDishAvailables);
                         }
                     });
         });

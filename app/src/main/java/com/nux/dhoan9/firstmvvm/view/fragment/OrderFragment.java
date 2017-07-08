@@ -3,6 +3,7 @@ package com.nux.dhoan9.firstmvvm.view.fragment;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,12 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import com.nux.dhoan9.firstmvvm.Application;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
+import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentOrderBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
+import com.nux.dhoan9.firstmvvm.model.OrderInfoItem;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.OrderAdapter;
@@ -53,7 +55,7 @@ public class OrderFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((Application) getActivity().getApplication()).getComponent()
+        ((BoeApplication) getActivity().getApplication()).getComponent()
                 .plus(new ActivityModule(getActivity()))
                 .inject(this);
         isCheckAvailable.observeOn(AndroidSchedulers.mainThread());
@@ -101,12 +103,16 @@ public class OrderFragment extends BaseFragment {
                 .initialize()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> showProcessing("Loading..."))
+                .doOnSubscribe(() -> showProcessing(getString(R.string.text_processing)))
                 .doOnCompleted(() -> hideProcessing())
                 .subscribe(result -> {
                     initTotalPayment(cartItemListViewModel.getCartItems());
+
                 });
-        showProcessing("Loading...");
+//        showProcessing("Loading...");
+    }
+
+    private void navigationBottom() {
     }
 
     private void initTotalPayment(List<CartItemViewModel> cartItems) {
@@ -115,7 +121,7 @@ public class OrderFragment extends BaseFragment {
             CartItemViewModel cartItem = cartItems.get(i);
             total += cartItem.quantity * cartItem.price;
         }
-        setTotal(String.valueOf(total));
+        setTotal(String.valueOf(new BigDecimal(total)));
     }
 
     private void initView() {
@@ -129,7 +135,7 @@ public class OrderFragment extends BaseFragment {
                     return;
                 }
                 total += oops.price;
-                String textTotal = String.valueOf(String.valueOf(total));
+                String textTotal = String.valueOf(new BigDecimal(total));
                 setTotal(textTotal);
             }
 
@@ -148,7 +154,7 @@ public class OrderFragment extends BaseFragment {
             @Override
             public void onRemove(float minus) {
                 total -= minus;
-                String textTotal = String.valueOf(String.valueOf(total));
+                String textTotal = String.valueOf(new BigDecimal(total));
                 setTotal(textTotal);
             }
         });
@@ -158,20 +164,20 @@ public class OrderFragment extends BaseFragment {
         rvCart.setAdapter(adapter);
         rvCart.setLayoutManager(manager);
         rvCart.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        rvCart.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
-                if (dy > 0) {
-                    // Scrolling up
-                    view.setVisibility(View.GONE);
-                } else {
-                    // Scrolling down\
-                    view.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+//        rvCart.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
+//                if (dy > 0) {
+//                    // Scrolling up
+//                    view.setVisibility(View.GONE);
+//                } else {
+//                    // Scrolling down\
+//                    view.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
     }
 
     public float getTotalPayment() {
@@ -180,5 +186,17 @@ public class OrderFragment extends BaseFragment {
 
     public int getItemtotal() {
         return cartManager.getItemTotal();
+    }
+
+    public void showDialog(List<CartDishAvailable> infoItemList) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        OrderNotAvailableDialog dialog = OrderNotAvailableDialog.newInstance(infoItemList);
+        dialog.setListener(items -> {
+            for (CartDishAvailable item : items) {
+                cartManager.removeOutOfCart(item.getId());
+            }
+            ((CustomerActivity) getActivity()).showOrderFragment();
+        });
+        dialog.show(fm, "eeee");
     }
 }
