@@ -30,10 +30,10 @@ public interface DishServices {
     Observable<List<Dish>> getDishByCategory(@Query("id") int id, @Query("search_key") String searchKey);
 
     @GET("dishes/search_cutlery")
-    Observable<List<MenuCategories>> getCutleryByKeySearch(@Query("key_search") String keySearch);
+    Observable<List<MenuCategories>> getCutleryByKeySearch(@Query(value = "key_search", encoded = true) String keySearch);
 
     @GET("dishes/search_drinking")
-    Observable<List<MenuCategories>> getDrinkingByKeySearch(@Query("key_search") String keySearch);
+    Observable<List<MenuCategories>> getDrinkingByKeySearch(@Query(value = "key_search", encoded = true) String keySearch);
 
     @GET("dishes/check_dish_available")
     Observable<List<CartDishAvailable>> checkDishInCartAvailable(@Query("ids") String ids);

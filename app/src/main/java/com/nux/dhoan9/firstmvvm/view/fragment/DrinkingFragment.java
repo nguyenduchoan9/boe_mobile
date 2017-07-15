@@ -27,6 +27,7 @@ import rx.schedulers.Schedulers;
 public class DrinkingFragment extends BaseFragment {
     FragmentDrinkingBinding binding;
     private RecyclerView rvDish;
+    private boolean isHaveResult = true;
 
     @Inject
     @Named("drinking")
@@ -95,6 +96,24 @@ public class DrinkingFragment extends BaseFragment {
                 .into(binding.ivBackground);
     }
 
+    public void handleNoSearchResultView() {
+        if (isInit) {
+            isInit = false;
+        } else {
+            if (!isHaveResult) {
+                showNoSearchResult();
+                rvDish.setVisibility(View.INVISIBLE);
+                setSearchKeyOnSearchBar(adapter.getKeySearch());
+            } else {
+                hideNoSearchResult();
+                if (rvDish.getVisibility() != View.VISIBLE) {
+                    rvDish.setVisibility(View.VISIBLE);
+                }
+                setSearchKeyOnSearchBar(adapter.getKeySearch());
+            }
+        }
+    }
+
     private void initView() {
         setActionSwipeContainer();
         LinearLayoutManager manager =
@@ -102,28 +121,6 @@ public class DrinkingFragment extends BaseFragment {
         rvDish = binding.rvDish;
         rvDish.setAdapter(adapter);
         rvDish.setLayoutManager(manager);
-//        rvDish.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
-//                if (dy > 0) {
-//                    // Scrolling up
-////                    view.animate()
-////                            .setDuration(100)
-////                            .scaleX(0)
-////                            .scaleY(0);
-//                    view.setVisibility(View.GONE);
-//                } else {
-//                    // Scrolling down
-//                    view.setVisibility(View.VISIBLE);
-////                    view.animate()
-////                            .setDuration(100)
-////                            .scaleX(1.0f)
-////                            .scaleY(1.0f);
-//                }
-//            }
-//        });
     }
 
     private void setActionSwipeContainer() {
@@ -132,6 +129,10 @@ public class DrinkingFragment extends BaseFragment {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(result -> {
+                        isHaveResult = true;
+                        clearSearchKey();
+                        hideNoSearchResult();
+                        rvDish.setVisibility(View.VISIBLE);
                         binding.srRefresh.setRefreshing(false);
                     });
         });
@@ -146,11 +147,27 @@ public class DrinkingFragment extends BaseFragment {
         viewModel.onDrinkingSearch(keySearch)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(v -> showProcessing(getString(R.string.text_processing)))
-                .doOnTerminate(() -> hideProcessing())
-                .subscribe(result -> {});
+                .doOnNext(action -> setAdapterSearchKey(keySearch))
+                .doOnSubscribe(() -> showProgressingOnSearching())
+                .doOnTerminate(() -> hideProgressingOnSearching())
+                .subscribe(result -> {
+                    if (result.size() == 0) {
+                        showNoSearchResult();
+                        rvDish.setVisibility(View.INVISIBLE);
+                        isHaveResult = false;
+                    } else {
+                        hideNoSearchResult();
+                        rvDish.setVisibility(View.VISIBLE);
+                        isHaveResult = true;
+                    }
+                });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        handleNoSearchResultView();
+    }
 
     public void synTheCart(){
         viewModel.synCartInCate();
@@ -162,5 +179,9 @@ public class DrinkingFragment extends BaseFragment {
 
     public void clearSearchKey(){
         setAdapterSearchKey("");
+    }
+
+    public void notifyChange(){
+        viewModel.notifyCartChange();
     }
 }

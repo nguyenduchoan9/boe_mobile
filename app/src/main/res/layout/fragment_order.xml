@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#fff"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -39,6 +39,25 @@
                 android:textAllCaps="true"
                 android:textColor="@color/secondaryText"
                 android:textSize="@dimen/size_x_large_text"
+                android:textStyle="bold"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlHourOver"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fff"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Nhà Hàng Đã ngưng phục vụ"
+                android:textAllCaps="true"
+                android:gravity="center"
+                android:textColor="@color/secondaryText"
+                android:textSize="@dimen/size_large_text"
                 android:textStyle="bold"/>
         </RelativeLayout>
     </RelativeLayout>

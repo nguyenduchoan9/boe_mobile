@@ -31,8 +31,8 @@ public class OrderRepoImpl implements OrderRepo {
     }
 
     @Override
-    public Observable<OrderCreateResponse> makeOrder(String cart, int tableNumber) {
-        return services.makeOrder(cart, tableNumber);
+    public Observable<OrderCreateResponse> makeOrder(String cart, int tableNumber, String paymentId) {
+        return services.makeOrder(cart, tableNumber, paymentId);
     }
 
     @Override

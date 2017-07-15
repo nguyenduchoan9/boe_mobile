@@ -21,14 +21,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btnCancel"
-        android:text="Tiếp tục"/>
-
-    <Button
-        android:id="@+id/btnCancel"
-        style="@style/LoginButton"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="hủy"/>
+        android:text="Tiếp tục"/>
 </RelativeLayout>

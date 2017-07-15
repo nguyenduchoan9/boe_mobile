@@ -3,7 +3,7 @@ package com.nux.dhoan9.firstmvvm.viewmodel;
 import android.databinding.ObservableField;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.model.Dish;
-import java.math.BigDecimal;
+import com.nux.dhoan9.firstmvvm.utils.CurrencyUtil;
 
 /**
  * Created by hoang on 08/05/2017.
@@ -27,7 +27,7 @@ public class DishViewModel {
         this.price = dish.getPrice();
         this.cartManager = cartManager;
         isOrder.set(isInCart());
-        priceView.set(String.valueOf(new BigDecimal(price)));
+        priceView.set(String.valueOf(CurrencyUtil.formatVNDecimal(price)));
     }
 
     public Dish toModel(DishViewModel viewModel) {

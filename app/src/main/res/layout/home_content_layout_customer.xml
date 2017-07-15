@@ -17,7 +17,51 @@
             android:id="@+id/bottomNavigationContent"
             layout="@layout/bottom_navigation"/>
 
-        <include layout="@layout/layout_processing"
-                 android:id="@+id/processingContainer"/>
+        <include
+            android:id="@+id/processingContainer"
+            layout="@layout/layout_processing"/>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/rlNoResult"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#66000000"
+                        android:visibility="gone">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:padding="16dp"
+                app:cardBackgroundColor="#FFF"
+                app:cardElevation="4dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/avi"
+                        android:layout_alignTop="@+id/avi"
+                        android:layout_toRightOf="@+id/avi"
+                        android:gravity="center"
+                        android:text="Không tìm thấy kết quả"
+                        android:textAllCaps="true"
+                        android:textSize="20sp"/>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+        </RelativeLayout>
+
     </RelativeLayout>
 </layout>

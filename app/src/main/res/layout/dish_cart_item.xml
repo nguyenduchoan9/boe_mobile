@@ -102,7 +102,7 @@
                     android:layout_toLeftOf="@+id/ivMinus"
                     android:layout_toRightOf="@+id/tvQuantity"
                     android:fontFamily="serif-monospace"
-                    android:text='@{" = " + viewModel.totalView + " VND"}'
+                    android:text='@{" = " + viewModel.totalView}'
                     android:textAlignment="textStart"
                     android:textSize="@dimen/size_medium_text"/>
 

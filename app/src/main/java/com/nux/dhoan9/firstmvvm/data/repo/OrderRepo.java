@@ -13,10 +13,15 @@ import rx.Observable;
  */
 
 public interface OrderRepo {
-    Observable<OrderCreateResponse> makeOrder(String cart, int tableNumber);
+    Observable<OrderCreateResponse> makeOrder(String cart, int tableNumber, String paymentId);
+
     Observable<List<OrderView>> getOrder();
+
     Observable<OrderInfo> getOrderInfo(String orderId);
+
     Observable<CanOrder> isAvailable();
+
     Observable<StatusResponse> fullyRefund(int id);
+
     Observable<StatusResponse> partialRefund(int id, float totla, String dishList);
 }

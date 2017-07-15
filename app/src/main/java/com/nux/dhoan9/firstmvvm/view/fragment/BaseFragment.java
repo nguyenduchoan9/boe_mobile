@@ -19,6 +19,7 @@ import rx.subjects.PublishSubject;
 public abstract class BaseFragment extends Fragment {
     private PublishSubject<BaseFragment> createView = PublishSubject.create();
     private PublishSubject<BaseFragment> destroyView = PublishSubject.create();
+    protected boolean isInit = true;
 
     public PublishSubject<BaseFragment> preDestroyView() {
         return destroyView;
@@ -64,5 +65,25 @@ public abstract class BaseFragment extends Fragment {
     protected void setProcessing(RelativeLayout rlProcessing, TextView tvProcessingTitle) {
         ((BaseActivity) getActivity()).rlProcessing = rlProcessing;
         ((BaseActivity) getActivity()).tvProcessingTitle = tvProcessingTitle;
+    }
+
+    protected void showProgressingOnSearching(){
+        ((CustomerActivity)getActivity()).showProgressAndDisableTouch();
+    }
+
+    protected void hideProgressingOnSearching(){
+        ((CustomerActivity)getActivity()).hideProgressAndEnableTouch();
+    }
+
+    public void showNoSearchResult(){
+        ((CustomerActivity)getActivity()).showNoSearchResult();
+    }
+
+    public void hideNoSearchResult(){
+        ((CustomerActivity)getActivity()).hideNoSearchResult();
+    }
+
+    protected void setSearchKeyOnSearchBar(String key){
+        ((CustomerActivity)getActivity()).setSearchKeyInBar(key);
     }
 }

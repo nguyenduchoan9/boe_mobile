@@ -1,5 +1,6 @@
 package com.nux.dhoan9.firstmvvm.view.fragment;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,20 +14,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
+import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
+import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
+import com.nux.dhoan9.firstmvvm.data.response.CanOrder;
 import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentOrderBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.model.OrderInfoItem;
+import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
+import com.nux.dhoan9.firstmvvm.view.activity.PaypalActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.OrderAdapter;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemViewModel;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
@@ -39,6 +48,10 @@ public class OrderFragment extends BaseFragment {
     OrderAdapter adapter;
     @Inject
     CartManager cartManager;
+    @Inject
+    OrderRepo orderRepo;
+    @Inject
+    DishRepo dishRepo;
     float total = 0F;
     RecyclerView rvCart;
 
@@ -77,6 +90,7 @@ public class OrderFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
+        binding.rlHourOver.setVisibility(View.GONE);
         if (cartManager.getCart().isEmpty()) {
             binding.rlEmptyMsg.setVisibility(View.VISIBLE);
             isCheckAvailable.onNext(false);
@@ -104,12 +118,53 @@ public class OrderFragment extends BaseFragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> showProcessing(getString(R.string.text_processing)))
-                .doOnCompleted(() -> hideProcessing())
                 .subscribe(result -> {
                     initTotalPayment(cartItemListViewModel.getCartItems());
-
+                    checkDishIsAvailable();
                 });
 //        showProcessing("Loading...");
+    }
+
+    private void checkDishIsAvailable() {
+        orderRepo.isAvailable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnTerminate(() -> hideProcessing())
+                .flatMap(new Func1<CanOrder, Observable<List<CartDishAvailable>>>() {
+                    @Override
+                    public Observable<List<CartDishAvailable>> call(CanOrder canOrder) {
+                        if (canOrder.isAvailable()) {
+                            if (cartManager.getCart().size() == 0) {
+                                return dishRepo.checkDishCartAvailable("")
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread());
+                            } else {
+                                return dishRepo.checkDishCartAvailable(getIdDishInCart())
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread());
+                            }
+                        }
+                        return null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(dishNotAvailable -> {
+                    if (null == dishNotAvailable) {
+                        showrRlHourOver();
+                    } else if (0 < dishNotAvailable.size()) {
+                        showBeforeHandle(dishNotAvailable);
+                    }
+                });
+
+    }
+
+    private String getIdDishInCart() {
+        StringBuilder ids = new StringBuilder();
+        for (Map.Entry<Integer, Integer> cartItem : cartManager.getCart().entrySet()) {
+            ids.append(String.valueOf(cartItem.getKey()))
+                    .append("_");
+        }
+        return ids.deleteCharAt(ids.length() - 1).toString();
     }
 
     private void navigationBottom() {
@@ -135,7 +190,7 @@ public class OrderFragment extends BaseFragment {
                     return;
                 }
                 total += oops.price;
-                String textTotal = String.valueOf(new BigDecimal(total));
+                String textTotal = String.valueOf(new BigDecimal(getTotalPayment()));
                 setTotal(textTotal);
             }
 
@@ -146,7 +201,7 @@ public class OrderFragment extends BaseFragment {
                     return;
                 }
                 total -= oops.price;
-                String textTotal = String.valueOf(new BigDecimal(total));
+                String textTotal = String.valueOf(new BigDecimal(getTotalPayment()));
                 setTotal(textTotal);
 
             }
@@ -154,7 +209,7 @@ public class OrderFragment extends BaseFragment {
             @Override
             public void onRemove(float minus) {
                 total -= minus;
-                String textTotal = String.valueOf(new BigDecimal(total));
+                String textTotal = String.valueOf(new BigDecimal(getTotalPayment()));
                 setTotal(textTotal);
             }
         });
@@ -181,7 +236,13 @@ public class OrderFragment extends BaseFragment {
     }
 
     public float getTotalPayment() {
-        return total;
+        List<CartItemViewModel> vms = cartItemListViewModel.getCartItems();
+        float mtotal = 0F;
+        for(int i =0; i< vms.size(); i ++){
+            CartItemViewModel item = vms.get(i);
+            mtotal += (item.quantity*item.price);
+        }
+        return mtotal;
     }
 
     public int getItemtotal() {
@@ -191,12 +252,42 @@ public class OrderFragment extends BaseFragment {
     public void showDialog(List<CartDishAvailable> infoItemList) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         OrderNotAvailableDialog dialog = OrderNotAvailableDialog.newInstance(infoItemList);
+        dialog.setListener(new OrderNotAvailableDialog.OrderInfoListener() {
+            @Override
+            public void onOrderClick(List<CartDishAvailable> items) {
+//                for (CartDishAvailable item : items) {
+//                    cartManager.removeOutOfCart(item.getId());
+//                }
+                cartItemListViewModel.notifyCartChange(items);
+                ((CustomerActivity) getActivity()).notifyCartChange();
+                setTotal(String.valueOf(new BigDecimal(getTotalPayment())));
+                ((CustomerActivity) getActivity()).performClickContinues();
+            }
+
+            @Override
+            public void onCancelClick() {
+                cartManager.clear();
+//                cartItemListViewModel.notifyCartChange();
+                ((CustomerActivity) getActivity()).notifyCartChange();
+                ((CustomerActivity) getActivity()).showOrderFragment();
+            }
+        });
+        dialog.show(fm, "eeee");
+    }
+
+    public void showrRlHourOver() {
+        binding.rlHourOver.setVisibility(View.VISIBLE);
+    }
+
+    public void showBeforeHandle(List<CartDishAvailable> infoItemList) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        BeforeDishNotAvailableDialog dialog = BeforeDishNotAvailableDialog.newInstance(infoItemList);
         dialog.setListener(items -> {
             for (CartDishAvailable item : items) {
                 cartManager.removeOutOfCart(item.getId());
             }
             ((CustomerActivity) getActivity()).showOrderFragment();
         });
-        dialog.show(fm, "eeee");
+        dialog.show(fm, "beyond");
     }
 }

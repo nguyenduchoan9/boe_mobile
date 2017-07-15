@@ -24,7 +24,8 @@ public interface OrderServices {
     @POST("orders")
     @FormUrlEncoded
     Observable<OrderCreateResponse> makeOrder(@Field("order") String orderParams,
-                                              @Field("table_number") int tableNumber);
+                                              @Field("table_number") int tableNumber,
+                                              @Field("payment_id") String paymentId);
 
     @GET("orders")
     Observable<List<OrderView>> getOrder();

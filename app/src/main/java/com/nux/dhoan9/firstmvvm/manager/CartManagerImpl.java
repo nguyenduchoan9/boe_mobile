@@ -1,9 +1,7 @@
 package com.nux.dhoan9.firstmvvm.manager;
 
-import android.content.Intent;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +64,17 @@ public class CartManagerImpl implements CartManager {
             pos = cart.get(dishId);
         }
         return pos;
+    }
+
+    @Override
+    public float getTotal() {
+        if (null != cart) {
+            float total = 0;
+            for (Map.Entry<Integer, Integer> item : cart.entrySet()) {
+
+            }
+        }
+        return 0;
     }
 
     public int getItemTotal() {

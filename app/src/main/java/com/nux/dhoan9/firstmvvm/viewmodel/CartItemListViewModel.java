@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.nux.dhoan9.firstmvvm.data.repo.CartRepo;
 import com.nux.dhoan9.firstmvvm.data.request.CartItemRequest;
+import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.model.CartItem;
 import com.nux.dhoan9.firstmvvm.model.Dish;
@@ -108,12 +109,32 @@ public class CartItemListViewModel extends BaseViewModel {
     }
 
     public float remove(int pos) {
+        if(-1 == pos){
+            return 0;
+        }
         CartItemViewModel item = cartItems.get(pos);
         float minus = item.price * item.quantity;
         cartManager.removeOutOfCart(item.id);
         cartItems.remove(pos);
         listBinder.notifyDataChange(cartItems);
         return minus;
+    }
+
+    private int findPos(CartDishAvailable item) {
+        for (int i = 0; i < cartItems.size(); i ++){
+            CartItemViewModel vm = cartItems.get(i);
+            if(vm.id == item.getId()){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void notifyCartChange(List<CartDishAvailable> items) {
+        for (CartDishAvailable item : items) {
+            remove(findPos(item));
+        }
+        listBinder.notifyDataChange(cartItems);
     }
 }
 

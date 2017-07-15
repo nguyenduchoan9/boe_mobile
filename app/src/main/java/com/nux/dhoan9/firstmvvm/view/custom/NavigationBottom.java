@@ -34,6 +34,7 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
     public TextView tvOrderBadge;
     public TextView tvHistoryBadge;
     public TextView tvHistory, tvDrinking, tvOrder, tvCutlery;
+    public boolean isCanHanle = true;
 
     public NavigationBottom(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -129,7 +130,7 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        if (null != listener) {
+        if (null != listener && isCanHanle) {
             int id = v.getId();
             switch (id) {
                 case R.id.rlCutlery:

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -38,6 +39,7 @@ import com.nux.dhoan9.firstmvvm.manager.LocalServices;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
+import com.nux.dhoan9.firstmvvm.utils.CurrencyUtil;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.view.fragment.CutleryFragment;
@@ -236,6 +238,7 @@ public class CustomerActivity extends BaseActivity {
                 if (query.length() == 0) {
                     return true;
                 }
+                hideNoSearchResult();
                 svSearch.clearFocus();
                 searchQuery = query;
                 handleQuerySearchSubmit(query.trim());
@@ -391,12 +394,15 @@ public class CustomerActivity extends BaseActivity {
     }
 
     private void showFragmentPosition(int pos) {
+        cutleryFragment.hideNoSearchResult();
+        drinkingFragment.hideNoSearchResult();
         if (CUTLERY_POS == pos) {
             showFragment(cutleryFragment);
             setDishToolBar();
             clearSearchBox();
             cutleryFragment.synTheCart();
-            cutleryFragment.clearSearchKey();
+//            cutleryFragment.clearSearchKey();
+            cutleryFragment.onResume();
             hideFragment(drinkingFragment);
             hideFragment(orderFragment);
             hideFragment(historyFragment);
@@ -405,7 +411,8 @@ public class CustomerActivity extends BaseActivity {
             setDishToolBar();
             clearSearchBox();
             drinkingFragment.synTheCart();
-            drinkingFragment.clearSearchKey();
+//            drinkingFragment.clearSearchKey();
+            drinkingFragment.onResume();
             hideFragment(cutleryFragment);
             hideFragment(orderFragment);
             hideFragment(historyFragment);
@@ -424,6 +431,7 @@ public class CustomerActivity extends BaseActivity {
             hideFragment(drinkingFragment);
             hideFragment(orderFragment);
         }
+
         fragmentPos = pos;
     }
 
@@ -438,7 +446,7 @@ public class CustomerActivity extends BaseActivity {
     }
 
     public void setTotalOrder(String total) {
-        tvTotal.setText(total);
+        tvTotal.setText(CurrencyUtil.formatVNDecimal(Float.valueOf(total)));
     }
 
     public void setOrderToolBar() {
@@ -451,7 +459,11 @@ public class CustomerActivity extends BaseActivity {
         svSearch.setVisibility(View.VISIBLE);
     }
 
-    private void onContinuesClick() {
+    public void performClickContinues() {
+        tvContinues.performClick();
+    }
+
+    public void onContinuesClick() {
         tvContinues.setOnClickListener(v -> {
             float total = orderFragment.getTotalPayment();
             if (0F == total) {
@@ -475,36 +487,26 @@ public class CustomerActivity extends BaseActivity {
                     })
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(dishNotAvailable -> {
-//                        if (isAvailable.isAvailable()) {
-//                            Intent i = new Intent(this, PaypalActivity.class);
-//                            i.putExtra(Constant.KEY_TOTAL_PAYMENT, total);
-//                            i.putExtra(Constant.KEY_ORDER_NAME, "Hello");
-//                            i.putExtra(Constant.KEY_ORDER_ITEM_TOTAL, orderFragment.getItemtotal());
-//
-//                            startActivity(i);
-//                        } else {
-//                            ToastUtils.toastLongMassage(CustomerActivity.this, "Order time is over.");
-//                        }
                         if (null == dishNotAvailable) {
-                            ToastUtils.toastLongMassage(CustomerActivity.this, "Order time is over.");
+                            orderFragment.showrRlHourOver();
                         } else if (0 == dishNotAvailable.size()) {
-                            Intent i = new Intent(this, PaypalActivity.class);
-                            i.putExtra(Constant.KEY_TOTAL_PAYMENT, total);
-                            i.putExtra(Constant.KEY_ORDER_NAME, "Hello");
-                            i.putExtra(Constant.KEY_ORDER_ITEM_TOTAL, orderFragment.getItemtotal());
-
-                            startActivity(i);
+                            navToPayment();
                         } else if (0 < dishNotAvailable.size()) {
                             orderFragment.showDialog(dishNotAvailable);
-//                            String s = "";
-//                            for (CartDishAvailable item : dishNotAvailable) {
-//                                s = s + item.getName() + "-";
-//                            }
-//                            ToastUtils.toastLongMassage(CustomerActivity.this, s + " is not available");
                         }
                     });
 
         });
+    }
+
+    public void navToPayment() {
+        float total = orderFragment.getTotalPayment();
+        Intent i = new Intent(this, PaypalActivity.class);
+        i.putExtra(Constant.KEY_TOTAL_PAYMENT, total);
+        i.putExtra(Constant.KEY_ORDER_NAME, "Hello");
+        i.putExtra(Constant.KEY_ORDER_ITEM_TOTAL, orderFragment.getItemtotal());
+
+        startActivity(i);
     }
 
     public String getSearchQuery() {
@@ -545,6 +547,44 @@ public class CustomerActivity extends BaseActivity {
             ids.append(String.valueOf(cartItem.getKey()))
                     .append("_");
         }
-        return ids.deleteCharAt(ids.length() - 1).toString();
+        return (ids.length() == 0) ? "" : ids.deleteCharAt(ids.length() - 1).toString();
+    }
+
+    public void notifyCartChange() {
+        cutleryFragment.notifyChange();
+        drinkingFragment.notifyChange();
+    }
+
+    public void showProgressAndDisableTouch() {
+        showProcessing("Đang tìm kiếm...");
+        navigationBottom.isCanHanle = false;
+    }
+
+    public void hideProgressAndEnableTouch() {
+        hideProcessing();
+        navigationBottom.isCanHanle = true;
+    }
+
+    public void showNoSearchResult() {
+        binding.actionBarContent.content.rlNoResult.setVisibility(View.VISIBLE);
+    }
+
+    public void hideNoSearchResult() {
+        binding.actionBarContent.content.rlNoResult.setVisibility(View.GONE);
+    }
+
+    public void setSearchKeyInBar(String key) {
+        int searchPlateId = svSearch.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
+        View searchPlateView = svSearch.findViewById(searchPlateId);
+        if (searchPlateView != null) {
+            searchPlateView.setBackgroundColor(Color.TRANSPARENT);
+        }
+        if ("".equals(key)) {
+            svSearch.setIconifiedByDefault(true);
+        } else {
+            svSearch.setIconifiedByDefault(false);
+            svSearch.setQuery(key, false);
+        }
+//        svSearch.clearFocus();
     }
 }

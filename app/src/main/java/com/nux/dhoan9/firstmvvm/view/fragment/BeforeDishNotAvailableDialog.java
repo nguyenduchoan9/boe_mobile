@@ -11,14 +11,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
-import com.nux.dhoan9.firstmvvm.model.OrderInfoItem;
 import com.nux.dhoan9.firstmvvm.view.adapter.DishNotAvailableInfoAdapter;
-import com.nux.dhoan9.firstmvvm.view.adapter.OrderInfoAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,17 +23,17 @@ import java.util.List;
  * Created by hoang on 14/06/2017.
  */
 
-public class OrderNotAvailableDialog extends DialogFragment {
+public class BeforeDishNotAvailableDialog extends DialogFragment {
     DishNotAvailableInfoAdapter adapter;
     RecyclerView rvList;
     Button btnCancel;
     Button btnOrder;
 
-    public OrderNotAvailableDialog() {
+    public BeforeDishNotAvailableDialog() {
     }
 
-    public static OrderNotAvailableDialog newInstance(List<CartDishAvailable> items) {
-        OrderNotAvailableDialog dialog = new OrderNotAvailableDialog();
+    public static BeforeDishNotAvailableDialog newInstance(List<CartDishAvailable> items) {
+        BeforeDishNotAvailableDialog dialog = new BeforeDishNotAvailableDialog();
         Bundle args = new Bundle();
         args.putParcelableArrayList("list", (ArrayList<? extends Parcelable>) items);
         dialog.setArguments(args);
@@ -61,7 +58,7 @@ public class OrderNotAvailableDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.layout_dialog_order_info, container);
+        return inflater.inflate(R.layout.layout_dialog_before_order_info, container);
     }
 
     @Override
@@ -73,11 +70,6 @@ public class OrderNotAvailableDialog extends DialogFragment {
         btnOrder = (Button) view.findViewById(R.id.btnOrder);
         btnOrder.setOnClickListener(v -> {
             listener.onOrderClick(getArguments().getParcelableArrayList("list"));
-            dismiss();
-        });
-        btnCancel = (Button) view.findViewById(R.id.btnCancel);
-        btnCancel.setOnClickListener(v -> {
-            listener.onCancelClick();
             dismiss();
         });
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -108,7 +100,6 @@ public class OrderNotAvailableDialog extends DialogFragment {
 
     public interface OrderInfoListener {
         void onOrderClick(List<CartDishAvailable> items);
-        void onCancelClick();
     }
 
     private OrderInfoListener listener;

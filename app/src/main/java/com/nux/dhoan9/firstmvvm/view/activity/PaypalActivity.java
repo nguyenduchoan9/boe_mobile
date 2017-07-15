@@ -93,7 +93,7 @@ public class PaypalActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(R.string.bill_text);
         ButterKnife.bind(this);
-        tvAmount.setText(String.valueOf(new BigDecimal(getTotal())) + " VND");
+        tvAmount.setText(CurrencyUtil.formatVNDecimal(getTotal()));
         tvDinerName.setText(getDinerName());
         Date orderDate = new Date();
         tvOrderDate.setText(convertDateToVietNam(orderDate));
@@ -116,7 +116,13 @@ public class PaypalActivity extends BaseActivity {
         int minute = cal.get(Calendar.MINUTE);
         int seconds = cal.get(Calendar.SECOND);
 
-        String sf = String.format("%s/%s/%s %s:%s:%s", day, month, year, hour, minute, seconds);
+        String sDay = String.valueOf(day).length() == 1 ? ("0" + String.valueOf(day)) : String.valueOf(day);
+        String sMonth = String.valueOf(month).length() == 1 ? ("0" + String.valueOf(month)) : String.valueOf(month);
+        String sHour = String.valueOf(hour).length() == 1 ? ("0" + String.valueOf(hour)) : String.valueOf(hour);
+        String sMinute = String.valueOf(minute).length() == 1 ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+        String sSecond = String.valueOf(seconds).length() == 1 ? ("0" + String.valueOf(seconds)) : String.valueOf(seconds);
+
+        String sf = String.format("%s/%s/%s %s:%s:%s", sDay, sMonth, year, sHour, sMinute, sSecond);
         return sf.toString();
     }
 
@@ -140,8 +146,8 @@ public class PaypalActivity extends BaseActivity {
     private void onOkPress() {
         CurrencyUtil.convertVNDToUSD(getTotal())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> showProcessing(null))
-                .doOnTerminate(() -> hideProcessing())
+                .doOnSubscribe(() -> showMProcessing(null))
+                .doOnTerminate(() -> hideMProcessing())
                 .subscribe(usdMoney -> {
                     PayPalPayment payment = new PayPalPayment(new BigDecimal(usdMoney),
                             "USD", getOrderName(), PayPalPayment.PAYMENT_INTENT_SALE);
@@ -187,7 +193,7 @@ public class PaypalActivity extends BaseActivity {
                         Gson gson = new Gson();
                         invoiceResp = gson.fromJson(res, PaypalInvoiceResp.class);
                         Log.i(LOG_TAG, invoiceResp.toString());
-                        showProcessing("Processing...");
+                        showMProcessing("Processing...");
                         handleSuccessfullyPayment();
                         btnPay.setVisibility(View.GONE);
                         isSuccess = true;
@@ -204,10 +210,13 @@ public class PaypalActivity extends BaseActivity {
     }
 
     private void handleSuccessfullyPayment() {
-        orderRepo.makeOrder(getCartParams(), Integer.valueOf(preferencesManager.getTableInfo().table_number))
+        orderRepo.makeOrder(getCartParams(),
+                Integer.valueOf(preferencesManager.getTableInfo().table_number),
+                invoiceResp.getResponse().getId())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .doOnTerminate(() -> hideProcessing())
+                .doOnSubscribe(() -> showMProcessing(null))
+                .doOnTerminate(() -> hideMProcessing())
                 .subscribe(orderCreateRes -> {
                     orderCreateResponse = orderCreateRes;
                     if (orderCreateRes.getDish().size() > 0) {
@@ -219,7 +228,8 @@ public class PaypalActivity extends BaseActivity {
                         showDialogConfirmContinue(orderCreateRes.getDish());
                     } else {
                         cartManager.clear();
-                        showDialogInform();
+                        startActivity(CustomerActivity.newInstance(PaypalActivity.this));
+//                        showDialogInform();
                     }
 
                 });
@@ -292,17 +302,17 @@ public class PaypalActivity extends BaseActivity {
         }
     }
 
-    public void showProcessing(String title) {
+    public void showMProcessing(String title) {
         if (null != title) {
-            tvProcessingTitle.setText(title);
+            mTvProcessingTitle.setText(title);
         } else {
-            tvProcessingTitle.setText(R.string.text_processing);
+            mTvProcessingTitle.setText(R.string.text_processing);
         }
-        rlProcessing.setVisibility(View.VISIBLE);
+        mRlProcessing.setVisibility(View.VISIBLE);
     }
 
-    public void hideProcessing() {
-        rlProcessing.setVisibility(View.GONE);
+    public void hideMProcessing() {
+        mRlProcessing.setVisibility(View.GONE);
     }
 
     private void showDialogConfirmContinue(List<Dish> infoItemList) {
@@ -318,10 +328,11 @@ public class PaypalActivity extends BaseActivity {
                     total += (quantity * item.getPrice());
                 }
                 float finalTotal = total;
+                showMProcessing(null);
                 CurrencyUtil.convertVNDToUSD(total)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe(() -> showProcessing(null))
+                        .doOnSubscribe(() -> showMProcessing(null))
                         .subscribe(usdMoney -> {
                             PaypalServices.getCredential()
                                     .subscribeOn(Schedulers.io())
@@ -356,22 +367,23 @@ public class PaypalActivity extends BaseActivity {
                                                             finalTotal, dishList.deleteCharAt(dishList.length() - 1).toString())
                                                             .subscribeOn(Schedulers.io())
                                                             .observeOn(AndroidSchedulers.mainThread())
-                                                            .doOnTerminate(() -> hideProcessing())
+                                                            .doOnTerminate(() -> hideMProcessing())
                                                             .subscribe(new Subscriber<StatusResponse>() {
                                                                 @Override
                                                                 public void onCompleted() {
-
+                                                                    hideMProcessing();
                                                                 }
 
                                                                 @Override
                                                                 public void onError(Throwable e) {
-
+                                                                    hideMProcessing();
                                                                 }
 
                                                                 @Override
                                                                 public void onNext(StatusResponse partialRefundResponse) {
                                                                     cartManager.clear();
                                                                     startActivity(CustomerActivity.newInstance(PaypalActivity.this));
+                                                                    hideMProcessing();
                                                                 }
                                                             });
                                                 });
@@ -384,10 +396,11 @@ public class PaypalActivity extends BaseActivity {
                 // Huy order
 //                ToastUtils.toastShortMassage(PaypalActivity.this, "on Angry click");
 //                Transa
+                showMProcessing(null);
                 PaypalServices.getCredential()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe(() -> showProcessing(null))
+                        .doOnSubscribe(() -> showMProcessing(null))
                         .subscribe(credential -> {
                             ToastUtils.toastShortMassage(PaypalActivity.this, "credential success");
                             PaypalServices.getDetailByPaymentId(invoiceResp.getResponse().getId(), credential.getAccessToken())
@@ -425,16 +438,16 @@ public class PaypalActivity extends BaseActivity {
                                             orderRepo.fullyRefund(orderCreateResponse.getOrderId())
                                                     .subscribeOn(Schedulers.io())
                                                     .observeOn(AndroidSchedulers.mainThread())
-                                                    .doOnTerminate(() -> hideProcessing())
+                                                    .doOnTerminate(() -> hideMProcessing())
                                                     .subscribe(new Subscriber<StatusResponse>() {
                                                         @Override
                                                         public void onCompleted() {
-
+                                                            hideMProcessing();
                                                         }
 
                                                         @Override
                                                         public void onError(Throwable e) {
-
+                                                            hideMProcessing();
                                                         }
 
                                                         @Override
@@ -442,6 +455,7 @@ public class PaypalActivity extends BaseActivity {
                                                             ToastUtils.toastShortMassage(PaypalActivity.this, " success");
                                                             cartManager.clear();
                                                             startActivity(CustomerActivity.newInstance(PaypalActivity.this));
+                                                            hideMProcessing();
                                                         }
                                                     });
                                         }

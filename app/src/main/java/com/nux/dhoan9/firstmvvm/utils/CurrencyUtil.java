@@ -1,6 +1,10 @@
 package com.nux.dhoan9.firstmvvm.utils;
 
 import com.nux.dhoan9.firstmvvm.model.Currency;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -21,15 +25,22 @@ public class CurrencyUtil {
                 .build();
     }
 
-    public static Observable<Float> convertVNDToUSD(float vnd){
+    public static Observable<Float> convertVNDToUSD(float vnd) {
         CurrencyService service = create().create(CurrencyService.class);
         return service.getCurrencyRate()
                 .compose(RxUtils.onProcessRequest())
                 .map(currency -> currency.convertVNDtoUSD(vnd));
     }
 
-    public interface CurrencyService{
+    public interface CurrencyService {
         @GET("live?access_key=088bcad87c3fd862b4793c2f535089ba")
         Observable<Currency> getCurrencyRate();
+    }
+
+    public static String formatVNDecimal(float money) {
+        Locale local = new Locale("vi","VN");
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(local);
+//        DecimalFormat decimalFormat = new DecimalFormat("###.###.###");
+        return currencyFormat.format(money);
     }
 }

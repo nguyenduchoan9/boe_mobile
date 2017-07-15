@@ -89,4 +89,7 @@ public class MenuCategoryListAdapter extends RecyclerView.Adapter<MenuCategoryLi
     public void setKeySearch(String keySearch) {
         this.keySearch = keySearch;
     }
+    public String getKeySearch(){
+        return keySearch;
+    }
 }

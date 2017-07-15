@@ -20,7 +20,7 @@
             android:id="@+id/tvTotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text='@{vm.totalView + " VND"}'
+            android:text='@{vm.totalView}'
             android:textSize="@dimen/size_large_text"/>
 
         <TextView

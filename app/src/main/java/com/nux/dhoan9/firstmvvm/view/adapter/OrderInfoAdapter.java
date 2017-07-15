@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.model.OrderInfoItem;
+import com.nux.dhoan9.firstmvvm.utils.CurrencyUtil;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -35,12 +36,11 @@ public class OrderInfoAdapter extends RecyclerView.Adapter<OrderInfoAdapter.Orde
         OrderInfoItem item = list.get(position);
         float total = item.getPrice() * item.getQuantity();
         holder.tvDate.setText(item.getCreateAt());
-        holder.tvTotal.setText(String.valueOf(new BigDecimal(item.getPrice()))
+        holder.tvTotal.setText(String.valueOf(CurrencyUtil.formatVNDecimal(item.getPrice()))
                 + " x "
                 + String.valueOf(item.getQuantity())
                 + " = "
-                + String.valueOf(String.valueOf(new BigDecimal(total)))
-                + " VND");
+                + String.valueOf(String.valueOf(CurrencyUtil.formatVNDecimal(total))));
         holder.tvDishName.setText(item.getName());
     }
 

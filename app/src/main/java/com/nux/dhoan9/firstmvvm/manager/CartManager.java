@@ -24,4 +24,6 @@ public interface CartManager {
     List<Integer> getCartOrder();
 
     int getQuantityById(int dishId);
+
+    float getTotal();
 }

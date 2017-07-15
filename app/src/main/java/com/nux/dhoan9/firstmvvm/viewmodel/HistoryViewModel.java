@@ -2,6 +2,7 @@ package com.nux.dhoan9.firstmvvm.viewmodel;
 
 import android.databinding.ObservableField;
 import com.nux.dhoan9.firstmvvm.model.OrderView;
+import com.nux.dhoan9.firstmvvm.utils.CurrencyUtil;
 import java.math.BigDecimal;
 
 /**
@@ -18,7 +19,7 @@ public class HistoryViewModel {
         this.listOrderId = view.getListOrderId();
         this.total = view.getTotal();
         this.orderDate = view.getOrderDate();
-        totalView.set(String.valueOf(new BigDecimal(total)));
+        totalView.set(CurrencyUtil.formatVNDecimal(total));
     }
 
     @Override

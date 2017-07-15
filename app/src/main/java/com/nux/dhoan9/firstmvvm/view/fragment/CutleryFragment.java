@@ -32,6 +32,7 @@ public class CutleryFragment extends BaseFragment {
     @Inject
     @Named("cutlery")
     MenuCateListViewModel viewModel;
+    private boolean isHaveResult = true;
 
     public CutleryFragment() {
         // Required empty public constructor
@@ -73,6 +74,9 @@ public class CutleryFragment extends BaseFragment {
         Log.i(log, "onStart");
         initializerData();
         ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
+        Glide.with(this)
+                .load(Constant.API_ENDPOINT + "/images/background.jpg")
+                .into(binding.ivBackground);
     }
 
     private String log = "zzzzzz-Cutlery_TAG";
@@ -88,14 +92,30 @@ public class CutleryFragment extends BaseFragment {
         binding.executePendingBindings();
         viewModel.initialize(false)
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(() ->showProcessing(getString(R.string.text_processing)))
+                .doOnSubscribe(() -> showProcessing(getString(R.string.text_processing)))
                 .doOnCompleted(() -> hideProcessing())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                 });
-        Glide.with(this)
-                .load(Constant.API_ENDPOINT + "/images/background.jpg")
-                .into(binding.ivBackground);
+
+    }
+
+    public void handleNoSearchResultView() {
+        if (isInit) {
+            isInit = false;
+        } else {
+            if (!isHaveResult) {
+                showNoSearchResult();
+                rvDish.setVisibility(View.INVISIBLE);
+                setSearchKeyOnSearchBar(adapter.getKeySearch());
+            } else {
+                hideNoSearchResult();
+                if (rvDish.getVisibility() != View.VISIBLE) {
+                    rvDish.setVisibility(View.VISIBLE);
+                }
+                setSearchKeyOnSearchBar(adapter.getKeySearch());
+            }
+        }
     }
 
     private void initView() {
@@ -105,20 +125,6 @@ public class CutleryFragment extends BaseFragment {
         rvDish = binding.rvDish;
         rvDish.setAdapter(adapter);
         rvDish.setLayoutManager(manager);
-//        rvDish.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
-//                if (dy > 0) {
-////                    // Scrolling up
-//                    view.setVisibility(View.GONE);
-//                } else {
-//                    // Scrolling down
-//                    view.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
     }
 
     public void synTheCart() {
@@ -132,6 +138,10 @@ public class CutleryFragment extends BaseFragment {
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(v -> clearSearchKey())
                     .subscribe(result -> {
+                        isHaveResult = true;
+                        clearSearchKey();
+                        hideNoSearchResult();
+                        rvDish.setVisibility(View.VISIBLE);
                         binding.srRefresh.setRefreshing(false);
                     });
         });
@@ -147,10 +157,25 @@ public class CutleryFragment extends BaseFragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(action -> setAdapterSearchKey(keySearch))
-                .doOnNext(v -> showProcessing(getString(R.string.text_processing)))
-                .doOnTerminate(() -> hideProcessing())
+                .doOnSubscribe(() -> showProgressingOnSearching())
+                .doOnTerminate(() -> hideProgressingOnSearching())
                 .subscribe(result -> {
+                    if (result.size() == 0) {
+                        showNoSearchResult();
+                        rvDish.setVisibility(View.INVISIBLE);
+                        isHaveResult = false;
+                    } else {
+                        hideNoSearchResult();
+                        rvDish.setVisibility(View.VISIBLE);
+                        isHaveResult = true;
+                    }
                 });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        handleNoSearchResultView();
     }
 
     private void setAdapterSearchKey(String searchKey) {
@@ -160,4 +185,9 @@ public class CutleryFragment extends BaseFragment {
     public void clearSearchKey() {
         setAdapterSearchKey("");
     }
+
+    public void notifyChange() {
+        viewModel.notifyCartChange();
+    }
+
 }

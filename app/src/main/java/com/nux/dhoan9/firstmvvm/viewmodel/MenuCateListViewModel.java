@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
-import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.model.MenuCategories;
 import com.nux.dhoan9.firstmvvm.utils.ThreadScheduler;
 import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
@@ -176,5 +175,9 @@ public class MenuCateListViewModel extends BaseViewModel {
 
     public String getSearchKey() {
         return searchKey;
+    }
+
+    public void notifyCartChange(){
+        menuListBinder.notifyDataChange(menuCategoriesViewModels);
     }
 }

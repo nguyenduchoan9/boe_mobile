@@ -4,6 +4,7 @@ import android.databinding.ObservableField;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.model.CartItem;
 import com.nux.dhoan9.firstmvvm.model.Dish;
+import com.nux.dhoan9.firstmvvm.utils.CurrencyUtil;
 import java.math.BigDecimal;
 import rx.Observable;
 
@@ -21,9 +22,9 @@ public class CartItemViewModel extends DishViewModel {
     public CartItemViewModel(Dish dish, int quantity, CartManager cartManager) {
         super(dish, cartManager);
         this.quantity = quantity;
-        priceView.set(String.valueOf(new BigDecimal(price)));
+        priceView.set(CurrencyUtil.formatVNDecimal(price));
         quantityView.set(String.valueOf(quantity));
-        totalView.set(String.valueOf(new BigDecimal(price * quantity)));
+        totalView.set(CurrencyUtil.formatVNDecimal(price * quantity));
         this.cartManager = cartManager;
     }
 

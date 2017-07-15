@@ -130,7 +130,7 @@ public class DishRepoImpl implements DishRepo {
     @Override
     public Observable<List<MenuCategories>> getDrinkingByKeySearch(String keySearch) {
         return Observable.create(subscriber -> {
-            services.getCutleryByKeySearch(keySearch)
+            services.getDrinkingByKeySearch(keySearch)
                     .compose(RxUtils.onProcessRequest())
                     .subscribe(new Subscriber<List<MenuCategories>>() {
                         @Override
@@ -154,7 +154,7 @@ public class DishRepoImpl implements DishRepo {
     @Override
     public Observable<List<MenuCategories>> getCutleryByKeySearch(String keySearch) {
         return Observable.create(subscriber -> {
-            services.getDrinkingByKeySearch(keySearch)
+            services.getCutleryByKeySearch(keySearch)
                     .compose(RxUtils.onProcessRequest())
                     .subscribe(new Subscriber<List<MenuCategories>>() {
                         @Override
