@@ -42,11 +42,11 @@ public class Constant {
     public final static String KEY_ID_CATEGORY = "KEY_ID_CATEGORY";
     public final static String KEY_SEARCH = "KEY_SEARCH";
 
-    public final static String KEY_TOTAL_PAYMENT= "KEY_TOTAL_PAYMENT";
+    public final static String KEY_TOTAL_PAYMENT = "KEY_TOTAL_PAYMENT";
     public final static String KEY_ORDER_NAME = "KEY_ORDER_NAME";
     public final static String KEY_ORDER_ITEM_TOTAL = "KEY_ORDER_ITEM_TOTAL";
     public final static String KEY_ORDER_ADAPTER = "KEY_ORDER_ADAPTER";
 
     public final static String PAYPAL_AUTHORIZRTION = "Basic QWV0elZRaEpoNmtWX3ZfR0RleDBJeW5HT182a3kwVkx6dkYwRDNha0o3WURDVkdZU3JnVHBJVy1GQXEtQWRZbFZXMFRNSjdYZFlwYkNQei06RVAtSHZrTkJXbGw3MWc5cTJQS2ZURHRXWFEwVC1Od3g1X3Y0QVhzZFNlZXEtWTBJQ2hzYXV6ZE1HVHJpVFdyRDBWaTh1TWNsckM1c2hUcGU=";
-
+    public final static String LIST_DISH_NOT_SERVE = "LIST_DISH_NOT_SERVE";
 }

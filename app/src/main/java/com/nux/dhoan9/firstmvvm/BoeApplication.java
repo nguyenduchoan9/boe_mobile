@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 public class BoeApplication extends android.app.Application {
     private AppComponent daggerAppComponent;
+    private boolean isOpenNotification = false;
     @Inject
     PreferencesManager preferencesManager;
     @Inject
@@ -40,5 +41,13 @@ public class BoeApplication extends android.app.Application {
     public void clearPreviousData() {
         preferencesManager.setTableInfo(null);
         cartManager.clear();
+    }
+
+    public boolean isOpenNotification() {
+        return isOpenNotification;
+    }
+
+    public void setOpenNotification(boolean openNotification) {
+        isOpenNotification = openNotification;
     }
 }

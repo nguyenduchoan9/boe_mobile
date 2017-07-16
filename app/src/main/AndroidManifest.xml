@@ -51,7 +51,6 @@
             android:name=".manager.GCMRegistrationIntentService"
             android:exported="false">
         </service>
-
         <service
             android:name=".manager.LocalServices"
             android:stopWithTask="false">
@@ -114,6 +113,8 @@
         <activity
             android:name=".view.activity.PaypalActivity"
             android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".view.activity.ListDishNotServeActivity">
         </activity>
     </application>
 

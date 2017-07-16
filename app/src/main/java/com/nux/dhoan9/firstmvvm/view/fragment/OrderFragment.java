@@ -219,20 +219,6 @@ public class OrderFragment extends BaseFragment {
         rvCart.setAdapter(adapter);
         rvCart.setLayoutManager(manager);
         rvCart.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-//        rvCart.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
-//                if (dy > 0) {
-//                    // Scrolling up
-//                    view.setVisibility(View.GONE);
-//                } else {
-//                    // Scrolling down\
-//                    view.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
     }
 
     public float getTotalPayment() {

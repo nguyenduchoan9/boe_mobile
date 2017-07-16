@@ -1,5 +1,8 @@
 package com.nux.dhoan9.firstmvvm.view.activity;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
@@ -38,8 +42,10 @@ import com.nux.dhoan9.firstmvvm.manager.GCMRegistrationIntentService;
 import com.nux.dhoan9.firstmvvm.manager.LocalServices;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.Dish;
+import com.nux.dhoan9.firstmvvm.model.ParcelDishList;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.CurrencyUtil;
+import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.view.fragment.CutleryFragment;
@@ -47,6 +53,7 @@ import com.nux.dhoan9.firstmvvm.view.fragment.DrinkingFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.EndpointDialogFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.HistoryFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.OrderFragment;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -130,30 +137,32 @@ public class CustomerActivity extends BaseActivity {
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().endsWith(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
                     String token = intent.getStringExtra("token");
-//                    userRepo.registerRegToken(token)
-//                            .compose(RxUtils.onProcessRequest())
-//                            .subscribe(subscribe -> {
-//                                if(true == subscribe.status){
-//                                    Log.v("GCM-register", "Success");
-//                                }else{
-//                                    Log.v("GCM-register", "fail");
-//                                }
-//                            });
+                    userRepo.registerRegToken(token)
+                            .compose(RxUtils.onProcessRequest())
+                            .subscribe(subscribe -> {
+                                if (true == subscribe.status) {
+                                    Log.v("GCM-register", "Success");
+                                } else {
+                                    Log.v("GCM-register", "fail");
+                                }
+                            });
                     Log.v(GCM_TOKEN, token);
                 } else if (intent.getAction().endsWith(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
                     ToastUtils.toastLongMassage(CustomerActivity.this,
                             "GCM registration error");
                 } else if (intent.getAction().endsWith(GCMIntentService.MESSAGE_TO_DINER)) {
                     String message = intent.getStringExtra("body");
+                    Log.d("fucking cool", intent.getStringExtra("body"));
                     if (message.length() > 0) {
                         Gson gson = new Gson();
                         List<Dish> dishes = gson.fromJson(message, new TypeToken<List<Dish>>() {
                         }.getType());
+
                         ToastUtils.toastLongMassage(CustomerActivity.this,
                                 dishes.size() + "");
+                        notifyDishNotServe(dishes);
                     }
-                    ToastUtils.toastLongMassage(CustomerActivity.this,
-                            message);
+
                 } else {
                     ToastUtils.toastShortMassage(getApplicationContext(), "Nothing");
                 }
@@ -587,4 +596,38 @@ public class CustomerActivity extends BaseActivity {
         }
 //        svSearch.clearFocus();
     }
+
+    private final int NOTIFY_DINER = 0;
+    private ArrayList<Dish> notificationdishes = new ArrayList<>();
+
+    private void notifyDishNotServe(List<Dish> dishes) {
+        notificationdishes.addAll(dishes);
+        ParcelDishList parcel = new ParcelDishList();
+        parcel.setDishList(notificationdishes);
+        Intent intent = new Intent(this, ListDishNotServeActivity.class);
+        intent.putExtra(Constant.LIST_DISH_NOT_SERVE, parcel);
+        int requestID = (int) System.currentTimeMillis();
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        PendingIntent pIntent = PendingIntent.getActivity(this, requestID, intent, flags);
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_notification_bell)
+                .setContentTitle("Nhà hàng BOE trân trọng thông báo")
+                .setContentText("Hiện tại chúng tôi không còn phục vụ...")
+                .setContentIntent(pIntent)
+                .setAutoCancel(true)
+                .setLights(Color.BLUE, 500, 500)
+                .addAction(R.drawable.ic_notification_bell, "Ignore", null)
+                .setDefaults(Notification.DEFAULT_SOUND);
+        notificationManager.notify(NOTIFY_DINER, mBuilder.build());
+    }
+
+//    private void setFlagNotification(boolean flag) {
+//        ((BoeApplication) getApplication()).setOpenNotification(flag);
+//    }
+//
+//    private boolean isFlagNotification() {
+//        ((BoeApplication) getApplication()).isOpenNotification();
+//    }
 }

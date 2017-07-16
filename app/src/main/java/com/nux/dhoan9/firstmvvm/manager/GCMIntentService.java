@@ -18,23 +18,9 @@ public class GCMIntentService extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String string, Bundle data) {
-//        PendingIntent pIntent = PendingIntent.getActivity(
-//                this,
-//                (int) System.currentTimeMillis(),
-//                SlashActivity.newInstance(this, "body"),
-//                PendingIntent.FLAG_ONE_SHOT
-//        );
         String to = data.getString("to");
         String body = data.getString("body");
-//        NotificationManager notificationManager =
-//                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-//                .setSmallIcon(R.drawable.ic_add)
-//                .setContentTitle("Test")
-//                .setContentIntent(pIntent)
-//                .setAutoCancel(true)
-//                .setContentText(message);
-//        notificationManager.notify(1, mBuilder.build());
+
         if ("diner".equals(to)) {
             sendMessageToDiner(body);
         } else if ("chef".equals(to)) {

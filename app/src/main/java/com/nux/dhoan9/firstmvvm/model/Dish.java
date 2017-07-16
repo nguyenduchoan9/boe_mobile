@@ -17,6 +17,9 @@ public class Dish implements Parcelable{
     private String image;
 //    private Image image;
 
+    public Dish() {
+    }
+
     protected Dish(Parcel in) {
         id = in.readInt();
         name = in.readString();
