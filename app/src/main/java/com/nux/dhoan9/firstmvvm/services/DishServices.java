@@ -2,7 +2,9 @@ package com.nux.dhoan9.firstmvvm.services;
 
 import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
 import com.nux.dhoan9.firstmvvm.model.Dish;
+import com.nux.dhoan9.firstmvvm.model.DishSugesstion;
 import com.nux.dhoan9.firstmvvm.model.MenuCategories;
+import com.nux.dhoan9.firstmvvm.model.SuggestionByCategory;
 import java.util.List;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -37,4 +39,7 @@ public interface DishServices {
 
     @GET("dishes/check_dish_available")
     Observable<List<CartDishAvailable>> checkDishInCartAvailable(@Query("ids") String ids);
+
+    @GET("dishes/dish_suggestion")
+    Observable<SuggestionByCategory> getSuggestedDish();
 }

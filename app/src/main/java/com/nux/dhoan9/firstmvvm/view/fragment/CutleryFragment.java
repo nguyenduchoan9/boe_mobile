@@ -107,13 +107,13 @@ public class CutleryFragment extends BaseFragment {
             if (!isHaveResult) {
                 showNoSearchResult();
                 rvDish.setVisibility(View.INVISIBLE);
-                setSearchKeyOnSearchBar(adapter.getKeySearch());
+                setSearchKeyOnSearchBar(adapter.getKeySearch(), 0);
             } else {
                 hideNoSearchResult();
                 if (rvDish.getVisibility() != View.VISIBLE) {
                     rvDish.setVisibility(View.VISIBLE);
                 }
-                setSearchKeyOnSearchBar(adapter.getKeySearch());
+                setSearchKeyOnSearchBar(adapter.getKeySearch(), 0);
             }
         }
     }

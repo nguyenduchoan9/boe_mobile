@@ -33,4 +33,5 @@
     <string name="nav_sign_out">Đăng xuất</string>
     <string name="text_loading">Đang tải...</string>
     <string name="text_description_pay_back">Hiện tại, chúng tôi không còn phục vụ các món ăn như bên dưới. Xin quý khách liên hệ quản lý để làm thủ tục hoàn tiền.</string>
+    <string name="text_no_result_found">Không tìm thấy kết quả</string>
 </resources>

@@ -83,7 +83,7 @@ public abstract class BaseFragment extends Fragment {
         ((CustomerActivity)getActivity()).hideNoSearchResult();
     }
 
-    protected void setSearchKeyOnSearchBar(String key){
-        ((CustomerActivity)getActivity()).setSearchKeyInBar(key);
+    protected void setSearchKeyOnSearchBar(String key, int from){
+        ((CustomerActivity)getActivity()).setSearchKeyInBar(key, from);
     }
 }

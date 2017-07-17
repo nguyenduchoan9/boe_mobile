@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,11 +19,16 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.andremion.floatingnavigationview.FloatingNavigationView;
@@ -42,11 +48,13 @@ import com.nux.dhoan9.firstmvvm.manager.GCMRegistrationIntentService;
 import com.nux.dhoan9.firstmvvm.manager.LocalServices;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.Dish;
+import com.nux.dhoan9.firstmvvm.model.DishSugesstion;
 import com.nux.dhoan9.firstmvvm.model.ParcelDishList;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.CurrencyUtil;
 import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
+import com.nux.dhoan9.firstmvvm.view.adapter.DishSugesstionAdapter;
 import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.view.fragment.CutleryFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.DrinkingFragment;
@@ -77,8 +85,9 @@ public class CustomerActivity extends BaseActivity {
     private Toolbar toolbar;
     private SearchView svSearch;
     private TextView tvTotal;
-    private TextView tvContinues;
-
+    private TextView tvContinues, tvNoSuggestResult;
+    private RecyclerView rvSuggestion;
+    private DishSugesstionAdapter suggestionAdapter;
     private String searchQuery = "";
     @Inject
     PreferencesManager preferencesManager;
@@ -94,8 +103,9 @@ public class CustomerActivity extends BaseActivity {
     DrinkingFragment drinkingFragment = new DrinkingFragment();
     OrderFragment orderFragment = new OrderFragment();
     HistoryFragment historyFragment = new HistoryFragment();
-
-    private int fragmentPos;
+    private List<DishSugesstion> cutlerySuggest;
+    private List<DishSugesstion> drinkingSuggest;
+    private int fragmentPos = -1;
 
     private ActivityCustomerBinding binding;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -157,12 +167,8 @@ public class CustomerActivity extends BaseActivity {
                         Gson gson = new Gson();
                         List<Dish> dishes = gson.fromJson(message, new TypeToken<List<Dish>>() {
                         }.getType());
-
-                        ToastUtils.toastLongMassage(CustomerActivity.this,
-                                dishes.size() + "");
                         notifyDishNotServe(dishes);
                     }
-
                 } else {
                     ToastUtils.toastShortMassage(getApplicationContext(), "Nothing");
                 }
@@ -214,6 +220,71 @@ public class CustomerActivity extends BaseActivity {
     private void initDrawer() {
         initToolbar();
         initDrawerMenu();
+        initSuggestionContainer();
+    }
+
+    private boolean isInitFirstTime = true;
+
+    private void initSuggestionContainer() {
+        tvNoSuggestResult = binding.actionBarContent.tvNoResult;
+        rvSuggestion = binding.actionBarContent.rvSuggestion;
+
+        suggestionAdapter = new DishSugesstionAdapter(this);
+        suggestionAdapter.setListener(new DishSugesstionAdapter.FilterResultListener() {
+            @Override
+            public void onFilterSuccess() {
+                Log.d("Hoang", "onFilterSuccess: ");
+                tvNoSuggestResult.setVisibility(View.GONE);
+                rvSuggestion.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFilterNoting() {
+                Log.d("Hoang", "onFilterNoting: ");
+                if (isInitFirstTime) {
+                    isInitFirstTime = false;
+                    tvNoSuggestResult.setVisibility(View.GONE);
+                    rvSuggestion.setVisibility(View.GONE);
+                } else {
+                    tvNoSuggestResult.setVisibility(View.VISIBLE);
+                    rvSuggestion.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onItemClick(int dishId, String dishName) {
+                hideKeyboard();
+                svSearch.setQuery(dishName, true);
+            }
+        });
+        DividerItemDecoration dividerItemDecoration =
+                new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        RecyclerView.LayoutManager manager =
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        rvSuggestion.setLayoutManager(manager);
+        rvSuggestion.addItemDecoration(dividerItemDecoration);
+        rvSuggestion.setAdapter(suggestionAdapter);
+        dishRepo.getSuggestedDish()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(results -> {
+                    cutlerySuggest = new ArrayList<>();
+                    drinkingSuggest = new ArrayList<>();
+                    if (null != results) {
+                        if (null != results.getCutlery() && results.getCutlery().size() > 0) {
+                            cutlerySuggest.addAll(results.getCutlery());
+                        }
+                        if (null != results.getDrinking() && results.getDrinking().size() > 0) {
+                            drinkingSuggest.addAll(results.getDrinking());
+                        }
+                    }
+                    if (fragmentPos == 0 || fragmentPos == -1) {
+                        suggestionAdapter.setData(results.getCutlery());
+                    } else {
+                        suggestionAdapter.setData(results.getDrinking());
+                    }
+                    tvNoSuggestResult.setVisibility(View.GONE);
+                });
     }
 
     private void initDrawerMenu() {
@@ -241,6 +312,11 @@ public class CustomerActivity extends BaseActivity {
     }
 
     private void initSearchView() {
+        int searchPlateId = svSearch.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
+        View searchPlateView = svSearch.findViewById(searchPlateId);
+        if (searchPlateView != null) {
+            searchPlateView.setBackgroundColor(Color.TRANSPARENT);
+        }
         svSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -255,10 +331,36 @@ public class CustomerActivity extends BaseActivity {
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
+            public boolean onQueryTextChange(String term) {
+                handleFilterOnChange(term);
+                return true;
             }
         });
+        LinearLayout ll = binding.actionBarContent.rootViewCus;
+        ll.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            Rect r = new Rect();
+            ll.getWindowVisibleDisplayFrame(r);
+            int screenHeight = ll.getRootView().getHeight();
+
+            int keypadHeight = screenHeight - r.bottom;
+
+            if (keypadHeight > screenHeight * 0.15) {
+                // keypad show
+            } else {
+                // keypad hide
+                tvNoSuggestResult.setVisibility(View.GONE);
+                rvSuggestion.setVisibility(View.GONE);
+            }
+        });
+        svSearch.clearFocus();
+    }
+
+    private void handleFilterOnChange(String term) {
+        if (fragmentPos == CUTLERY_POS) {
+            suggestionAdapter.getFilter().filter(term);
+        } else if (fragmentPos == DRINKING_POS) {
+            suggestionAdapter.getFilter().filter(term);
+        }
     }
 
     private void handleQuerySearchSubmit(String keySearch) {
@@ -299,6 +401,9 @@ public class CustomerActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+
+        rvSuggestion.setVisibility(View.GONE);
+        tvNoSuggestResult.setVisibility(View.GONE);
         if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
             binding.drawer.closeDrawers();
         } else {
@@ -412,6 +517,9 @@ public class CustomerActivity extends BaseActivity {
             cutleryFragment.synTheCart();
 //            cutleryFragment.clearSearchKey();
             cutleryFragment.onResume();
+            if (null != cutlerySuggest) {
+                suggestionAdapter.setData(cutlerySuggest);
+            }
             hideFragment(drinkingFragment);
             hideFragment(orderFragment);
             hideFragment(historyFragment);
@@ -422,6 +530,9 @@ public class CustomerActivity extends BaseActivity {
             drinkingFragment.synTheCart();
 //            drinkingFragment.clearSearchKey();
             drinkingFragment.onResume();
+            if (null != drinkingSuggest) {
+                suggestionAdapter.setData(drinkingSuggest);
+            }
             hideFragment(cutleryFragment);
             hideFragment(orderFragment);
             hideFragment(historyFragment);
@@ -582,19 +693,20 @@ public class CustomerActivity extends BaseActivity {
         binding.actionBarContent.content.rlNoResult.setVisibility(View.GONE);
     }
 
-    public void setSearchKeyInBar(String key) {
-        int searchPlateId = svSearch.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
-        View searchPlateView = svSearch.findViewById(searchPlateId);
-        if (searchPlateView != null) {
-            searchPlateView.setBackgroundColor(Color.TRANSPARENT);
-        }
-        if ("".equals(key)) {
-            svSearch.setIconifiedByDefault(true);
+    public void setSearchKeyInBar(String key, int from) {
+        svSearch.setIconifiedByDefault(false);
+        svSearch.setQuery(key, false);
+        if (CUTLERY_POS == from) {
+            svSearch.setQueryHint("Tìm kiếm thức ăn");
+        } else if (DRINKING_POS == from) {
+            svSearch.setQueryHint("Tìm kiếm nước uống");
         } else {
-            svSearch.setIconifiedByDefault(false);
-            svSearch.setQuery(key, false);
+            svSearch.setQueryHint("Tìm kiếm");
         }
-//        svSearch.clearFocus();
+
+        rvSuggestion.setVisibility(View.GONE);
+        tvNoSuggestResult.setVisibility(View.GONE);
+        svSearch.clearFocus();
     }
 
     private final int NOTIFY_DINER = 0;
@@ -623,11 +735,8 @@ public class CustomerActivity extends BaseActivity {
         notificationManager.notify(NOTIFY_DINER, mBuilder.build());
     }
 
-//    private void setFlagNotification(boolean flag) {
-//        ((BoeApplication) getApplication()).setOpenNotification(flag);
-//    }
-//
-//    private boolean isFlagNotification() {
-//        ((BoeApplication) getApplication()).isOpenNotification();
-//    }
+    private void hideKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(svSearch.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
 }

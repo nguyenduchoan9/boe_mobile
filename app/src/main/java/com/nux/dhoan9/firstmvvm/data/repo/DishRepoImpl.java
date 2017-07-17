@@ -4,7 +4,9 @@ import android.util.Log;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
 import com.nux.dhoan9.firstmvvm.model.Dish;
+import com.nux.dhoan9.firstmvvm.model.DishSugesstion;
 import com.nux.dhoan9.firstmvvm.model.MenuCategories;
+import com.nux.dhoan9.firstmvvm.model.SuggestionByCategory;
 import com.nux.dhoan9.firstmvvm.services.DishServices;
 import com.nux.dhoan9.firstmvvm.services.UserServices;
 import com.nux.dhoan9.firstmvvm.utils.RxUtils;
@@ -197,6 +199,11 @@ public class DishRepoImpl implements DishRepo {
                         }
                     });
         });
+    }
+
+    @Override
+    public Observable<SuggestionByCategory> getSuggestedDish() {
+        return services.getSuggestedDish();
     }
 
 }

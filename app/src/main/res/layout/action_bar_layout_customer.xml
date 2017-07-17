@@ -11,6 +11,7 @@
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/rootViewCus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
@@ -34,7 +35,8 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:focusableInTouchMode="true">
 
 
                         <RelativeLayout
@@ -76,7 +78,10 @@
                             android:id="@+id/svSearch"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:visibility="visible"/>
+                            android:visibility="visible"
+                            app:iconifiedByDefault="false"
+                            app:searchIcon="@null"/>
+
                     </RelativeLayout>
                 </android.support.v7.widget.Toolbar>
 
@@ -95,6 +100,32 @@
                 layout="@layout/home_content_layout_customer"/>
 
         </LinearLayout>
+
+        <com.nux.dhoan9.firstmvvm.view.custom.SuggestionContainer
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="88dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="48dp"
+            android:background="@color/blur_white">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvSuggestion"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvNoResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/text_no_result_found"
+                android:textSize="@dimen/size_x_medium_text"
+                android:visibility="gone"/>
+        </com.nux.dhoan9.firstmvvm.view.custom.SuggestionContainer>
 
         <!--<com.andremion.floatingnavigationview.FloatingNavigationView-->
         <!--android:id="@+id/floating_navigation_view"-->

@@ -103,13 +103,13 @@ public class DrinkingFragment extends BaseFragment {
             if (!isHaveResult) {
                 showNoSearchResult();
                 rvDish.setVisibility(View.INVISIBLE);
-                setSearchKeyOnSearchBar(adapter.getKeySearch());
+                setSearchKeyOnSearchBar(adapter.getKeySearch(),1);
             } else {
                 hideNoSearchResult();
                 if (rvDish.getVisibility() != View.VISIBLE) {
                     rvDish.setVisibility(View.VISIBLE);
                 }
-                setSearchKeyOnSearchBar(adapter.getKeySearch());
+                setSearchKeyOnSearchBar(adapter.getKeySearch(), 1);
             }
         }
     }
