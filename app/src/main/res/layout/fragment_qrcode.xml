@@ -7,7 +7,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/menu"/>
+            android:background="@drawable/get_menu"/>
 
         <TextView
             android:id="@+id/tvScanner"
@@ -18,7 +18,7 @@
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif"
             android:gravity="center"
-            android:text="Scan QR code and get menu"
+            android:text="@string/text_info_scan_qr_code"
             android:textColor="@color/white"
             android:textSize="@dimen/size_large_text"
             android:textStyle="bold"/>

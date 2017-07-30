@@ -85,10 +85,12 @@
         </activity>
         <activity
             android:name=".view.activity.CustomerActivity"
+            android:configChanges="locale"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.NoStatusBar"/>
-        <activity android:name=".view.activity.QRCodeScanActivity">
-        </activity>
+        <activity
+            android:name=".view.activity.QRCodeScanActivity"
+            android:theme="@style/AppTheme.NoActionBar.NoStatusBar"/>
         <activity
             android:name=".view.activity.DishDetailActivity"
             android:screenOrientation="portrait"

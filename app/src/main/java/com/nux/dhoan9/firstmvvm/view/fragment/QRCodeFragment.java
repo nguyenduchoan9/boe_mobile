@@ -1,10 +1,15 @@
 package com.nux.dhoan9.firstmvvm.view.fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +28,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class QRCodeFragment extends Fragment {
     private final int REQUEST_CODE = 400;
+    private final int MY_PERMISSIONS_REQUEST_CAMERA = 404;
     FragmentQrcodeBinding binding;
 
     @Inject
@@ -58,7 +64,8 @@ public class QRCodeFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.tvScanner.setOnClickListener(v -> {
-            startActivityForResult(QRCodeScanActivity.newInstace(getContext()), REQUEST_CODE);
+            checkAndHandlePermission();
+
         });
     }
 
@@ -74,6 +81,50 @@ public class QRCodeFragment extends Fragment {
                     startActivity(CustomerActivity.newInstance(getContext()));
                 }
             }
+        }
+    }
+
+    private void checkAndHandlePermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // Should we show an explanation?
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+//                    Manifest.permission.CAMERA)) {
+//
+//                // Show an explanation to the user *asynchronously* -- don't block
+//                // this thread waiting for the user's response! After the user
+//                // sees the explanation, try again to request the permission.
+//
+//            } else {
+//
+//                // No explanation needed, we can request the permission.
+//
+//
+//
+//                // MY_PERMISSIONS_REQUEST_CAMERA is an
+//                // app-defined int constant. The callback method gets the
+//                // result of the request.
+//            }
+            requestPermissions(new String[]{Manifest.permission.CAMERA},
+                    MY_PERMISSIONS_REQUEST_CAMERA);
+        } else {
+            startActivityForResult(QRCodeScanActivity.newInstace(getContext()), REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (MY_PERMISSIONS_REQUEST_CAMERA == requestCode) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission was granted, yay! Do the
+                // contacts-related task you need to do.
+                startActivityForResult(QRCodeScanActivity.newInstace(getContext()), REQUEST_CODE);
+            } else {
+                return;
+                // permission denied, boo! Disable the
+                // functionality that depends on this permission.
+            }
+            return;
         }
     }
 }

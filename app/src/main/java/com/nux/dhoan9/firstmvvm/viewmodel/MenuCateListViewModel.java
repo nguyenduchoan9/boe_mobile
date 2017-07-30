@@ -3,6 +3,7 @@ package com.nux.dhoan9.firstmvvm.viewmodel;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
+import com.nux.dhoan9.firstmvvm.data.response.CutlerySearchResult;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.model.MenuCategories;
 import com.nux.dhoan9.firstmvvm.utils.ThreadScheduler;
@@ -43,6 +44,7 @@ public class MenuCateListViewModel extends BaseViewModel {
         if (isRefresh) {
             for (MenuCategoriesViewModel menu : menuCategoriesViewModels) {
                 menu.dishViewModels.removeAllData();
+                menu.dishViewModels.getDishListBinder().notifyDataChange(menu.dishViewModels.getDishes());
             }
             menuCategoriesViewModels.clear();
             menuListBinder.notifyDataChange(menuCategoriesViewModels);
@@ -69,14 +71,14 @@ public class MenuCateListViewModel extends BaseViewModel {
                         }));
     }
 
-    public Observable<List<MenuCategories>> onCutlerySearch(String keySearch) {
+    public Observable<CutlerySearchResult> onCutlerySearch(String keySearch) {
         menuCategoriesViewModels.clear();
         menuListBinder.notifyDataChange(menuCategoriesViewModels);
 
         return dishRepo.getCutleryByKeySearch(keySearch)
                 .compose(withScheduler())
                 .doOnNext(menu -> {
-                    for (MenuCategories menuCategories : menu) {
+                    for (MenuCategories menuCategories : menu.getResult()) {
                         DishListViewModel dishListViewModel = new DishListViewModel(listBinder,
                                 dishRepo, resources, threadScheduler, cartManager);
                         MenuCategoriesViewModel menuCategoriesViewModel =
@@ -89,7 +91,7 @@ public class MenuCateListViewModel extends BaseViewModel {
                 });
     }
 
-    public Observable<List<MenuCategories>> onDrinkingSearch(String keySearch) {
+    public Observable<CutlerySearchResult> onDrinkingSearch(String keySearch) {
         searchKey = keySearch;
         menuCategoriesViewModels.clear();
         menuListBinder.notifyDataChange(menuCategoriesViewModels);
@@ -97,7 +99,7 @@ public class MenuCateListViewModel extends BaseViewModel {
         return dishRepo.getDrinkingByKeySearch(keySearch)
                 .compose(withScheduler())
                 .doOnNext(menu -> {
-                    for (MenuCategories menuCategories : menu) {
+                    for (MenuCategories menuCategories : menu.getResult()) {
                         DishListViewModel dishListViewModel = new DishListViewModel(listBinder,
                                 dishRepo, resources, threadScheduler, cartManager);
                         MenuCategoriesViewModel menuCategoriesViewModel =

@@ -20,4 +20,6 @@ public interface PreferencesManager {
     String getRole();
     void setTableInfo(QRCodeTableInfo tableInfo);
     QRCodeTableInfo getTableInfo();
+    String getLanguage();
+    void setLanguage(String language);
 }

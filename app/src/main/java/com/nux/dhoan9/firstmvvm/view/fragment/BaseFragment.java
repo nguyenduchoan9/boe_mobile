@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.nux.dhoan9.firstmvvm.view.activity.BaseActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
-import org.w3c.dom.Text;
 import rx.subjects.PublishSubject;
 
 /**
@@ -67,23 +66,35 @@ public abstract class BaseFragment extends Fragment {
         ((BaseActivity) getActivity()).tvProcessingTitle = tvProcessingTitle;
     }
 
-    protected void showProgressingOnSearching(){
-        ((CustomerActivity)getActivity()).showProgressAndDisableTouch();
+    protected void showProgressingOnSearching() {
+        ((CustomerActivity) getActivity()).showProgressAndDisableTouch();
     }
 
-    protected void hideProgressingOnSearching(){
-        ((CustomerActivity)getActivity()).hideProgressAndEnableTouch();
+    protected void hideProgressingOnSearching() {
+        ((CustomerActivity) getActivity()).hideProgressAndEnableTouch();
     }
 
-    public void showNoSearchResult(){
-        ((CustomerActivity)getActivity()).showNoSearchResult();
+    public void showNoSearchResult() {
+        ((CustomerActivity) getActivity()).showNoSearchResult();
     }
 
-    public void hideNoSearchResult(){
-        ((CustomerActivity)getActivity()).hideNoSearchResult();
+    public void hideNoSearchResult() {
+        ((CustomerActivity) getActivity()).hideNoSearchResult();
     }
 
-    protected void setSearchKeyOnSearchBar(String key, int from){
-        ((CustomerActivity)getActivity()).setSearchKeyInBar(key, from);
+    protected void hideSearchDishNotServe() {
+        if (getActivity() instanceof CustomerActivity) {
+            ((CustomerActivity) getActivity()).hideSearchDishNotServe();
+        }
+    }
+
+    protected void setSearchKeyOnSearchBar(String key, int from) {
+        ((CustomerActivity) getActivity()).setSearchKeyInBar(key, from);
+    }
+
+    protected void updateOrderBagde() {
+        if (getActivity() instanceof CustomerActivity) {
+            ((CustomerActivity) getActivity()).updateOrderBadge();
+        }
     }
 }

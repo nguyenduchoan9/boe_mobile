@@ -188,12 +188,12 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
     }
 
     public void showOrderBadge(int quantity) {
-        if (9 < quantity) {
-            tvOrderBadge.setText("+9");
-        } else {
-            tvOrderBadge.setText(String.valueOf(quantity));
+        if (0 == quantity) {
+            tvOrderBadge.setVisibility(GONE);
+            return;
         }
         tvOrderBadge.setVisibility(VISIBLE);
+        tvOrderBadge.setText(String.valueOf(quantity));
     }
 
     public void hideOrderBadge() {
@@ -234,6 +234,6 @@ public class NavigationBottom extends LinearLayout implements View.OnClickListen
         Paint p = new Paint();
         p.setColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
         p.setStrokeWidth(1F);
-        canvas.drawLine(0,0, this.getWidth(), 0, p);
+        canvas.drawLine(0, 0, this.getWidth(), 0, p);
     }
 }

@@ -33,6 +33,7 @@ public class LoginViewModel extends BaseViewModel {
     private String password = "";
     public ObservableField<String> emailError = new ObservableField<>();
     public ObservableField<String> passwordError = new ObservableField<>();
+    public ObservableField<String> msgError = new ObservableField<>();
     private BehaviorSubject<String> toast = BehaviorSubject.create();
 
     private UserRepo userRepo;
@@ -55,7 +56,7 @@ public class LoginViewModel extends BaseViewModel {
     }
 
     public TextChange onEmailChange = value -> {
-        username= value;
+        username = value;
         validateEmail();
     };
 
@@ -87,13 +88,14 @@ public class LoginViewModel extends BaseViewModel {
 
     @VisibleForTesting
     public void isSuccess(Response<User> userResponse) {
+        msgError.set("");
         if (userResponse.isSuccessful()) {
             if (null != userResponse.body()) {
                 User user = userResponse.body();
-                if(Constant.ROLE_DINER.equals(user.getRole())){
+                if (Constant.ROLE_DINER.equals(user.getRole())) {
                     saveCredentialHeader(userResponse.headers());
                     saveUser(userResponse.body());
-                }else {
+                } else {
                     throw new IllegalArgumentException(Constant.MESSAGE_PERMISSION_LOGIN_ERROR);
                 }
 
@@ -106,7 +108,9 @@ public class LoginViewModel extends BaseViewModel {
     private void handleError(Response<User> userResponse) {
         try {
             LoginError errors = ErrorUtils.parseError(userResponse, LoginError.class);
-            toast.onNext(errors.getError().getCode().toString());
+            msgError.set(errors.getError().getCode().toString());
+//            msgError.l
+//            toast.onNext(errors.getError().getCode().toString());
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {

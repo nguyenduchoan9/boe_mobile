@@ -7,22 +7,9 @@ import java.util.List;
  */
 
 public class SuggestionByCategory {
-    private List<DishSugesstion> cutlery;
-    private List<DishSugesstion> drinking;
+    private List<DishSugesstion> dish;
 
-    public List<DishSugesstion> getCutlery() {
-        return cutlery;
-    }
-
-    public void setCutlery(List<DishSugesstion> cutlery) {
-        this.cutlery = cutlery;
-    }
-
-    public List<DishSugesstion> getDrinking() {
-        return drinking;
-    }
-
-    public void setDrinking(List<DishSugesstion> drinking) {
-        this.drinking = drinking;
+    public List<DishSugesstion> getDish() {
+        return dish;
     }
 }

@@ -2,8 +2,10 @@ package com.nux.dhoan9.firstmvvm.manager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.gson.Gson;
+import com.nux.dhoan9.firstmvvm.BuildConfig;
 import com.nux.dhoan9.firstmvvm.model.QRCodeTableInfo;
 import com.nux.dhoan9.firstmvvm.model.User;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
@@ -21,6 +23,7 @@ public class PreferencesManagerImpl implements PreferencesManager {
     private static final String USER = "USER";
     private static final String HEADERS = "HEADERS";
     private static final String TABLE_INFO = "TABLE_INFO";
+    private static final String LANGUAGE_INFO = "LANGUAGE_INFO";
     private SharedPreferences sharedPreferences;
     private Gson gson;
 
@@ -102,11 +105,28 @@ public class PreferencesManagerImpl implements PreferencesManager {
 
     @Override
     public QRCodeTableInfo getTableInfo() {
+        if(BuildConfig.IS_FAKE){
+            QRCodeTableInfo info = new QRCodeTableInfo("", String.valueOf(BuildConfig.NUMBER_TABLE));
+            return info;
+        }
         String userJSON = sharedPreferences.getString(TABLE_INFO, "");
         if (!StringUtils.isEmpty(userJSON)) {
             return gson.fromJson(userJSON, QRCodeTableInfo.class);
         }
         return null;
+    }
+
+    @Override
+    public String getLanguage() {
+        Log.d("Hoang", "getLanguage: " + sharedPreferences.getString(LANGUAGE_INFO, Constant.VI_LANGUAGE_STRING));
+        return sharedPreferences.getString(LANGUAGE_INFO, Constant.VI_LANGUAGE_STRING);
+    }
+
+    @Override
+    public void setLanguage(String language) {
+        sharedPreferences.edit()
+                .putString(LANGUAGE_INFO, language)
+                .apply();
     }
 
 }

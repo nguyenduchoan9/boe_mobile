@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -39,8 +40,10 @@ import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
 import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
 import com.nux.dhoan9.firstmvvm.data.repo.UserRepo;
+import com.nux.dhoan9.firstmvvm.data.response.AfterRefundNotification;
 import com.nux.dhoan9.firstmvvm.data.response.CanOrder;
 import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
+import com.nux.dhoan9.firstmvvm.data.response.NotificationResponse;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityCustomerBinding;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.manager.GCMIntentService;
@@ -50,22 +53,28 @@ import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.model.DishSugesstion;
 import com.nux.dhoan9.firstmvvm.model.ParcelDishList;
+import com.nux.dhoan9.firstmvvm.model.SuggestionByCategory;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.CurrencyUtil;
+import com.nux.dhoan9.firstmvvm.utils.RetrofitUtils;
 import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
+import com.nux.dhoan9.firstmvvm.utils.Utils;
 import com.nux.dhoan9.firstmvvm.view.adapter.DishSugesstionAdapter;
+import com.nux.dhoan9.firstmvvm.view.custom.MyContextWrapper;
 import com.nux.dhoan9.firstmvvm.view.custom.NavigationBottom;
 import com.nux.dhoan9.firstmvvm.view.fragment.CutleryFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.DrinkingFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.EndpointDialogFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.HistoryFragment;
+import com.nux.dhoan9.firstmvvm.view.fragment.LanguageDialog;
 import com.nux.dhoan9.firstmvvm.view.fragment.OrderFragment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -74,6 +83,8 @@ public class CustomerActivity extends BaseActivity {
     private final static String GCM_TOKEN = "GCM_TOKEN";
     private final static String LOG_TAG = "CUSTOMER";
     private BroadcastReceiver mBroadcastReceiver;
+    private boolean isSearchModeInCutlery = false;
+    private boolean isSearchModeInDrinking = false;
 
     private NavigationBottom navigationBottom;
     private final int CUTLERY_POS = 0;
@@ -81,7 +92,7 @@ public class CustomerActivity extends BaseActivity {
     private final int ORDER_POS = 2;
     private final int HISTORY_POS = 3;
     private FloatingNavigationView fnv;
-    private RelativeLayout navigationContainer;
+    private RelativeLayout navigationContainer, rlOverlay;
     private Toolbar toolbar;
     private SearchView svSearch;
     private TextView tvTotal;
@@ -89,6 +100,7 @@ public class CustomerActivity extends BaseActivity {
     private RecyclerView rvSuggestion;
     private DishSugesstionAdapter suggestionAdapter;
     private String searchQuery = "";
+    private boolean isSwitchScreen = false;
     @Inject
     PreferencesManager preferencesManager;
     @Inject
@@ -103,8 +115,7 @@ public class CustomerActivity extends BaseActivity {
     DrinkingFragment drinkingFragment = new DrinkingFragment();
     OrderFragment orderFragment = new OrderFragment();
     HistoryFragment historyFragment = new HistoryFragment();
-    private List<DishSugesstion> cutlerySuggest;
-    private List<DishSugesstion> drinkingSuggest;
+    private List<DishSugesstion> dishSuggest;
     private int fragmentPos = -1;
 
     private ActivityCustomerBinding binding;
@@ -120,6 +131,7 @@ public class CustomerActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_customer);
         initDependency();
+        Utils.handleSelectLanguage(this, preferencesManager.getLanguage());
         super.onCreate(savedInstanceState);
         setBroadcastReceiver();
         initDrawer();
@@ -149,11 +161,24 @@ public class CustomerActivity extends BaseActivity {
                     String token = intent.getStringExtra("token");
                     userRepo.registerRegToken(token)
                             .compose(RxUtils.onProcessRequest())
-                            .subscribe(subscribe -> {
-                                if (true == subscribe.status) {
-                                    Log.v("GCM-register", "Success");
-                                } else {
-                                    Log.v("GCM-register", "fail");
+                            .subscribe(new Subscriber<NotificationResponse>() {
+                                @Override
+                                public void onCompleted() {
+
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    ToastUtils.toastLongMassage(CustomerActivity.this, RetrofitUtils.getMessageError(CustomerActivity.this, e));
+                                }
+
+                                @Override
+                                public void onNext(NotificationResponse subscribe) {
+                                    if (true == subscribe.status) {
+                                        Log.v("GCM-register", "Success");
+                                    } else {
+                                        Log.v("GCM-register", "fail");
+                                    }
                                 }
                             });
                     Log.v(GCM_TOKEN, token);
@@ -169,8 +194,16 @@ public class CustomerActivity extends BaseActivity {
                         }.getType());
                         notifyDishNotServe(dishes);
                     }
+                } else if (intent.getAction().endsWith(GCMIntentService.MESSAGE_TO_DINER_REFUND)) {
+                    String message = intent.getStringExtra("body");
+                    Log.d("fucking cool refund", intent.getStringExtra("body"));
+                    if (message.length() > 0) {
+                        Gson gson = new Gson();
+                        AfterRefundNotification bo = gson.fromJson(message, AfterRefundNotification.class);
+                        notifyRefundSuccess(bo);
+                    }
                 } else {
-                    ToastUtils.toastShortMassage(getApplicationContext(), "Nothing");
+//                    ToastUtils.toastShortMassage(getApplicationContext(), "Nothing");
                 }
             }
         };
@@ -182,12 +215,15 @@ public class CustomerActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
                 new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
                 new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
                 new IntentFilter(GCMIntentService.MESSAGE_TO_DINER));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
+                new IntentFilter(GCMIntentService.MESSAGE_TO_DINER_REFUND));
         showToolBar(fragmentPos);
     }
 
@@ -267,23 +303,28 @@ public class CustomerActivity extends BaseActivity {
         dishRepo.getSuggestedDish()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(results -> {
-                    cutlerySuggest = new ArrayList<>();
-                    drinkingSuggest = new ArrayList<>();
-                    if (null != results) {
-                        if (null != results.getCutlery() && results.getCutlery().size() > 0) {
-                            cutlerySuggest.addAll(results.getCutlery());
-                        }
-                        if (null != results.getDrinking() && results.getDrinking().size() > 0) {
-                            drinkingSuggest.addAll(results.getDrinking());
-                        }
+                .subscribe(new Subscriber<SuggestionByCategory>() {
+                    @Override
+                    public void onCompleted() {
+
                     }
-                    if (fragmentPos == 0 || fragmentPos == -1) {
-                        suggestionAdapter.setData(results.getCutlery());
-                    } else {
-                        suggestionAdapter.setData(results.getDrinking());
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ToastUtils.toastLongMassage(CustomerActivity.this, RetrofitUtils.getMessageError(CustomerActivity.this, e));
                     }
-                    tvNoSuggestResult.setVisibility(View.GONE);
+
+                    @Override
+                    public void onNext(SuggestionByCategory results) {
+                        dishSuggest = new ArrayList<>();
+                        if (null != results) {
+                            if (null != results.getDish() && results.getDish().size() > 0) {
+                                dishSuggest.addAll(results.getDish());
+                            }
+                        }
+                        suggestionAdapter.setData(dishSuggest);
+                        tvNoSuggestResult.setVisibility(View.GONE);
+                    }
                 });
     }
 
@@ -302,6 +343,12 @@ public class CustomerActivity extends BaseActivity {
         tvTotal = (TextView) toolbar.findViewById(R.id.tvTotal);
         tvContinues = (TextView) toolbar.findViewById(R.id.tvContinues);
         binding.navView.inflateMenu(R.menu.drawer_menu_customer);
+        View headerLayout = binding.navView.getHeaderView(0);
+        TextView tvUsername = (TextView) headerLayout.findViewById(R.id.tvUsername);
+        tvUsername.setText(preferencesManager.getUser().getUsername());
+        TextView tvTableNo = (TextView) headerLayout.findViewById(R.id.tvTableNumber);
+        tvTableNo.setText(getString(R.string.text_nav_header_layout_table)
+                + preferencesManager.getTableInfo().table_number);
         binding.navView.setNavigationItemSelectedListener(item -> {
             selectDrawerItem(item);
             return false;
@@ -317,6 +364,7 @@ public class CustomerActivity extends BaseActivity {
         if (searchPlateView != null) {
             searchPlateView.setBackgroundColor(Color.TRANSPARENT);
         }
+
         svSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -327,31 +375,66 @@ public class CustomerActivity extends BaseActivity {
                 svSearch.clearFocus();
                 searchQuery = query;
                 handleQuerySearchSubmit(query.trim());
+                if (CUTLERY_POS == fragmentPos) {
+                    isSearchModeInCutlery = true;
+                } else if (DRINKING_POS == fragmentPos) {
+                    isSearchModeInDrinking = true;
+                }
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String term) {
-                handleFilterOnChange(term);
+                if (!isSwitchScreen) {
+                    handleFilterOnChange(term);
+                }
                 return true;
             }
         });
-        LinearLayout ll = binding.actionBarContent.rootViewCus;
-        ll.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            Rect r = new Rect();
-            ll.getWindowVisibleDisplayFrame(r);
-            int screenHeight = ll.getRootView().getHeight();
-
-            int keypadHeight = screenHeight - r.bottom;
-
-            if (keypadHeight > screenHeight * 0.15) {
-                // keypad show
-            } else {
-                // keypad hide
-                tvNoSuggestResult.setVisibility(View.GONE);
+        ImageView searchCloseButton = (ImageView) svSearch.findViewById(R.id.search_close_btn);
+        searchCloseButton.setOnClickListener(v -> {
+            if (CUTLERY_POS == fragmentPos) {
+                isSearchModeInCutlery = false;
                 rvSuggestion.setVisibility(View.GONE);
+                tvNoSuggestResult.setVisibility(View.GONE);
+                isSwitchScreen = true;
+                clearSearchBox();
+                isSwitchScreen = false;
+                cutleryFragment.refreshMenu();
+            } else if (DRINKING_POS == fragmentPos) {
+                isSearchModeInDrinking = false;
+                rvSuggestion.setVisibility(View.GONE);
+                tvNoSuggestResult.setVisibility(View.GONE);
+                isSwitchScreen = true;
+                clearSearchBox();
+                isSwitchScreen = false;
+                drinkingFragment.refreshMenu();
             }
         });
+        LinearLayout ll = binding.actionBarContent.rootViewCus;
+        rlOverlay = binding.actionBarContent.content.rlOverlay;
+        rlOverlay.setVisibility(View.GONE);
+        ll.getViewTreeObserver().
+                addOnGlobalLayoutListener(() ->
+                {
+                    Rect r = new Rect();
+                    ll.getWindowVisibleDisplayFrame(r);
+                    int screenHeight = ll.getRootView().getHeight();
+
+                    int keypadHeight = screenHeight - r.bottom;
+
+                    if (keypadHeight > screenHeight * 0.15) {
+                        // keypad show
+                        navigationBottom.setVisibility(View.GONE);
+                        rlOverlay.setVisibility(View.VISIBLE);
+                    } else {
+                        // keypad hide
+                        tvNoSuggestResult.setVisibility(View.GONE);
+                        rvSuggestion.setVisibility(View.GONE);
+                        navigationBottom.setVisibility(View.VISIBLE);
+                        rlOverlay.setVisibility(View.GONE);
+                    }
+                });
         svSearch.clearFocus();
     }
 
@@ -369,7 +452,6 @@ public class CustomerActivity extends BaseActivity {
         } else if (fragmentPos == DRINKING_POS) {
             drinkingFragment.onSearchSubmit(keySearch);
         } else if (fragmentPos == HISTORY_POS) {
-
         }
     }
 
@@ -390,8 +472,12 @@ public class CustomerActivity extends BaseActivity {
             case R.id.apiEndpoint:
                 showEndpointDialog();
                 break;
-            case R.id.payment:
-                startActivity(PaypalActivity.newInstance(this));
+            case R.id.setting:
+                startActivity(QRCodeActivity.newInstance(this));
+                break;
+            case R.id.language:
+//                orderFragment.showDialogSelectLanguage(preferencesManager);
+                showDialogSelectLanguage();
                 break;
             default:
                 break;
@@ -399,9 +485,32 @@ public class CustomerActivity extends BaseActivity {
         binding.drawer.closeDrawers();
     }
 
+    private void showDialogSelectLanguage() {
+        FragmentTransaction fm = getSupportFragmentManager().beginTransaction();
+        LanguageDialog dialog = LanguageDialog.newInstance(preferencesManager.getLanguage());
+        dialog.setmListener(new LanguageDialog.LanguageListener() {
+            @Override
+            public void onEnglishSelect() {
+                preferencesManager.setLanguage(Constant.EN_LANGUAGE_STRING);
+                refreshViewAfterChangeLanguage();
+            }
+
+            @Override
+            public void onVNSelect() {
+                preferencesManager.setLanguage(Constant.VI_LANGUAGE_STRING);
+                refreshViewAfterChangeLanguage();
+            }
+        });
+        dialog.show(fm, "putang");
+    }
+
+    private void refreshViewAfterChangeLanguage() {
+        finish();
+        startActivity(new Intent(this, CustomerActivity.class));
+    }
+
     @Override
     public void onBackPressed() {
-
         rvSuggestion.setVisibility(View.GONE);
         tvNoSuggestResult.setVisibility(View.GONE);
         if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
@@ -419,13 +528,17 @@ public class CustomerActivity extends BaseActivity {
     private void initView() {
         navigationContainer = binding.actionBarContent.content.bottomNavigationContent.navigationContainer;
         navigationBottom = binding.actionBarContent.content.bottomNavigationContent.bottomNavigation;
-//        navigationBottom.showOrderBadge(12);
-//        navigationBottom.showHisrotyBadge(12);
+
         initContent();
         navigationBottom.setPress(fragmentPos);
         navigationBottom.setListener(new NavigationBottom.NavigationListener() {
             @Override
             public void onCutleryClick() {
+                if (isSearchModeInCutlery && CUTLERY_POS == fragmentPos) {
+                    isSearchModeInCutlery = false;
+                    cutleryFragment.refreshMenu();
+                    return;
+                }
                 if (fragmentPos == CUTLERY_POS) {
                     return;
                 }
@@ -434,6 +547,11 @@ public class CustomerActivity extends BaseActivity {
 
             @Override
             public void onDrinkingClick() {
+                if (isSearchModeInDrinking && DRINKING_POS == fragmentPos) {
+                    isSearchModeInDrinking = false;
+                    drinkingFragment.refreshMenu();
+                    return;
+                }
                 if (fragmentPos == DRINKING_POS) {
                     return;
                 }
@@ -471,9 +589,22 @@ public class CustomerActivity extends BaseActivity {
         userRepo.logout(preferencesManager.getUser().getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(success -> {
-                    preferencesManager.logOut();
-                    startActivity(LoginActivity.newInstance(this));
+                .subscribe(new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ToastUtils.toastLongMassage(CustomerActivity.this, RetrofitUtils.getMessageError(CustomerActivity.this, e));
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+                        preferencesManager.logOut();
+                        startActivity(LoginActivity.newInstance(CustomerActivity.this));
+                    }
                 });
     }
 
@@ -483,6 +614,8 @@ public class CustomerActivity extends BaseActivity {
         replaceContent(orderFragment, false, "OrderFragment");
         replaceContent(historyFragment, false, "HistoryFragment");
         showFragmentPosition(fragmentPos = 0);
+        updateOrderBadge();
+        hideOrderBadge();
         setDishToolBar();
     }
 
@@ -508,31 +641,33 @@ public class CustomerActivity extends BaseActivity {
     }
 
     private void showFragmentPosition(int pos) {
-        cutleryFragment.hideNoSearchResult();
-        drinkingFragment.hideNoSearchResult();
+        hideNoSearchResult();
+        hideSearchDishNotServe();
         if (CUTLERY_POS == pos) {
             showFragment(cutleryFragment);
             setDishToolBar();
+            isSwitchScreen = true;
             clearSearchBox();
             cutleryFragment.synTheCart();
 //            cutleryFragment.clearSearchKey();
             cutleryFragment.onResume();
-            if (null != cutlerySuggest) {
-                suggestionAdapter.setData(cutlerySuggest);
-            }
+//            if (null != cutlerySuggest) {
+//                suggestionAdapter.setData(cutlerySuggest);
+//            }
             hideFragment(drinkingFragment);
             hideFragment(orderFragment);
             hideFragment(historyFragment);
         } else if (DRINKING_POS == pos) {
             showFragment(drinkingFragment);
             setDishToolBar();
+            isSwitchScreen = true;
             clearSearchBox();
             drinkingFragment.synTheCart();
 //            drinkingFragment.clearSearchKey();
             drinkingFragment.onResume();
-            if (null != drinkingSuggest) {
-                suggestionAdapter.setData(drinkingSuggest);
-            }
+//            if (null != drinkingSuggest) {
+//                suggestionAdapter.setData(drinkingSuggest);
+//            }
             hideFragment(cutleryFragment);
             hideFragment(orderFragment);
             hideFragment(historyFragment);
@@ -592,7 +727,7 @@ public class CustomerActivity extends BaseActivity {
             orderRepo.isAvailable()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(() -> showProcessing("Processing..."))
+                    .doOnSubscribe(() -> showProcessing(getString(R.string.text_info_processing)))
                     .doOnTerminate(() -> hideProcessing())
                     .flatMap(new Func1<CanOrder, Observable<List<CartDishAvailable>>>() {
                         @Override
@@ -606,13 +741,26 @@ public class CustomerActivity extends BaseActivity {
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(dishNotAvailable -> {
-                        if (null == dishNotAvailable) {
-                            orderFragment.showrRlHourOver();
-                        } else if (0 == dishNotAvailable.size()) {
-                            navToPayment();
-                        } else if (0 < dishNotAvailable.size()) {
-                            orderFragment.showDialog(dishNotAvailable);
+                    .subscribe(new Subscriber<List<CartDishAvailable>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            ToastUtils.toastLongMassage(CustomerActivity.this, RetrofitUtils.getMessageError(CustomerActivity.this, e));
+                        }
+
+                        @Override
+                        public void onNext(List<CartDishAvailable> dishNotAvailable) {
+                            if (null == dishNotAvailable) {
+                                orderFragment.showrRlHourOver();
+                            } else if (0 == dishNotAvailable.size()) {
+                                navToPayment();
+                            } else if (0 < dishNotAvailable.size()) {
+                                orderFragment.showDialog(dishNotAvailable);
+                            }
                         }
                     });
 
@@ -676,7 +824,7 @@ public class CustomerActivity extends BaseActivity {
     }
 
     public void showProgressAndDisableTouch() {
-        showProcessing("Đang tìm kiếm...");
+        showProcessing(getString(R.string.text_info_searching));
         navigationBottom.isCanHanle = false;
     }
 
@@ -686,7 +834,18 @@ public class CustomerActivity extends BaseActivity {
     }
 
     public void showNoSearchResult() {
+        binding.actionBarContent.content.tvMessage.setText(getString(R.string.text_info_no_search_result));
         binding.actionBarContent.content.rlNoResult.setVisibility(View.VISIBLE);
+    }
+
+    public void showSearchDishNotServe() {
+        binding.actionBarContent.content.tvMessage.setText(getString(R.string.text_search_dish_not_serve));
+        binding.actionBarContent.content.rlNoResult.setVisibility(View.VISIBLE);
+    }
+
+    public void hideSearchDishNotServe() {
+        binding.actionBarContent.content.tvMessage.setText(getString(R.string.text_search_dish_not_serve));
+        binding.actionBarContent.content.rlNoResult.setVisibility(View.GONE);
     }
 
     public void hideNoSearchResult() {
@@ -696,12 +855,13 @@ public class CustomerActivity extends BaseActivity {
     public void setSearchKeyInBar(String key, int from) {
         svSearch.setIconifiedByDefault(false);
         svSearch.setQuery(key, false);
+        isSwitchScreen = false;
         if (CUTLERY_POS == from) {
-            svSearch.setQueryHint("Tìm kiếm thức ăn");
+            svSearch.setQueryHint(getString(R.string.text_info_search_cutlery));
         } else if (DRINKING_POS == from) {
-            svSearch.setQueryHint("Tìm kiếm nước uống");
+            svSearch.setQueryHint(getString(R.string.text_info_search_drinking));
         } else {
-            svSearch.setQueryHint("Tìm kiếm");
+            svSearch.setQueryHint(getString(R.string.text_search_default));
         }
 
         rvSuggestion.setVisibility(View.GONE);
@@ -725,18 +885,54 @@ public class CustomerActivity extends BaseActivity {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification_bell)
-                .setContentTitle("Nhà hàng BOE trân trọng thông báo")
-                .setContentText("Hiện tại chúng tôi không còn phục vụ...")
+                .setContentTitle(getString(R.string.text_info_notification_annoucement))
+                .setContentText(getString(R.string.text_info_notification_description))
                 .setContentIntent(pIntent)
                 .setAutoCancel(true)
                 .setLights(Color.BLUE, 500, 500)
-                .addAction(R.drawable.ic_notification_bell, "Ignore", null)
                 .setDefaults(Notification.DEFAULT_SOUND);
         notificationManager.notify(NOTIFY_DINER, mBuilder.build());
+    }
+
+    private final int NOTIFY_DINER_REFUND = 1;
+
+    private void notifyRefundSuccess(AfterRefundNotification response) {
+        Intent intent = new Intent(this, RefundInfoActivity.class);
+        intent.putExtra(Constant.LIST_DISH_NOT_SERVE, response);
+        int requestID = (int) System.currentTimeMillis();
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        PendingIntent pIntent = PendingIntent.getActivity(this, requestID, intent, flags);
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_notification_bell)
+                .setContentTitle(getString(R.string.text_info_notification_annoucement))
+                .setContentText(getString(R.string.text_notification_refund))
+                .setContentIntent(pIntent)
+                .setAutoCancel(true)
+                .setLights(Color.BLUE, 500, 500)
+                .setDefaults(Notification.DEFAULT_SOUND);
+        notificationManager.notify(NOTIFY_DINER_REFUND, mBuilder.build());
     }
 
     private void hideKeyboard() {
         InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(svSearch.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        Log.d("Hoang", "attachBaseContext: " + Utils.getLanguage(newBase));
+        super.attachBaseContext(MyContextWrapper
+                .wrap(newBase,
+                        Utils.getLanguage(newBase)));
+    }
+
+    public void updateOrderBadge() {
+        navigationBottom.showOrderBadge((int) cartManager.getTotal());
+    }
+
+    public void hideOrderBadge() {
+        navigationBottom.hideOrderBadge();
     }
 }

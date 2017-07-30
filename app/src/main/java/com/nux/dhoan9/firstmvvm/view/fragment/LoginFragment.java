@@ -1,8 +1,10 @@
 package com.nux.dhoan9.firstmvvm.view.fragment;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,21 +12,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nux.dhoan9.firstmvvm.BoeApplication;
+import com.nux.dhoan9.firstmvvm.BuildConfig;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentLoginBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.UserModule;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.User;
+import com.nux.dhoan9.firstmvvm.utils.RetrofitUtils;
 import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
+import com.nux.dhoan9.firstmvvm.utils.Utils;
 import com.nux.dhoan9.firstmvvm.utils.test.EspressoIdlingResource;
+import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.QRCodeActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.RegisterActivity;
+import com.nux.dhoan9.firstmvvm.view.custom.MyContextWrapper;
 import com.nux.dhoan9.firstmvvm.viewmodel.LoginViewModel;
 
 import javax.inject.Inject;
 
 import retrofit2.Response;
+import rx.Subscriber;
 
 public class LoginFragment extends BaseFragment {
 
@@ -46,6 +54,7 @@ public class LoginFragment extends BaseFragment {
         ((BoeApplication) getActivity().getApplication()).getComponent()
                 .plus(new UserModule())
                 .inject(this);
+        Utils.handleSelectLanguage(getActivity(), preferencesManager.getLanguage());
     }
 
     @Override
@@ -65,9 +74,22 @@ public class LoginFragment extends BaseFragment {
             EspressoIdlingResource.increment();
             loginViewModel.login()
                     .compose(RxUtils.withLoading(binding.processingContainer.rlProcessing))
-                    .subscribe(loginResponse -> {
-                        navigateFlow(loginResponse);
-                        EspressoIdlingResource.decrement();
+                    .subscribe(new Subscriber<Response<User>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e));
+                        }
+
+                        @Override
+                        public void onNext(Response<User> userResponse) {
+                            navigateFlow(userResponse);
+                            EspressoIdlingResource.decrement();
+                        }
                     });
 //            RxUtils.checkNetWork(getContext())
 //                    .subscribeOn(Schedulers.io())
@@ -86,8 +108,12 @@ public class LoginFragment extends BaseFragment {
     }
 
     public void navigateFlow(Response<User> loginResponse) {
-        if (loginResponse.isSuccessful()) {
-            startActivity(QRCodeActivity.newInstance(getContext()));
+        if (BuildConfig.IS_FAKE) {
+            startActivity(CustomerActivity.newInstance(getContext()));
+        } else {
+            if (loginResponse.isSuccessful()) {
+                startActivity(QRCodeActivity.newInstance(getContext()));
+            }
         }
     }
 
@@ -103,5 +129,12 @@ public class LoginFragment extends BaseFragment {
     protected void setProcessing(RelativeLayout rlProcessing, TextView tvProcessingTitle) {
         super.setProcessing(binding.processingContainer.rlProcessing,
                 binding.processingContainer.tvProcessingTitle);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(MyContextWrapper
+                .wrap(context,
+                        Utils.getLanguage(context)));
     }
 }

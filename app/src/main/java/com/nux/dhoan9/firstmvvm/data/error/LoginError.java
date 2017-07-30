@@ -15,11 +15,11 @@ public class LoginError {
     }
 
     public class Error {
-        private Message message;
+        private List<Object> message;
         private String code;
         private int status;
 
-        public Message getMessage() {
+        public List<Object> getMessage() {
             return message;
         }
 

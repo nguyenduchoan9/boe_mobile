@@ -6,7 +6,7 @@ package com.nux.dhoan9.firstmvvm.utils;
 
 public class Constant {
     public static final String ID = "BOE";
-    public static String API_ENDPOINT = "http://192.168.0.108:3000";
+    public static String API_ENDPOINT = "http://192.168.0.108:3000/";
 
     public final static String INVALID_USERNAME_ERROR = "Username length must be in from 8 to 40 characters";
     public final static String INVALID_PASSWORD_ERROR = "Invalid password";
@@ -49,4 +49,8 @@ public class Constant {
 
     public final static String PAYPAL_AUTHORIZRTION = "Basic QWV0elZRaEpoNmtWX3ZfR0RleDBJeW5HT182a3kwVkx6dkYwRDNha0o3WURDVkdZU3JnVHBJVy1GQXEtQWRZbFZXMFRNSjdYZFlwYkNQei06RVAtSHZrTkJXbGw3MWc5cTJQS2ZURHRXWFEwVC1Od3g1X3Y0QVhzZFNlZXEtWTBJQ2hzYXV6ZE1HVHJpVFdyRDBWaTh1TWNsckM1c2hUcGU=";
     public final static String LIST_DISH_NOT_SERVE = "LIST_DISH_NOT_SERVE";
+
+    public final static String LANGUAGE_KEY = "LANGUAGE_KEY";
+    public final static String VI_LANGUAGE_STRING = "vi";
+    public final static String EN_LANGUAGE_STRING = "en";
 }

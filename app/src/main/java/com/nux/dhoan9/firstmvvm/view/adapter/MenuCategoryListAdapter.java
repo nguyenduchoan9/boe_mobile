@@ -78,6 +78,17 @@ public class MenuCategoryListAdapter extends RecyclerView.Adapter<MenuCategoryLi
             rvDishes = binding.rvDishes;
 
             DishListAdapter adapter = new DishListAdapter(viewModel.dishViewModels, mContext);
+            adapter.setListener(new DishListAdapter.OrderHandleListener() {
+                @Override
+                public void onMaxOrderClick() {
+
+                }
+
+                @Override
+                public void onOrderClick(boolean isMax, int dishId) {
+                    if (null != mListener) mListener.onOrderClick(isMax, dishId);
+                }
+            });
             rvDishes.setAdapter(adapter);
             rvDishes.setLayoutManager(manager);
 
@@ -89,7 +100,18 @@ public class MenuCategoryListAdapter extends RecyclerView.Adapter<MenuCategoryLi
     public void setKeySearch(String keySearch) {
         this.keySearch = keySearch;
     }
-    public String getKeySearch(){
+
+    public String getKeySearch() {
         return keySearch;
+    }
+
+    public interface OrderHandleListener {
+        void onOrderClick(boolean isMax, int dishId);
+    }
+
+    private OrderHandleListener mListener;
+
+    public void setListener(OrderHandleListener mListener) {
+        this.mListener = mListener;
     }
 }

@@ -3,35 +3,110 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="login_text">Đăng nhập</string>
-    <string name="register_text">Đăng ký</string>
+    <!--Start Login and Register-->
+    <string name="login_text_btn_login">Đăng nhập</string>
+    <string name="login_text_input_username">Tài khoản</string>
+    <string name="login_text_input_password">Mật khẩu</string>
+    <string name="login_text_btn_register">Đăng ký</string>
+    <string name="login_text_as_guest"><u>Đăng nhập với tài khoản khách</u></string>
+    <string name="register_text_input_confirm_password">Nhập lại mật khẩu</string>
+    <!--End Login and Rgister-->
+
     <string name="open">Open</string>
     <string name="close">Close</string>
 
     <string name="item_image_transition">item_image_transition</string>
     <string name="item_cart_sum">Tổng cộng:</string>
     <string name="scan_qr_code_fragment">Scan QR Code</string>
-    <string name="cutlery_fragment">Cutlery</string>
-    <string name="drinking_fragment">Drinking</string>
-    <string name="order_fragment">Order</string>
-    <string name="history_fragment">History</string>
+    <string name="cutlery_fragment">Món ăn</string>
+    <string name="drinking_fragment">Nước</string>
+    <string name="order_fragment">Giỏ</string>
+    <string name="history_fragment">Lịch sử</string>
+
 
     <string name="text_clear_all"><u>Clear all</u></string>
-    <string name="text_login_as_guest"><u>Login as guest</u></string>
     <string name="text_submit">Submit</string>
-    <string name="text_not_available_network">Kết nối của bạn không khả</string>
-    <string name="text_server_maintanance">Hệ thống đang bản tr</string>
+    <string name="text_not_available_network">Kết nối của bạn không khả d</string>
+    <string name="text_server_maintanance">Hệ thống đang bảo trì</string>
     <string name="text_processing">Đang xử lý...</string>
     <string name="bill_text">Hóa đơn</string>
-    <string name="amount">Tổng cộng</string>
-    <string name="text_diner">Thực khách</string>
-    <string name="text_oreder_date">Ngày ăn</string>
-    <string name="text_items">Số món</string>
-    <string name="text_payment_method">Phương thức thanh toán</string>
-    <string name="nav_information">Thông tin</string>
-    <string name="nav_profile">Trang cá nhân</string>
-    <string name="nav_sign_out">Đăng xuất</string>
+    <string name="text_info_bill_amount">Tổng cộng</string>
+    <string name="text_info_bill_title_diner">Thực khách</string>
+    <string name="text_info_bill_title_oreder_date">Ngày ăn</string>
+    <string name="text_info_bill_title_items">Số món</string>
+    <string name="text_info_bill_title_payment_method">Phương thức thanh toán</string>
+
     <string name="text_loading">Đang tải...</string>
-    <string name="text_description_pay_back">Hiện tại, chúng tôi không còn phục vụ các món ăn như bên dưới. Xin quý khách liên hệ quản lý để làm thủ tục hoàn tiền.</string>
+    <string name="text_description_pay_back">Hiện tại, chúng tôi không còn phục vụ các món ăn bên dưới. Xin quý khách liên hệ quản lý để làm thủ tục hoàn tiền.</string>
+    <string name="text_description_dish_not_available_paypal">Chúng tôi không còn phục vụ các món ăn bên dưới. Bạn có muốn tiếp tục dùng bữa.</string>
+
+    <string name="text_description_after_order">Chúng tôi không còn phục vụ các món ăn bên dưới. Xin quý khách thông cảm.\nBạn có muốn tiếp tục thanh toán?</string>
+    <string name="text_description_payback_money">* Hệ thống sẽ tự động hoàn tiền dựa trên lựa chọn của bạn</string>
     <string name="text_no_result_found">Không tìm thấy kết quả</string>
+
+    <!--Start Drawer Navigation-->
+    <string name="drawer_title_information">Thông tin</string>
+    <string name="drawer_title_configuration">Tùy chỉnh</string>
+    <string name="drawer_text_sign_out">Đăng xuất</string>
+    <string name="drawer_text_profile">Trang cá nhân</string>
+    <string name="drawer_text_language">Ngôn ngữ</string>
+    <string name="drawer_text_api">API</string>
+    <string name="drawer_text_scan_table">Quét mã bàn</string>
+    <!--End Drawer Navigation-->
+
+    <!--Start Bottom Navigation-->
+    <string name="bottom_nav_text_cutlery">Món ăn</string>
+    <string name="bottom_nav_text_drinking">Nước</string>
+    <string name="bottom_nav_text_order">Giỏ</string>
+    <string name="bottom_nav_text_history">Lịch sử</string>
+    <!--End Bottom Navigation-->
+
+    <!--Start Button-->
+    <string name="text_btn_description_before_order">Chúng tôi không còn phục vụ các món ăn bên dưới. Xin quý khách thông cảm.</string>
+    <string name="text_btn_continue">Tiếp tục</string>
+    <string name="text_btn_order">Thêm vào giỏ</string>
+    <string name="text_btn_close">Đóng</string>
+    <string name="text_btn_select_language">Chọn ngôn ngữ</string>
+    <string name="text_btn_apply_config">Áp dụng</string>
+    <string name="text_btn_delete">Hủy giỏ hàng</string>
+    <string name="text_btn_stop_eating">Hủy hóa đơn</string>
+    <!--End Button-->
+
+    <!--Start Information-->
+    <string name="text_info_no_history">K</string>
+    <string name="text_info_stop_serving">Nhà Hàng Đã ngưng phục vụ</string>
+    <string name="text_info_empty_cart">Bạn chưa chọn món</string>
+    <string name="text_info_searching">Đang tìm kiếm...</string>
+    <string name="text_info_search_cutlery">Tìm kiếm món ăn</string>
+    <string name="text_info_search_drinking">Tìm kiếm thức uống</string>
+    <string name="text_search_default">Tìm kiếm</string>
+    <string name="text_info_notification_annoucement">Nhà hàng BOE trân trọng thông báo</string>
+    <string name="text_info_notification_description">Hiện tại chúng tôi không còn phục vụ...</string>
+    <string name="text_info_notification_ignore">Ignore</string>
+    <string name="text_info_dish">món</string>
+    <string name="text_info_dishes">món</string>
+    <string name="text_info_refunding_bill">Hệ thống đang hoàn tác tiền món ăn</string>
+    <string name="text_btn_bill_pay">Thanh toán</string>
+    <string name="text_info_scan_qr_code">Scan QR code and get menu</string>
+    <string name="text_info_processing">Đang xử lý...</string>
+    <string name="text_info_no_search_result">Không tìm thấy kết quả</string>
+    <string name="text_info_checkout">Thanh Toán</string>
+    <string name="text_toast_maximum_quantity">Bạn đã đặt tối đa số lượng</string>
+    <string name="text_toast_minimum">Bạn phải đặt tổi thiểu là một</string>
+    <string name="text_dialog_title_remove_dish">Quý khách có muốn hủy toàn bộ món ăn</string>
+    <string name="text_dialog_negative_button">CÓ</string>
+    <string name="text_dialog_positive_button">KHÔNG</string>
+    <string name="text_nav_header_layout_table">Bàn&#160;</string>
+    <string name="text_btn_update">Cập nhật</string>
+    <string name="text_search_dish_not_serve">Món ăn tìm kiếm đã ngưng phục vụ</string>
+    <string name="text_notification_refund">Hoàn tiền món ăn...</string>
+    <string name="text_profile_username">Username</string>
+    <string name="text_profile_full_name_title">Full Name</string>
+    <string name="text_profile_full_name_h">Your name</string>
+    <string name="text_profile_phone">Phone</string>
+    <string name="text_profile_phone_hint">Your phone number</string>
+    <string name="text_response_error_msg">The server is not available</string>
+    <string name="text_response_error_connection">The connection has a error</string>
+    <string name="text_response_error_not_process">The server can process this request</string>
+    <!--End Information-->
 </resources>

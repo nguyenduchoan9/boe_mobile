@@ -1,6 +1,10 @@
 package com.nux.dhoan9.firstmvvm.utils;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,11 +14,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 
 /**
  * Created by hoang on 27/05/2017.
@@ -69,9 +75,28 @@ public class Utils {
 
         return new BitmapDrawable(resources, x);
     }
+
     public static Drawable changeDrawableColor(Drawable drawable, int newColor) {
 //        Drawable mDrawable = ContextCompat.getDrawable(context, icon).mutate();
         drawable.setColorFilter(new PorterDuffColorFilter(newColor, PorterDuff.Mode.SRC_IN));
         return drawable;
+    }
+
+    public static String getLanguage(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.ID, Context.MODE_PRIVATE);
+        return sharedPreferences.getString("LANGUAGE_INFO", Constant.VI_LANGUAGE_STRING);
+    }
+
+    @SuppressWarnings("deprecation")
+    public static void handleSelectLanguage(Activity activity, String lang) {
+        String languageToLoad = lang; // your language
+        Locale locale = new Locale(languageToLoad);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.setLocale(locale);
+//        Context context  = createConfigurationContext(config);
+//        Resources resources = context.getResources();
+        activity.getBaseContext().getResources().updateConfiguration(config,
+                activity.getBaseContext().getResources().getDisplayMetrics());
     }
 }

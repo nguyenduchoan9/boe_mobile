@@ -45,6 +45,7 @@ public class UserRepoImpl implements UserRepo {
 
                         @Override
                         public void onError(Throwable e) {
+                            subscriber.onError(e);
                             Log.d("Error", "UserrepoImpl");
                         }
 
@@ -69,6 +70,7 @@ public class UserRepoImpl implements UserRepo {
 
                         @Override
                         public void onError(Throwable e) {
+                            subscriber.onError(e);
                             Log.d("Error", "UserrepoImpl-getprofile");
                         }
 
@@ -94,6 +96,7 @@ public class UserRepoImpl implements UserRepo {
 
                         @Override
                         public void onError(Throwable e) {
+                            subscriber.onError(e);
                             Log.d("Error", "UserrepoImpl-loginByEmail");
                         }
 
@@ -110,9 +113,22 @@ public class UserRepoImpl implements UserRepo {
         return Observable.create(subscriber -> {
             services.logout(id)
                     .compose(RxUtils.onProcessRequest())
-                    .subscribe(response -> {
-                        subscriber.onNext(null);
-                        subscriber.onCompleted();
+                    .subscribe(new Subscriber<Response<SessionDeleteResponse>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            subscriber.onError(e);
+                        }
+
+                        @Override
+                        public void onNext(Response<SessionDeleteResponse> sessionDeleteResponseResponse) {
+                            subscriber.onNext(null);
+                            subscriber.onCompleted();
+                        }
                     });
         });
     }

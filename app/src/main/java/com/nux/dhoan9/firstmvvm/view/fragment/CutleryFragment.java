@@ -1,25 +1,36 @@
 package com.nux.dhoan9.firstmvvm.view.fragment;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import com.bumptech.glide.Glide;
 import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
+import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
+import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
+import com.nux.dhoan9.firstmvvm.data.response.CanOrder;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentCutleryBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
+import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
+import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
+import com.nux.dhoan9.firstmvvm.utils.Utils;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.MenuCategoryListAdapter;
+import com.nux.dhoan9.firstmvvm.view.custom.MyContextWrapper;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
 import javax.inject.Inject;
 import javax.inject.Named;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -32,7 +43,12 @@ public class CutleryFragment extends BaseFragment {
     @Inject
     @Named("cutlery")
     MenuCateListViewModel viewModel;
+    @Inject
+    CartManager cartManager;
+    @Inject
+    DishRepo dishRepo;
     private boolean isHaveResult = true;
+    private boolean isHaveResultDishNotServe = false;
 
     public CutleryFragment() {
         // Required empty public constructor
@@ -104,11 +120,16 @@ public class CutleryFragment extends BaseFragment {
         if (isInit) {
             isInit = false;
         } else {
-            if (!isHaveResult) {
+            if (!isHaveResult && !isHaveResultDishNotServe) {
                 showNoSearchResult();
                 rvDish.setVisibility(View.INVISIBLE);
                 setSearchKeyOnSearchBar(adapter.getKeySearch(), 0);
+            } else if (isHaveResultDishNotServe) {
+                ((CustomerActivity) getActivity()).showSearchDishNotServe();
+                rvDish.setVisibility(View.INVISIBLE);
+                setSearchKeyOnSearchBar(adapter.getKeySearch(), 0);
             } else {
+                hideSearchDishNotServe();
                 hideNoSearchResult();
                 if (rvDish.getVisibility() != View.VISIBLE) {
                     rvDish.setVisibility(View.VISIBLE);
@@ -120,6 +141,26 @@ public class CutleryFragment extends BaseFragment {
 
     private void initView() {
         setActionSwipeContainer();
+        adapter.setListener((isMax, dishId) -> {
+            dishRepo.checkDishCartAvailable(String.valueOf(dishId))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnTerminate(() -> hideProcessing())
+                    .subscribe(dishNotAvailable -> {
+                        if (null == dishNotAvailable || 0 == dishNotAvailable.size()) {
+                            if (isMax) {
+                                ToastUtils.toastLongMassage(getContext(), getString(R.string.text_toast_maximum_quantity));
+                            } else {
+                                updateOrderBagde();
+                            }
+                        } else if (0 < dishNotAvailable.size()) {
+                            cartManager.removeOutOfCart(dishId);
+                            handleDishNotServe();
+                        }
+                        updateOrderBagde();
+                    });
+
+        });
         LinearLayoutManager manager =
                 new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvDish = binding.rvDish;
@@ -127,23 +168,46 @@ public class CutleryFragment extends BaseFragment {
         rvDish.setLayoutManager(manager);
     }
 
+    private void handleDishNotServe() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        builder.setCustomTitle(inflater.inflate(R.layout.layout_dialog_dish_cutlery_title, null, false));
+        View content = inflater.inflate(R.layout.layout_dialog_update_menu, null, false);
+        builder.setView(content);
+
+        AlertDialog alertDialog = builder.create();
+        Button btnYes = (Button) content.findViewById(R.id.btnSelect);
+        btnYes.setOnClickListener(v -> {
+            alertDialog.dismiss();
+            refreshMenu();
+        });
+
+        alertDialog.show();
+    }
+
     public void synTheCart() {
         viewModel.synCartInCate();
     }
 
+    public void refreshMenu() {
+        viewModel.initialize(true)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(v -> clearSearchKey())
+                .subscribe(result -> {
+                    isHaveResult = true;
+                    isHaveResultDishNotServe = false;
+                    clearSearchKey();
+                    hideNoSearchResult();
+                    hideSearchDishNotServe();
+                    rvDish.setVisibility(View.VISIBLE);
+                    binding.srRefresh.setRefreshing(false);
+                });
+    }
+
     private void setActionSwipeContainer() {
         binding.srRefresh.setOnRefreshListener(() -> {
-            viewModel.initialize(true)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(v -> clearSearchKey())
-                    .subscribe(result -> {
-                        isHaveResult = true;
-                        clearSearchKey();
-                        hideNoSearchResult();
-                        rvDish.setVisibility(View.VISIBLE);
-                        binding.srRefresh.setRefreshing(false);
-                    });
+            refreshMenu();
         });
 
         binding.srRefresh.setColorSchemeResources(R.color.holoBlueBright,
@@ -160,15 +224,24 @@ public class CutleryFragment extends BaseFragment {
                 .doOnSubscribe(() -> showProgressingOnSearching())
                 .doOnTerminate(() -> hideProgressingOnSearching())
                 .subscribe(result -> {
-                    if (result.size() == 0) {
+                    hideNoSearchResult();
+                    hideSearchDishNotServe();
+                    if (result.isNoResult() == true && result.getResult().size() == 0) {
+                        // dish not serve
+                        ((CustomerActivity) getActivity()).showSearchDishNotServe();
+                        rvDish.setVisibility(View.INVISIBLE);
+                        isHaveResult = false;
+                        isHaveResultDishNotServe = true;
+                    } else if (result.isNoResult() == false) {
+                        // no search result
                         showNoSearchResult();
                         rvDish.setVisibility(View.INVISIBLE);
                         isHaveResult = false;
                     } else {
-                        hideNoSearchResult();
                         rvDish.setVisibility(View.VISIBLE);
                         isHaveResult = true;
                     }
+                    hideProgressingOnSearching();
                 });
     }
 
@@ -190,4 +263,10 @@ public class CutleryFragment extends BaseFragment {
         viewModel.notifyCartChange();
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(MyContextWrapper
+                .wrap(context,
+                        Utils.getLanguage(context)));
+    }
 }

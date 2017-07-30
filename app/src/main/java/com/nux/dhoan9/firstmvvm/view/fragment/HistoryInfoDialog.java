@@ -68,7 +68,11 @@ public class HistoryInfoDialog extends DialogFragment {
         List<OrderInfoItem> items = getArguments().getParcelableArrayList("list");
         setOrderInfoList(items);
         btnCancel = (Button) view.findViewById(R.id.btnCancel);
-        btnCancel.setOnClickListener(v -> dismiss());
+        btnCancel.setOnClickListener(v -> {
+            dismiss();
+            if (null != listener)
+                listener.onCloseClick();
+        });
         btnOrder = (Button) view.findViewById(R.id.btnOrder);
         btnOrder.setOnClickListener(v -> {
             listener.onOrderClick(getArguments().getParcelableArrayList("list"));
@@ -102,6 +106,8 @@ public class HistoryInfoDialog extends DialogFragment {
 
     public interface OrderInfoListener {
         void onOrderClick(List<OrderInfoItem> items);
+
+        void onCloseClick();
     }
 
     private OrderInfoListener listener;

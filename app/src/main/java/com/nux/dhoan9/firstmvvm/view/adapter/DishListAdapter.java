@@ -76,7 +76,12 @@ public class DishListAdapter extends Adapter<RecyclerView.ViewHolder> {
             DishViewModel viewModel = getDishes().get(position - 1);
             ((DishViewHolder) holder).binding.setViewModel(viewModel);
             ((DishViewHolder) holder).binding.executePendingBindings();
-            holder.itemView.setOnClickListener(v -> viewModel.onOrderClick());
+            holder.itemView.setOnClickListener(v -> {
+                boolean isUpperBound = viewModel.onOrderClick();
+
+                if (null != mListener) mListener.onOrderClick(!isUpperBound, viewModel.id);
+
+            });
             holder.itemView.setOnLongClickListener(v -> {
                 Intent intent = new Intent(mContext, DishDetailActivity.class);
                 intent.putExtra(Constant.KEY_DISH_DETAIL, viewModel.id);
@@ -132,5 +137,17 @@ public class DishListAdapter extends Adapter<RecyclerView.ViewHolder> {
         public BlankViewHolder(View itemView) {
             super(itemView);
         }
+    }
+
+    public interface OrderHandleListener {
+        void onMaxOrderClick();
+
+        void onOrderClick(boolean isMax, int dishId);
+    }
+
+    private OrderHandleListener mListener;
+
+    public void setListener(OrderHandleListener mListener) {
+        this.mListener = mListener;
     }
 }

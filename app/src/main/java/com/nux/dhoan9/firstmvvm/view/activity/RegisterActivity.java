@@ -7,7 +7,9 @@ import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.nux.dhoan9.firstmvvm.utils.Utils;
 import com.nux.dhoan9.firstmvvm.utils.test.EspressoIdlingResource;
+import com.nux.dhoan9.firstmvvm.view.custom.MyContextWrapper;
 import com.nux.dhoan9.firstmvvm.view.fragment.RegisterFragment;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -35,5 +37,12 @@ public class RegisterActivity extends AppCompatActivity {
     public void onBackPressed() {
         startActivity(LoginActivity.newInstance(this));
         finish();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(MyContextWrapper
+                .wrap(newBase,
+                        Utils.getLanguage(newBase)));
     }
 }

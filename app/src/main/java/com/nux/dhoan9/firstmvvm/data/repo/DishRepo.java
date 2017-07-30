@@ -1,6 +1,7 @@
 package com.nux.dhoan9.firstmvvm.data.repo;
 
 import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
+import com.nux.dhoan9.firstmvvm.data.response.CutlerySearchResult;
 import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.model.DishSugesstion;
 import com.nux.dhoan9.firstmvvm.model.MenuCategories;
@@ -23,9 +24,9 @@ public interface DishRepo {
 
     Observable<List<Dish>> getDishesByCategory(int idCategory, String keySeach);
 
-    Observable<List<MenuCategories>> getDrinkingByKeySearch(String keySearch);
+    Observable<CutlerySearchResult> getDrinkingByKeySearch(String keySearch);
 
-    Observable<List<MenuCategories>> getCutleryByKeySearch(String keySearch);
+    Observable<CutlerySearchResult> getCutleryByKeySearch(String keySearch);
 
     Observable<List<CartDishAvailable>> checkDishCartAvailable(String ids);
 

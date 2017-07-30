@@ -84,30 +84,27 @@ public class HistoryFragment extends BaseFragment {
         rv.setAdapter(adapter);
         rv.setLayoutManager(manager);
         rv.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-//        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                RelativeLayout view = ((CustomerActivity) getActivity()).getNavigationBottom();
-//                if (dy > 0) {
-//                    // Scrolling up
-//                    view.setVisibility(View.GONE);
-//                } else {
-//                    // Scrolling down\
-//                    view.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
     }
 
     private void showDialog(List<OrderInfoItem> infoItemList) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         HistoryInfoDialog dialog = HistoryInfoDialog.newInstance(infoItemList);
-        dialog.setListener(items -> {
-            for (OrderInfoItem item : items){
-                cartManager.plus(item.getId(), 1);
+        dialog.setListener(new HistoryInfoDialog.OrderInfoListener() {
+            @Override
+            public void onOrderClick(List<OrderInfoItem> items) {
+                for (OrderInfoItem item : items) {
+                    if (!cartManager.isInCart(item.getId())) {
+                        cartManager.plus(item.getId(), 1);
+                    }
+                }
+                updateOrderBagde();
+                ((CustomerActivity) getActivity()).showOrderFragment();
             }
-            ((CustomerActivity)getActivity()).showOrderFragment();
+
+            @Override
+            public void onCloseClick() {
+                onStart();
+            }
         });
         dialog.show(fm, "eeee");
     }

@@ -1,10 +1,12 @@
 package com.nux.dhoan9.firstmvvm.view.fragment;
 
-import android.content.Intent;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
@@ -21,11 +24,8 @@ import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentOrderBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
-import com.nux.dhoan9.firstmvvm.model.OrderInfoItem;
-import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
-import com.nux.dhoan9.firstmvvm.view.activity.PaypalActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.OrderAdapter;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemViewModel;
@@ -186,24 +186,25 @@ public class OrderFragment extends BaseFragment {
             @Override
             public void onIncrementQuantity(CartItemViewModel.Oops oops) {
                 if (oops.isUpperQuantityBound) {
-                    ToastUtils.toastLongMassage(getContext(), "The maximum of quantity is 4");
+                    ToastUtils.toastLongMassage(getContext(), getString(R.string.text_toast_maximum_quantity));
                     return;
                 }
                 total += oops.price;
                 String textTotal = String.valueOf(new BigDecimal(getTotalPayment()));
                 setTotal(textTotal);
+                updateOrderBagde();
             }
 
             @Override
             public void onDecrementQuantity(CartItemViewModel.Oops oops) {
                 if (oops.isLowerQuantityBound) {
-                    ToastUtils.toastLongMassage(getContext(), "The quantity must have at least 1");
+                    ToastUtils.toastLongMassage(getContext(), getString(R.string.text_toast_minimum));
                     return;
                 }
                 total -= oops.price;
                 String textTotal = String.valueOf(new BigDecimal(getTotalPayment()));
                 setTotal(textTotal);
-
+                updateOrderBagde();
             }
 
             @Override
@@ -211,6 +212,37 @@ public class OrderFragment extends BaseFragment {
                 total -= minus;
                 String textTotal = String.valueOf(new BigDecimal(getTotalPayment()));
                 setTotal(textTotal);
+                updateOrderBagde();
+            }
+
+            @Override
+            public void onRemoveAll() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                builder.setCustomTitle(inflater.inflate(R.layout.layout_dialog_remove_dish_title, null, false));
+                View content = inflater.inflate(R.layout.layout_dialog_remove_dish_content, null, false);
+                builder.setView(content);
+
+                AlertDialog alertDialog = builder.create();
+                Button btnYes = (Button) content.findViewById(R.id.btnSelect);
+                btnYes.setOnClickListener(v -> {
+                    cartManager.clear();
+                    alertDialog.dismiss();
+                    updateOrderBagde();
+                    onStart();
+                });
+
+                Button btnNo = (Button) content.findViewById(R.id.btnClose);
+                btnNo.setOnClickListener(v -> {
+                    alertDialog.dismiss();
+                });
+                builder.setPositiveButton(R.string.text_dialog_negative_button, (dialog, which) -> {
+
+                });
+                builder.setNegativeButton(R.string.text_dialog_positive_button, (dialog, which) -> {
+                    dialog.dismiss();
+                });
+                alertDialog.show();
             }
         });
         LinearLayoutManager manager =
@@ -224,9 +256,9 @@ public class OrderFragment extends BaseFragment {
     public float getTotalPayment() {
         List<CartItemViewModel> vms = cartItemListViewModel.getCartItems();
         float mtotal = 0F;
-        for(int i =0; i< vms.size(); i ++){
+        for (int i = 0; i < vms.size(); i++) {
             CartItemViewModel item = vms.get(i);
-            mtotal += (item.quantity*item.price);
+            mtotal += (item.quantity * item.price);
         }
         return mtotal;
     }
@@ -247,6 +279,7 @@ public class OrderFragment extends BaseFragment {
                 cartItemListViewModel.notifyCartChange(items);
                 ((CustomerActivity) getActivity()).notifyCartChange();
                 setTotal(String.valueOf(new BigDecimal(getTotalPayment())));
+                updateOrderBagde();
                 ((CustomerActivity) getActivity()).performClickContinues();
             }
 
@@ -254,6 +287,7 @@ public class OrderFragment extends BaseFragment {
             public void onCancelClick() {
                 cartManager.clear();
 //                cartItemListViewModel.notifyCartChange();
+                updateOrderBagde();
                 ((CustomerActivity) getActivity()).notifyCartChange();
                 ((CustomerActivity) getActivity()).showOrderFragment();
             }
@@ -272,6 +306,7 @@ public class OrderFragment extends BaseFragment {
             for (CartDishAvailable item : items) {
                 cartManager.removeOutOfCart(item.getId());
             }
+            updateOrderBagde();
             ((CustomerActivity) getActivity()).showOrderFragment();
         });
         dialog.show(fm, "beyond");

@@ -1,0 +1,111 @@
+<resources>
+    <string name="app_name">BOE</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--Start Login and Register-->
+    <string name="login_text_btn_login">Login</string>
+    <string name="login_text_input_username">Username</string>
+    <string name="login_text_input_password">Password</string>
+    <string name="login_text_btn_register">Register</string>
+    <string name="login_text_as_guest"><u>Login as guest</u></string>
+    <string name="register_text_input_confirm_password">Password confirmation</string>
+    <!--End Login and Rgister-->
+
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
+    <string name="item_image_transition">item_image_transition</string>
+    <string name="item_cart_sum">Total:</string>
+    <string name="scan_qr_code_fragment">Scan QR Code</string>
+    <string name="cutlery_fragment">Cutlery</string>
+    <string name="drinking_fragment">Drinking</string>
+    <string name="order_fragment">Order</string>
+    <string name="history_fragment">History</string>
+
+
+    <string name="text_clear_all"><u>Clear all</u></string>
+    <string name="text_submit">Submit</string>
+    <string name="text_not_available_network">Your network is not </string>
+    <string name="text_server_maintanance">The server is under maintain</string>
+    <string name="text_processing">Processing...</string>
+    <string name="bill_text">The bill</string>
+    <string name="text_info_bill_amount">Total</string>
+    <string name="text_info_bill_title_diner">Diner</string>
+    <string name="text_info_bill_title_oreder_date">Order Date</string>
+    <string name="text_info_bill_title_items">Dish quantity</string>
+    <string name="text_info_bill_title_payment_method">Payment Method</string>
+
+    <string name="text_loading">Loading...</string>
+    <string name="text_description_pay_back">The restaurant stop serving dishes below. Please contact manager to complete receiving money procedure</string>
+    <string name="text_description_dish_not_available_paypal">The restaurant stop serving dishes below. Do you continue having meal?</string>
+
+    <string name="text_description_after_order">The restaurant stop serving dishes below. Sorry for this convenience.\nDo you want to continue?</string>
+    <string name="text_description_payback_money">* The system will refund base on your option</string>
+    <string name="text_no_result_found">No search result</string>
+
+    <!--Start Drawer Navigation-->
+    <string name="drawer_title_information">Information</string>
+    <string name="drawer_title_configuration">Configuration</string>
+    <string name="drawer_text_sign_out">Log out</string>
+    <string name="drawer_text_profile">Profile</string>
+    <string name="drawer_text_language">Language</string>
+    <string name="drawer_text_api">API</string>
+    <string name="drawer_text_scan_table">Scan QRCode</string>
+    <!--End Drawer Navigation-->
+
+    <!--Start Bottom Navigation-->
+    <string name="bottom_nav_text_cutlery">Cutlery</string>
+    <string name="bottom_nav_text_drinking">Drinking</string>
+    <string name="bottom_nav_text_order">Cart</string>
+    <string name="bottom_nav_text_history">History</string>
+    <!--End Bottom Navigation-->
+
+    <!--Start Button-->
+    <string name="text_btn_description_before_order">The restaurant stop serving dishes below. We sorry for this convenience</string>
+    <string name="text_btn_continue">Continue</string>
+    <string name="text_btn_order">Order</string>
+    <string name="text_btn_close">Close</string>
+    <string name="text_btn_select_language">Select language</string>
+    <string name="text_btn_apply_config">Apply</string>
+    <string name="text_btn_delete">Delete cart</string>
+    <string name="text_btn_stop_eating">Delete bill</string>
+    <!--End Button-->
+
+    <!--Start Information-->
+    <string name="text_info_no_history">No history</string>
+    <string name="text_info_stop_serving">The restaurant is closed</string>
+    <string name="text_info_empty_cart">Your cart is empty</string>
+    <string name="text_info_searching">On searching...</string>
+    <string name="text_info_search_cutlery">Search cutlery</string>
+    <string name="text_info_search_drinking">Search drinking</string>
+    <string name="text_search_default">Search...</string>
+    <string name="text_info_notification_annoucement">The restaurant is informing to you</string>
+    <string name="text_info_notification_description">The restaurant stop serving...</string>
+    <string name="text_info_notification_ignore">Ignore</string>
+    <string name="text_info_dish">dish</string>
+    <string name="text_info_dishes">dishes</string>
+    <string name="text_info_refunding_bill">The system is refunding</string>
+    <string name="text_btn_bill_pay">Pay</string>
+    <string name="text_info_scan_qr_code">Scan QR code and get menu</string>
+    <string name="text_info_processing">Processing...</string>
+    <string name="text_info_no_search_result">No search result</string>
+    <string name="text_info_checkout">Checkout</string>
+    <string name="text_toast_maximum_quantity">Maximum quantity is four</string>
+    <string name="text_toast_minimum">Minimum quantity is </string>
+    <string name="text_dialog_title_remove_dish">Do you want to empty cart</string>
+    <string name="text_dialog_negative_button">YES</string>
+    <string name="text_dialog_positive_button">NO</string>
+    <string name="text_nav_header_layout_table">Table&#160;</string>
+    <string name="text_btn_update">Cập nhật</string>
+    <string name="text_search_dish_not_serve">Món ăn tìm kiếm đã ngưng phục vụ</string>
+    <string name="text_notification_refund">Hoàn tiền món ăn...</string>
+    <string name="text_profile_username">Username</string>
+    <string name="text_profile_full_name_title">First Name</string>
+    <string name="text_profile_full_name_h">Your name</string>
+    <string name="text_profile_phone">Phone</string>
+    <string name="text_profile_phone_hint">Your phone number</string>
+    <string name="text_response_error_msg">The server is not available</string>
+    <string name="text_response_error_connection">The connection has a error</string>
+    <!--End Information-->
+</resources>

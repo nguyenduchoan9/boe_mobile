@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import com.nux.dhoan9.firstmvvm.R;
@@ -50,7 +51,7 @@ public class BeforeDishNotAvailableDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
 //        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        dialog.setTitle("Hiện tại chúng tôi không còn phục vụ các món sau");
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         return dialog;
     }

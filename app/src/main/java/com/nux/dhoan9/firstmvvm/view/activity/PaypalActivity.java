@@ -21,7 +21,6 @@ import com.nux.dhoan9.firstmvvm.data.response.Amount;
 import com.nux.dhoan9.firstmvvm.data.response.FullRefundResponse;
 import com.nux.dhoan9.firstmvvm.data.response.PartialRefundResponse;
 import com.nux.dhoan9.firstmvvm.data.response.PaypalDetailResponse;
-import com.nux.dhoan9.firstmvvm.data.response.PaypalInvoiceInfoResponse;
 import com.nux.dhoan9.firstmvvm.data.response.StatusResponse;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
@@ -31,7 +30,8 @@ import com.nux.dhoan9.firstmvvm.model.PaypalInvoiceResp;
 import com.nux.dhoan9.firstmvvm.services.PaypalServices;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.CurrencyUtil;
-import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
+import com.nux.dhoan9.firstmvvm.utils.Utils;
+import com.nux.dhoan9.firstmvvm.view.custom.MyContextWrapper;
 import com.nux.dhoan9.firstmvvm.view.fragment.PaypalInfoDialog;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
@@ -74,6 +74,8 @@ public class PaypalActivity extends BaseActivity {
     TextView mTvProcessingTitle;
     @BindView(R.id.rlProcessing)
     RelativeLayout mRlProcessing;
+    @BindView(R.id.rlProcessingRollBack)
+    RelativeLayout rlProcessingRollBack;
     @Inject
     PreferencesManager preferencesManager;
 
@@ -86,23 +88,30 @@ public class PaypalActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         initDependency();
+        Log.d("Hoang", "Paypal: " + preferencesManager.getLanguage());
+        Utils.handleSelectLanguage(this, preferencesManager.getLanguage());
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paypal);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(R.string.bill_text);
         ButterKnife.bind(this);
-        tvAmount.setText(CurrencyUtil.formatVNDecimal(getTotal()));
-        tvDinerName.setText(getDinerName());
-        Date orderDate = new Date();
-        tvOrderDate.setText(convertDateToVietNam(orderDate));
-        tvItemQuantity.setText(String.valueOf(getItemTotal()) + " món");
+        confiBill();
         Intent intent = new Intent(this, PayPalService.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, configuration);
         startService(intent);
 
         btnPay.setOnClickListener(v -> onOkPress());
+    }
+
+    private void confiBill() {
+        tvAmount.setText(CurrencyUtil.formatVNDecimal(getTotal()));
+        tvItemQuantity.setText(String.valueOf(getItemTotal()) + " "
+                + (getItemTotal() <= 1 ? getString(R.string.text_info_dish) : getString(R.string.text_info_dishes)));
+        tvDinerName.setText(getDinerName());
+        Date orderDate = new Date();
+        tvOrderDate.setText(convertDateToVietNam(orderDate));
     }
 
     private String convertDateToVietNam(Date date) {
@@ -316,31 +325,44 @@ public class PaypalActivity extends BaseActivity {
     }
 
     private void showDialogConfirmContinue(List<Dish> infoItemList) {
+        hideMProcessing();
+        float minusTotal = 0F;
+        for (Dish dish : infoItemList) {
+            int quantity = cartManager.getQuantityById(dish.getId());
+            minusTotal += dish.getPrice() * quantity;
+        }
+
+        int updatedQuantity = getItemTotal() - infoItemList.size();
+        float updatedAmount = getTotal() - minusTotal;
+
         FragmentManager fm = getSupportFragmentManager();
         PaypalInfoDialog dialog = PaypalInfoDialog.newInstance(infoItemList);
+        dialog.setCancelable(false);
+        float finalMinusTotal = minusTotal;
         dialog.setListener(new PaypalInfoDialog.PaypalListener() {
             @Override
             public void onOkieClick(List<Dish> items) {
                 // tiep tuc va tru tien mon khong phuc vu
-                float total = 0;
-                for (Dish item : items) {
-                    int quantity = cartManager.getQuantityById(item.getId());
-                    total += (quantity * item.getPrice());
-                }
-                float finalTotal = total;
-                showMProcessing(null);
-                CurrencyUtil.convertVNDToUSD(total)
+                tvAmount.setText(CurrencyUtil.formatVNDecimal(updatedAmount));
+                tvItemQuantity.setText(String.valueOf(updatedQuantity) + " món");
+                // Convert VND -> USD
+                CurrencyUtil.convertVNDToUSD(finalMinusTotal)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe(() -> showMProcessing(null))
+                        .doOnSubscribe(() -> showProcessingRollBack())
+                        .doOnError(e -> hideProcessingRollBack())
                         .subscribe(usdMoney -> {
+                            // Get Paypal 's Credential
                             PaypalServices.getCredential()
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
+                                    .doOnError(e -> hideProcessingRollBack())
                                     .subscribe(credential -> {
+                                        // Get payment ID
                                         PaypalServices.getDetailByPaymentId(invoiceResp.getResponse().getId(), credential.getAccessToken())
                                                 .subscribeOn(Schedulers.io())
                                                 .observeOn(AndroidSchedulers.mainThread())
+                                                .doOnError(e -> hideProcessingRollBack())
                                                 .flatMap(new Func1<PaypalDetailResponse, Observable<PartialRefundResponse>>() {
                                                     @Override
                                                     public Observable<PartialRefundResponse> call(PaypalDetailResponse detail) {
@@ -357,6 +379,7 @@ public class PaypalActivity extends BaseActivity {
                                                     }
                                                 })
                                                 .observeOn(AndroidSchedulers.mainThread())
+                                                .doOnError(e -> hideProcessingRollBack())
                                                 .subscribe(res -> {
                                                     StringBuilder dishList = new StringBuilder();
                                                     for (Dish d : infoItemList) {
@@ -364,26 +387,27 @@ public class PaypalActivity extends BaseActivity {
                                                                 .append("_");
                                                     }
                                                     orderRepo.partialRefund(orderCreateResponse.getOrderId(),
-                                                            finalTotal, dishList.deleteCharAt(dishList.length() - 1).toString())
+                                                            finalMinusTotal, dishList.deleteCharAt(dishList.length() - 1).toString())
                                                             .subscribeOn(Schedulers.io())
                                                             .observeOn(AndroidSchedulers.mainThread())
-                                                            .doOnTerminate(() -> hideMProcessing())
+                                                            .doOnError(e -> hideProcessingRollBack())
+                                                            .doOnTerminate(() -> hideProcessingRollBack())
                                                             .subscribe(new Subscriber<StatusResponse>() {
                                                                 @Override
                                                                 public void onCompleted() {
-                                                                    hideMProcessing();
+                                                                    hideProcessingRollBack();
                                                                 }
 
                                                                 @Override
                                                                 public void onError(Throwable e) {
-                                                                    hideMProcessing();
+                                                                    hideProcessingRollBack();
                                                                 }
 
                                                                 @Override
                                                                 public void onNext(StatusResponse partialRefundResponse) {
                                                                     cartManager.clear();
                                                                     startActivity(CustomerActivity.newInstance(PaypalActivity.this));
-                                                                    hideMProcessing();
+                                                                    hideProcessingRollBack();
                                                                 }
                                                             });
                                                 });
@@ -393,23 +417,21 @@ public class PaypalActivity extends BaseActivity {
 
             @Override
             public void onAngryClick() {
-                // Huy order
-//                ToastUtils.toastShortMassage(PaypalActivity.this, "on Angry click");
-//                Transa
-                showMProcessing(null);
+                tvAmount.setText(CurrencyUtil.formatVNDecimal(0));
+                tvItemQuantity.setText(String.valueOf(0) + " món");
                 PaypalServices.getCredential()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe(() -> showMProcessing(null))
+                        .doOnSubscribe(() -> showProcessingRollBack())
+                        .doOnError(e -> hideProcessingRollBack())
                         .subscribe(credential -> {
-                            ToastUtils.toastShortMassage(PaypalActivity.this, "credential success");
                             PaypalServices.getDetailByPaymentId(invoiceResp.getResponse().getId(), credential.getAccessToken())
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
+                                    .doOnError(e -> hideProcessingRollBack())
                                     .flatMap(new Func1<PaypalDetailResponse, Observable<FullRefundResponse>>() {
                                         @Override
                                         public Observable<FullRefundResponse> call(PaypalDetailResponse detail) {
-                                            ToastUtils.toastShortMassage(PaypalActivity.this, "invoive number success");
                                             PaypalPartialReq req = new PaypalPartialReq();
                                             Amount amount = new Amount();
                                             amount.setCurrency("USD");
@@ -421,50 +443,52 @@ public class PaypalActivity extends BaseActivity {
                                         }
                                     })
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Subscriber<FullRefundResponse>() {
-                                        @Override
-                                        public void onCompleted() {
+                                    .doOnError(e -> hideProcessingRollBack())
+                                    .subscribe(result -> {
+                                        orderRepo.fullyRefund(orderCreateResponse.getOrderId())
+                                                .subscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .doOnError(e -> hideProcessingRollBack())
+                                                .doOnTerminate(() -> hideProcessingRollBack())
+                                                .subscribe(new Subscriber<StatusResponse>() {
+                                                    @Override
+                                                    public void onCompleted() {
+                                                        hideProcessingRollBack();
+                                                    }
 
-                                        }
+                                                    @Override
+                                                    public void onError(Throwable e) {
+                                                        hideProcessingRollBack();
+                                                    }
 
-                                        @Override
-                                        public void onError(Throwable e) {
-
-                                        }
-
-                                        @Override
-                                        public void onNext(FullRefundResponse partialRefundResponse) {
-                                            ToastUtils.toastShortMassage(PaypalActivity.this, "fully success");
-                                            orderRepo.fullyRefund(orderCreateResponse.getOrderId())
-                                                    .subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .doOnTerminate(() -> hideMProcessing())
-                                                    .subscribe(new Subscriber<StatusResponse>() {
-                                                        @Override
-                                                        public void onCompleted() {
-                                                            hideMProcessing();
-                                                        }
-
-                                                        @Override
-                                                        public void onError(Throwable e) {
-                                                            hideMProcessing();
-                                                        }
-
-                                                        @Override
-                                                        public void onNext(StatusResponse statusResponse) {
-                                                            ToastUtils.toastShortMassage(PaypalActivity.this, " success");
-                                                            cartManager.clear();
-                                                            startActivity(CustomerActivity.newInstance(PaypalActivity.this));
-                                                            hideMProcessing();
-                                                        }
-                                                    });
-                                        }
+                                                    @Override
+                                                    public void onNext(StatusResponse statusResponse) {
+                                                        cartManager.clear();
+                                                        startActivity(CustomerActivity.newInstance(PaypalActivity.this));
+                                                        hideProcessingRollBack();
+                                                    }
+                                                });
                                     });
                         });
 
             }
         });
         dialog.show(fm, "Paypal");
+    }
+
+    private void showProcessingRollBack() {
+        rlProcessingRollBack.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProcessingRollBack() {
+        rlProcessingRollBack.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(MyContextWrapper
+                .wrap(newBase,
+                        Utils.getLanguage(newBase)));
     }
 }
 

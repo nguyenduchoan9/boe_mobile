@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="@string/nav_information">
+    <item android:title="@string/drawer_title_information">
         <menu>
             <group
                 android:id="@+id/menu_personal"
@@ -8,7 +8,7 @@
                 <item
                     android:id="@+id/profile"
                     android:icon="@drawable/ic_nav_profile"
-                    android:title="@string/nav_profile"/>
+                    android:title="@string/drawer_text_profile"/>
                 <!--<item-->
                     <!--android:id="@+id/order"-->
                     <!--android:icon="@drawable/ic_nav_profile"-->
@@ -55,27 +55,27 @@
             <!--</group>-->
         <!--</menu>-->
     <!--</item>-->
-    <item android:title="Th">
+    <item android:title="@string/drawer_title_configuration">
         <menu>
             <group
                 android:id="@+id/menu_page"
                 android:checkableBehavior="single">
                 <item
                     android:id="@+id/setting"
-                    android:title="Setting"
+                    android:title="@string/drawer_text_scan_table"
                     android:icon="@drawable/ic_settings_cogwheel"/>
                 <item
                     android:id="@+id/apiEndpoint"
-                    android:title="API"
+                    android:title="@string/drawer_text_api"
                     android:icon="@drawable/ic_settings_cogwheel"/>
                 <item
-                    android:id="@+id/payment"
-                    android:title="Pay"
-                    android:icon="@drawable/ic_settings_cogwheel"/>
+                    android:id="@+id/language"
+                    android:title="@string/drawer_text_language"
+                    android:icon="@drawable/ic_language_black"/>
                 <item
                     android:id="@+id/logOut"
                     android:icon="@drawable/ic_nav_sign_out"
-                    android:title="@string/nav_sign_out"/>
+                    android:title="@string/drawer_text_sign_out"/>
             </group>
         </menu>
     </item>

@@ -10,6 +10,7 @@ import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by hoang on 13/06/2017.
@@ -36,8 +37,9 @@ public class HistoryListViewModel extends BaseViewModel {
     public Observable<Boolean> initialize() {
         return orderRepo.getOrder()
                 .compose(RxUtils.onProcessRequest())
-                .doOnNext(this::setData)
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(orderViews -> {
+                    setData(orderViews);
                     if (orderViews.size() == 0) {
                         return false;
                     }
@@ -50,6 +52,7 @@ public class HistoryListViewModel extends BaseViewModel {
         for (OrderView orderView : list){
             cartItems.add(new HistoryViewModel(orderView));
         }
+        listBinder.notifyDataChange(cartItems);
     }
 
     public List<HistoryViewModel> getCartItems() {

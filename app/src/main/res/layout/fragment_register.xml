@@ -2,112 +2,123 @@
 
     <data>
 
-        <import type="com.nux.dhoan9.firstmvvm.viewmodel.RegisterViewModel" />
+        <import type="com.nux.dhoan9.firstmvvm.viewmodel.RegisterViewModel"/>
 
         <variable
             name="viewmodel"
-            type="RegisterViewModel" />
+            type="RegisterViewModel"/>
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="center"
-            android:src="@drawable/cat" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#90000000" />
+            android:background="@drawable/get_menu"/>
 
-        <LinearLayout
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#90000000"/>
+
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:orientation="vertical">
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/tilEmail"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/medium_space"
-                android:layout_marginRight="@dimen/medium_space"
-                android:theme="@style/CustomInputEditText"
-                app:validateError="@{viewmodel.usernameError}">
+                android:layout_centerVertical="true"
+                android:orientation="vertical"
+                android:padding="8dp">
 
-                <EditText
-                    android:id="@+id/etEmail"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tilEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email"
-                    android:inputType="textEmailAddress"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    app:textChange="@{viewmodel.onEmailChange}" />
+                    android:layout_marginLeft="@dimen/medium_space"
+                    android:layout_marginRight="@dimen/medium_space"
+                    android:theme="@style/CustomInputEditText"
+                    app:validateError="@{viewmodel.usernameError}">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/login_text_input_username"
+                        android:inputType="textEmailAddress"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        app:textChange="@{viewmodel.onEmailChange}"/>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/tilPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/medium_space"
-                android:layout_marginRight="@dimen/medium_space"
-                android:layout_marginTop="@dimen/medium_space"
-                android:theme="@style/CustomInputEditText"
-                app:validateError="@{viewmodel.passwordError}">
+                </android.support.design.widget.TextInputLayout>
 
-                <EditText
-                    android:id="@+id/etPassword"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tilPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
-                    android:inputType="textPassword"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    app:textChange="@{viewmodel.onPasswordChange}" />
+                    android:layout_marginLeft="@dimen/medium_space"
+                    android:layout_marginRight="@dimen/medium_space"
+                    android:layout_marginTop="@dimen/medium_space"
+                    android:theme="@style/CustomInputEditText"
+                    app:validateError="@{viewmodel.passwordError}">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/etPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/login_text_input_password"
+                        android:inputType="textPassword"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        app:textChange="@{viewmodel.onPasswordChange}"/>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/tilPasswordConfirm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/medium_space"
-                android:layout_marginRight="@dimen/medium_space"
-                android:layout_marginTop="@dimen/medium_space"
-                android:theme="@style/CustomInputEditText"
-                app:validateError="@{viewmodel.passwordConfirmError}">
+                </android.support.design.widget.TextInputLayout>
 
-                <EditText
-                    android:id="@+id/etPasswordConfirm"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tilPasswordConfirm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password Confirm"
-                    android:inputType="textPassword"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    app:textChange="@{viewmodel.onPasswordConfirmChange}" />
+                    android:layout_marginLeft="@dimen/medium_space"
+                    android:layout_marginRight="@dimen/medium_space"
+                    android:layout_marginTop="@dimen/medium_space"
+                    android:theme="@style/CustomInputEditText"
+                    app:validateError="@{viewmodel.passwordConfirmError}">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/etPasswordConfirm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/register_text_input_confirm_password"
+                        android:inputType="textPassword"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        app:textChange="@{viewmodel.onPasswordConfirmChange}"/>
 
-            <Button
-                android:id="@+id/btnRegister"
-                style="@style/LoginButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/medium_space"
-                android:layout_marginRight="@dimen/medium_space"
-                android:layout_marginTop="@dimen/normal_space"
-                android:text="@string/register_text" />
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btnRegister"
+                    style="@style/PayButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="@dimen/medium_space"
+                    android:layout_marginRight="@dimen/medium_space"
+                    android:layout_marginTop="@dimen/normal_space"
+                    android:text="@string/login_text_btn_register"/>
 
 
-        </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
         <RelativeLayout
             android:id="@+id/pbLoading"
@@ -119,7 +130,7 @@
             <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"/>
         </RelativeLayout>
     </RelativeLayout>
 </layout>

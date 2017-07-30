@@ -2,34 +2,75 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="24dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="24dp"
-                android:orientation="vertical">
+                android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/tvDes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:background="@color/colorPrimaryDark"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/text_description_dish_not_available_paypal"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_x_medium_text"/>
+
+    <View
+        android:id="@+id/vSeparate"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@+id/tvDes"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginRight="48dp"
+        android:background="@color/blur_white"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btnOrder"
-        android:layout_margin="4dp"/>
+        android:layout_above="@+id/fButton"
+        android:layout_below="@+id/vSeparate"
+        android:layout_margin="8dp"/>
 
-    <Button
-        android:id="@+id/btnOrder"
-        style="@style/DetailButton.OrderButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btnCancel"
-        android:text="Tiếp tục"/>
-
-    <Button
-        android:id="@+id/btnCancel"
-        style="@style/LoginButton"
+    <LinearLayout
+        android:id="@+id/fButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="4dp"
-        android:text="Hủy"/>
+        android:orientation="vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+
+        <TextView
+            android:id="@+id/tvAttention"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="@string/text_description_payback_money"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/size_small_text"/>
+
+        <Button
+            android:id="@+id/btnOrder"
+            style="@style/DetailButton.OrderButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_btn_continue"/>
+
+        <Button
+            android:id="@+id/btnCancel"
+            style="@style/LoginButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/text_btn_stop_eating"/>
+    </LinearLayout>
+
 
 </RelativeLayout>

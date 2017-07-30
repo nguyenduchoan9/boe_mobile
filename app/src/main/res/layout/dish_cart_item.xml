@@ -30,20 +30,26 @@
 
                 <ImageView
                     android:id="@+id/ivPlus"
-                    android:layout_width="24dp"
+                    android:layout_width="36dp"
                     android:layout_height="24dp"
                     android:layout_alignBottom="@+id/tvPrice"
                     android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/tvDishName"
                     android:layout_marginRight="12dp"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
                     android:src="@drawable/ic_add"/>
 
                 <ImageView
                     android:id="@+id/ivMinus"
-                    android:layout_width="24dp"
+                    android:layout_width="36dp"
                     android:layout_height="24dp"
                     android:layout_alignBottom="@+id/tvPrice"
-                    android:layout_marginRight="24dp"
+                    android:layout_alignTop="@+id/tvDishName"
+                    android:layout_marginRight="12dp"
                     android:layout_toLeftOf="@+id/ivPlus"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
                     android:src="@drawable/ic_minus"
                     />
 
@@ -54,8 +60,7 @@
                     android:layout_toLeftOf="@id/ivMinus"
                     android:layout_toRightOf="@+id/ivCover"
                     android:ellipsize="end"
-                    android:fontFamily="serif-monospace"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:text="@{viewModel.name}"
                     android:textSize="@dimen/size_large_text"/>
 
@@ -66,7 +71,6 @@
                     android:layout_below="@+id/tvDishName"
                     android:layout_marginTop="4dp"
                     android:layout_toRightOf="@+id/ivCover"
-                    android:fontFamily="serif-monospace"
                     android:text='@{viewModel.priceView}'
                     android:textSize="@dimen/size_medium_text"/>
 
@@ -76,11 +80,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/tvPrice"
                     android:layout_toRightOf="@+id/tvPrice"
-                    android:fontFamily="serif-monospace"
                     android:gravity="end"
                     android:text='@{" x " + viewModel.quantityView}'
                     android:textSize="@dimen/size_medium_text"/>
-
 
 
                 <ImageView
@@ -101,7 +103,6 @@
                     android:layout_marginRight="24dp"
                     android:layout_toLeftOf="@+id/ivMinus"
                     android:layout_toRightOf="@+id/tvQuantity"
-                    android:fontFamily="serif-monospace"
                     android:text='@{" = " + viewModel.totalView}'
                     android:textAlignment="textStart"
                     android:textSize="@dimen/size_medium_text"/>

@@ -3,6 +3,7 @@ package com.nux.dhoan9.firstmvvm.data.repo;
 import android.util.Log;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
+import com.nux.dhoan9.firstmvvm.data.response.CutlerySearchResult;
 import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.model.DishSugesstion;
 import com.nux.dhoan9.firstmvvm.model.MenuCategories;
@@ -130,48 +131,48 @@ public class DishRepoImpl implements DishRepo {
     }
 
     @Override
-    public Observable<List<MenuCategories>> getDrinkingByKeySearch(String keySearch) {
+    public Observable<CutlerySearchResult> getDrinkingByKeySearch(String keySearch) {
         return Observable.create(subscriber -> {
             services.getDrinkingByKeySearch(keySearch)
                     .compose(RxUtils.onProcessRequest())
-                    .subscribe(new Subscriber<List<MenuCategories>>() {
+                    .subscribe(new Subscriber<CutlerySearchResult>() {
                         @Override
                         public void onCompleted() {
-                            subscriber.onCompleted();
+
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            subscriber.onError(e);
+
                         }
 
                         @Override
-                        public void onNext(List<MenuCategories> menuCategories) {
-                            subscriber.onNext(menuCategories);
+                        public void onNext(CutlerySearchResult cutlerySearchResult) {
+                            subscriber.onNext(cutlerySearchResult);
                         }
                     });
         });
     }
 
     @Override
-    public Observable<List<MenuCategories>> getCutleryByKeySearch(String keySearch) {
+    public Observable<CutlerySearchResult> getCutleryByKeySearch(String keySearch) {
         return Observable.create(subscriber -> {
             services.getCutleryByKeySearch(keySearch)
                     .compose(RxUtils.onProcessRequest())
-                    .subscribe(new Subscriber<List<MenuCategories>>() {
+                    .subscribe(new Subscriber<CutlerySearchResult>() {
                         @Override
                         public void onCompleted() {
-                            subscriber.onCompleted();
+
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            subscriber.onError(e);
+
                         }
 
                         @Override
-                        public void onNext(List<MenuCategories> menuCategories) {
-                            subscriber.onNext(menuCategories);
+                        public void onNext(CutlerySearchResult cutlerySearchResult) {
+                            subscriber.onNext(cutlerySearchResult);
                         }
                     });
         });

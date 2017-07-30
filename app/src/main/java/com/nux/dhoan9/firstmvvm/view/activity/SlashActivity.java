@@ -8,12 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.nux.dhoan9.firstmvvm.BoeApplication;
+import com.nux.dhoan9.firstmvvm.BuildConfig;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.QRCodeTableInfo;
 import com.nux.dhoan9.firstmvvm.model.User;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
+import com.nux.dhoan9.firstmvvm.utils.Utils;
+import com.nux.dhoan9.firstmvvm.view.custom.MyContextWrapper;
 import com.nux.dhoan9.firstmvvm.view.fragment.EndpointDialogFragment;
 import javax.inject.Inject;
 
@@ -29,7 +32,12 @@ public class SlashActivity extends AppCompatActivity {
         ((BoeApplication) getApplication()).getComponent()
                 .inject(this);
         if (checkGooglePlayService()) {
-            new Handler().postDelayed(() -> showEndpointDialog(), 4000);
+            new Handler().postDelayed(() -> {
+                if (BuildConfig.IS_PROD) {
+                    navigateUser();
+                } else
+                    showEndpointDialog();
+            }, 4000);
         } else {
             finish();
         }
@@ -65,6 +73,7 @@ public class SlashActivity extends AppCompatActivity {
         if (null != user) {
             if (Constant.ROLE_DINER.equals(user.getRole())) {
                 QRCodeTableInfo tableInfo = preferencesManager.getTableInfo();
+//                Utils.setLanguage(this, preferencesManager.getLanguage());
                 if (null != tableInfo) {
                     startActivity(CustomerActivity.newInstance(this));
                 } else {
@@ -79,5 +88,12 @@ public class SlashActivity extends AppCompatActivity {
     public static Intent newInstance(Context context, String body) {
         Intent i = new Intent(context, SlashActivity.class);
         return i;
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(MyContextWrapper
+                .wrap(newBase,
+                        Utils.getLanguage(newBase)));
     }
 }

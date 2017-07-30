@@ -19,14 +19,14 @@
 
             <RelativeLayout
                 android:id="@+id/rlCutlery"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center">
 
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:gravity="center"
@@ -44,10 +44,10 @@
                         android:id="@+id/tvCutlery"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/ivHistory"
+                        android:layout_below="@+id/ivCutlery"
                         android:layout_marginTop="6dp"
                         android:fontFamily="sans-serif"
-                        android:text="Món ăn"
+                        android:text="@string/bottom_nav_text_cutlery"
                         android:textSize="14sp"
                         android:visibility="gone"/>
                 </LinearLayout>
@@ -55,14 +55,14 @@
 
             <RelativeLayout
                 android:id="@+id/rlDrinking"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center">
 
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:gravity="center"
@@ -80,10 +80,10 @@
                         android:id="@+id/tvDrinking"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/ivHistory"
+                        android:layout_below="@+id/ivDrinking"
                         android:layout_marginTop="6dp"
                         android:fontFamily="sans-serif"
-                        android:text="Nước"
+                        android:text="@string/bottom_nav_text_drinking"
                         android:textSize="14sp"
                         android:visibility="gone"/>
                 </LinearLayout>
@@ -91,12 +91,12 @@
 
             <RelativeLayout
                 android:id="@+id/rlOrder"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:gravity="center"
@@ -112,12 +112,12 @@
 
                     <TextView
                         android:id="@+id/tvOrder"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/ivHistory"
+                        android:layout_below="@+id/ivOrder"
                         android:layout_marginTop="6dp"
                         android:fontFamily="sans-serif"
-                        android:text="Giỏ"
+                        android:text="@string/bottom_nav_text_order"
                         android:textSize="14sp"
                         android:visibility="gone"/>
                 </LinearLayout>
@@ -127,24 +127,26 @@
                     android:id="@+id/tvOrderBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_margin="4dp"
                     android:background="@drawable/clear_payment_bg"
                     android:gravity="center"
-                    android:padding="2dp"
+                    android:padding="4dp"
                     android:text="12"
                     android:textColor="@color/white"
                     android:textSize="@dimen/size_x_small_text"
-                    android:visibility="gone"/>
+                    android:visibility="visible"/>
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/rlHistory"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:gravity="center"
@@ -164,7 +166,7 @@
                         android:layout_below="@+id/ivHistory"
                         android:layout_marginTop="6dp"
                         android:fontFamily="sans-serif"
-                        android:text="Lịch sử"
+                        android:text="@string/bottom_nav_text_history"
                         android:textSize="14sp"
                         android:visibility="gone"/>
                 </LinearLayout>

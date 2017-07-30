@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="@string/text_btn_select_language"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_x_large_text"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvEnglish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/small_space"
+        android:layout_marginRight="@dimen/small_space"
+        android:layout_marginTop="16dp"
+        android:padding="16dp"
+        android:text="English"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/size_large_text"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"/>
+
+    <TextView
+        android:id="@+id/tvVN"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/small_space"
+        android:layout_marginRight="@dimen/small_space"
+        android:padding="16dp"
+        android:text="Tiếng Việt"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/size_large_text"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/gray"/>
+
+    <Button
+        android:id="@+id/btnSelect"
+        style="@style/LanguageButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnCancel"
+        android:layout_marginLeft="@dimen/small_space"
+        android:layout_marginRight="@dimen/small_space"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_btn_apply_config"/>
+
+    <Button
+        android:id="@+id/btnClose"
+        style="@style/LoginButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="@dimen/small_space"
+        android:layout_marginRight="@dimen/small_space"
+        android:layout_marginTop="@dimen/small_space"
+        android:text="@string/text_btn_close"/>
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:padding="8dp">-->
+
+    <!--<CheckBox-->
+    <!--android:id="@+id/cbEnglish"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tvEnglishTitle"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignBottom="@+id/cbEnglish"-->
+    <!--android:layout_alignTop="@+id/cbEnglish"-->
+    <!--android:layout_marginLeft="16dp"-->
+    <!--android:layout_toRightOf="@+id/cbEnglish"-->
+    <!--android:gravity="center"-->
+    <!--android:textSize="@dimen/size_large_text"-->
+    <!--tools:text="English"/>-->
+    <!--</RelativeLayout>-->
+    <!--</LinearLayout>-->
+
+</LinearLayout>

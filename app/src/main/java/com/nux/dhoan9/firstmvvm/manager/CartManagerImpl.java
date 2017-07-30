@@ -71,8 +71,9 @@ public class CartManagerImpl implements CartManager {
         if (null != cart) {
             float total = 0;
             for (Map.Entry<Integer, Integer> item : cart.entrySet()) {
-
+                total += item.getValue();
             }
+            return total;
         }
         return 0;
     }

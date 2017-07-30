@@ -32,7 +32,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="No history"/>
+                android:text="@string/text_info_no_history"
+                android:textAllCaps="true"
+                android:textColor="@color/secondaryText"
+                android:textSize="@dimen/size_x_large_text"
+                android:textStyle="bold"/>
         </RelativeLayout>
 
     </RelativeLayout>

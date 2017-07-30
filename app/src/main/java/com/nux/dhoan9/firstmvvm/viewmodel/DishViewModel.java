@@ -17,6 +17,7 @@ public class DishViewModel {
     public final String description;
     public ObservableField<Boolean> isOrder = new ObservableField<>(false);
     public ObservableField<String> priceView = new ObservableField<>();
+    public ObservableField<String> quantityView = new ObservableField<>();
     private CartManager cartManager;
 
     public DishViewModel(Dish dish, CartManager cartManager) {
@@ -57,12 +58,24 @@ public class DishViewModel {
         isOrder.set(true);
     }
 
-    public void onOrderClick() {
-        if (isOrder.get()) {
-            removeOutOfCart();
-        } else {
+    public boolean onOrderClick() {
+        isOrder.set(false);
+        if (!isInCart()) {
             addToCart();
+            quantityView.set("1");
+        } else {
+            int previousQuantity = getQuantityInCart();
+            if (4 == previousQuantity) {
+                return false;
+            }
+            addToCart();
+            quantityView.set("" + (previousQuantity + 1));
         }
+        return true;
+    }
+
+    private int getQuantityInCart() {
+        return cartManager.getQuantityById(this.id);
     }
 
     public void syncCart() {

@@ -2,17 +2,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="24dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="24dp"
                 android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvDes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:background="@color/colorPrimaryDark"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/text_btn_description_before_order"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_x_medium_text"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/btnOrder"
+        android:layout_below="@+id/tvDes"
         android:layout_margin="4dp"/>
 
     <Button
@@ -22,5 +32,6 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btnCancel"
         android:layout_alignParentBottom="true"
-        android:text="Tiếp tục"/>
+        android:layout_margin="8dp"
+        android:text="@string/text_btn_continue"/>
 </RelativeLayout>

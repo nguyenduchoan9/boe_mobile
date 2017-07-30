@@ -42,43 +42,21 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
         return new CartItemViewHolder(binding);
     }
 
+    public void clearDate() {
+
+    }
+
     private List<CartItemViewModel> getCartItems() {
         return viewModel.getCartItems();
     }
 
+    private CartItemViewModel getItems(int pos) {
+        return viewModel.getCartItems().get(pos);
+    }
+
     @Override
     public void onBindViewHolder(CartItemViewHolder holder, int position) {
-        CartItemViewModel cartItemViewModel = getCartItems().get(position);
-        holder.binding.ivMinus.setOnClickListener(v -> {
-            cartItemViewModel.onMinusClick()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(oops -> {
-                        if (null != listener) {
-                            listener.onDecrementQuantity(oops);
-                        }
-                    });
-        });
-
-        holder.binding.ivPlus.setOnClickListener(v -> {
-            cartItemViewModel.onPlusClick()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(oops -> {
-                        if (null != listener) {
-                            listener.onIncrementQuantity(oops);
-                        }
-                    });
-
-        });
-        holder.binding.setViewModel(cartItemViewModel);
-        holder.binding.executePendingBindings();
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(holder.itemView.getContext(), DishDetailActivity.class);
-            intent.putExtra(Constant.KEY_DISH_DETAIL, cartItemViewModel.id);
-            intent.putExtra(Constant.KEY_ORDER_ADAPTER, true);
-            holder.itemView.getContext().startActivity(intent);
-        });
+        holder.setupListeners();
     }
 
     @Override
@@ -92,16 +70,58 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
         public CartItemViewHolder(DishCartItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            setupListeners();
         }
 
-        private void setupListeners() {
-            itemView.setOnLongClickListener(v -> {
+        public void setupListeners() {
+            CartItemViewModel cartItemViewModel = getCartItems().get(getAdapterPosition());
+            binding.ivMinus.setOnClickListener(v -> {
+                cartItemViewModel.onMinusClick()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(oops -> {
+                            if (null != listener) {
+                                listener.onDecrementQuantity(oops);
+                            }
+                        });
+            });
+
+            binding.ivPlus.setOnClickListener(v -> {
+                cartItemViewModel.onPlusClick()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(oops -> {
+                            if (null != listener) {
+                                listener.onIncrementQuantity(oops);
+                            }
+                        });
+
+            });
+
+            binding.ivMinus.setOnLongClickListener(v -> {
                 if (null != listener) {
                     listener.onRemove(viewModel.remove(getAdapterPosition()));
+                    return true;
                 }
-                return true;
+                return false;
             });
+
+            itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(itemView.getContext(), DishDetailActivity.class);
+                intent.putExtra(Constant.KEY_DISH_DETAIL, cartItemViewModel.id);
+                intent.putExtra(Constant.KEY_ORDER_ADAPTER, true);
+                itemView.getContext().startActivity(intent);
+            });
+
+            itemView.setOnLongClickListener(v -> {
+                if (null != listener) {
+                    listener.onRemoveAll();
+                    return true;
+                }
+                return false;
+            });
+
+            binding.setViewModel(cartItemViewModel);
+            binding.executePendingBindings();
         }
     }
 
@@ -111,6 +131,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
         void onDecrementQuantity(CartItemViewModel.Oops oops);
 
         void onRemove(float minus);
+
+        void onRemoveAll();
     }
 
     private CartListener listener;

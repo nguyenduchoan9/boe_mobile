@@ -1,6 +1,7 @@
 package com.nux.dhoan9.firstmvvm.services;
 
 import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
+import com.nux.dhoan9.firstmvvm.data.response.CutlerySearchResult;
 import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.model.DishSugesstion;
 import com.nux.dhoan9.firstmvvm.model.MenuCategories;
@@ -32,10 +33,10 @@ public interface DishServices {
     Observable<List<Dish>> getDishByCategory(@Query("id") int id, @Query("search_key") String searchKey);
 
     @GET("dishes/search_cutlery")
-    Observable<List<MenuCategories>> getCutleryByKeySearch(@Query(value = "key_search", encoded = true) String keySearch);
+    Observable<CutlerySearchResult> getCutleryByKeySearch(@Query(value = "key_search", encoded = true) String keySearch);
 
     @GET("dishes/search_drinking")
-    Observable<List<MenuCategories>> getDrinkingByKeySearch(@Query(value = "key_search", encoded = true) String keySearch);
+    Observable<CutlerySearchResult> getDrinkingByKeySearch(@Query(value = "key_search", encoded = true) String keySearch);
 
     @GET("dishes/check_dish_available")
     Observable<List<CartDishAvailable>> checkDishInCartAvailable(@Query("ids") String ids);

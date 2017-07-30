@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -51,18 +51,25 @@
                     android:paddingTop="4dp">
 
                     <TextView
+                        android:id="@+id/tvMessage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignBottom="@+id/avi"
                         android:layout_alignTop="@+id/avi"
                         android:layout_toRightOf="@+id/avi"
                         android:gravity="center"
-                        android:text="Không tìm thấy kết quả"
+                        android:text="@string/text_info_no_search_result"
                         android:textAllCaps="true"
                         android:textSize="20sp"/>
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/rlOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/overlay_background"
+            android:visibility="gone"/>
     </RelativeLayout>
 </layout>

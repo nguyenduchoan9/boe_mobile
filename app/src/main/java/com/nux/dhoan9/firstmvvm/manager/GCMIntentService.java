@@ -13,6 +13,7 @@ import com.nux.dhoan9.firstmvvm.view.activity.SlashActivity;
 
 public class GCMIntentService extends GcmListenerService {
     public static final String MESSAGE_TO_DINER = "MESSAGE_TO_DINER";
+    public static final String MESSAGE_TO_DINER_REFUND = "MESSAGE_TO_DINER_REFUND";
     public static final String MESSAGE_TO_CHEF = "MESSAGE_TO_CHEF";
     public static final String MESSAGE_TO_WAITER = "MESSAGE_TO_WAITER";
 
@@ -20,8 +21,14 @@ public class GCMIntentService extends GcmListenerService {
     public void onMessageReceived(String string, Bundle data) {
         String to = data.getString("to");
         String body = data.getString("body");
+        String term = data.getString("term");
 
         if ("diner".equals(to)) {
+            if ("notification".equals(term)) {
+                sendMessageToDiner(body);
+            } else if ("afterRefund".equals(term)) {
+                sendMessageRefundToDiner(body);
+            }
             sendMessageToDiner(body);
         } else if ("chef".equals(to)) {
             sendMessageToChef(body);
@@ -44,6 +51,12 @@ public class GCMIntentService extends GcmListenerService {
 
     private void sendMessageToWaiter(String message) {
         Intent i = new Intent(MESSAGE_TO_WAITER);
+        i.putExtra("body", message);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+    }
+
+    private void sendMessageRefundToDiner(String message) {
+        Intent i = new Intent(MESSAGE_TO_DINER_REFUND);
         i.putExtra("body", message);
         LocalBroadcastManager.getInstance(this).sendBroadcast(i);
     }

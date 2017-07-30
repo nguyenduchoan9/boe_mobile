@@ -53,7 +53,7 @@ public class OrderNotAvailableDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
 //        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        dialog.setTitle("Hiện tại chúng tôi không còn phục vụ các món sau");
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         return dialog;
     }
