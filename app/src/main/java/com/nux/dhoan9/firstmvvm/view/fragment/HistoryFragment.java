@@ -17,6 +17,9 @@ import com.nux.dhoan9.firstmvvm.databinding.FragmentHistoryBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.model.OrderInfoItem;
+import com.nux.dhoan9.firstmvvm.utils.RetrofitUtils;
+import com.nux.dhoan9.firstmvvm.utils.RxUtils;
+import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.HistoryAdapter;
 import com.nux.dhoan9.firstmvvm.viewmodel.HistoryListViewModel;
@@ -74,12 +77,25 @@ public class HistoryFragment extends BaseFragment {
         RecyclerView.LayoutManager manager =
                 new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         adapter.setLinstener(orderListId -> {
-            orderRepo.getOrderInfo(orderListId)
+            RxUtils.checkNetWork(getContext())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(() -> showProcessing(getString(R.string.text_processing)))
-                    .doOnCompleted(() -> hideProcessing())
-                    .subscribe(orderInfo -> showDialog(orderInfo.getList()));
+                    .subscribe(isAvailable -> {
+                        if (-1 == isAvailable) {
+                            ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
+                        } else if (-2 == isAvailable) {
+                            ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
+                        } else {
+                            orderRepo.getOrderInfo(orderListId)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .doOnSubscribe(() -> showProcessing(getString(R.string.text_processing)))
+                                    .doOnError(e -> ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e)))
+                                    .doOnCompleted(() -> hideProcessing())
+                                    .subscribe(orderInfo -> showDialog(orderInfo.getList()));
+                        }
+                    });
+
         });
         rv.setAdapter(adapter);
         rv.setLayoutManager(manager);
@@ -119,16 +135,28 @@ public class HistoryFragment extends BaseFragment {
     private void initializeData() {
         binding.setVm(viewModel);
         binding.executePendingBindings();
-        viewModel.initialize()
+        RxUtils.checkNetWork(getContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> showProcessing(getString(R.string.text_loading)))
-                .doOnCompleted(() -> hideProcessing())
-                .subscribe(v -> {
-                    if (v) {
-                        hideNoResult();
+                .subscribe(isAvailable -> {
+                    if (-1 == isAvailable) {
+                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
+                    } else if (-2 == isAvailable) {
+                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
                     } else {
-                        showNoResult();
+                        viewModel.initialize()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnSubscribe(() -> showProcessing(getString(R.string.text_loading)))
+                                .doOnError(e -> ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e)))
+                                .doOnCompleted(() -> hideProcessing())
+                                .subscribe(v -> {
+                                    if (v) {
+                                        hideNoResult();
+                                    } else {
+                                        showNoResult();
+                                    }
+                                });
                     }
                 });
     }

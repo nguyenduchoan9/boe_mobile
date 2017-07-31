@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import rx.Observable;
+import rx.Subscriber;
 
 /**
  * Created by hoang on 09/05/2017.
@@ -55,19 +56,32 @@ public class MenuCateListViewModel extends BaseViewModel {
                 dishRepo.getMenu()
                         .debounce(300, TimeUnit.MILLISECONDS)
                         .compose(withScheduler())
-                        .subscribe(menu -> {
-                            for (MenuCategories menuCategories : menu) {
-                                DishListViewModel dishListViewModel = new DishListViewModel(listBinder,
-                                        dishRepo, resources, threadScheduler, cartManager);
-                                MenuCategoriesViewModel menuCategoriesViewModel =
-                                        new MenuCategoriesViewModel(dishListViewModel, menuCategories.getCategory());
+                        .subscribe(new Subscriber<List<MenuCategories>>() {
+                            @Override
+                            public void onCompleted() {
 
-                                menuCategoriesViewModels.add(menuCategoriesViewModel);
-                                dishListViewModel.initialize(menuCategories.getDish());
                             }
-                            menuListBinder.notifyDataChange(menuCategoriesViewModels);
-                            subscriber.onNext(null);
-                            subscriber.onCompleted();
+
+                            @Override
+                            public void onError(Throwable e) {
+                                subscriber.onError(e);
+                            }
+
+                            @Override
+                            public void onNext(List<MenuCategories> menu) {
+                                for (MenuCategories menuCategories : menu) {
+                                    DishListViewModel dishListViewModel = new DishListViewModel(listBinder,
+                                            dishRepo, resources, threadScheduler, cartManager);
+                                    MenuCategoriesViewModel menuCategoriesViewModel =
+                                            new MenuCategoriesViewModel(dishListViewModel, menuCategories.getCategory());
+
+                                    menuCategoriesViewModels.add(menuCategoriesViewModel);
+                                    dishListViewModel.initialize(menuCategories.getDish());
+                                }
+                                menuListBinder.notifyDataChange(menuCategoriesViewModels);
+                                subscriber.onNext(null);
+                                subscriber.onCompleted();
+                            }
                         }));
     }
 
@@ -125,6 +139,7 @@ public class MenuCateListViewModel extends BaseViewModel {
         }
         return Observable.create(subscriber -> dishRepo.getMenuDrinking()
                 .compose(withScheduler())
+                .doOnError(e -> subscriber.onError(e))
                 .subscribe(menu -> {
                     for (MenuCategories menuCategories : menu) {
                         DishListViewModel dishListViewModel = new DishListViewModel(listBinder,
@@ -179,7 +194,7 @@ public class MenuCateListViewModel extends BaseViewModel {
         return searchKey;
     }
 
-    public void notifyCartChange(){
+    public void notifyCartChange() {
         menuListBinder.notifyDataChange(menuCategoriesViewModels);
     }
 }

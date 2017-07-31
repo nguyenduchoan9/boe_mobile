@@ -24,6 +24,8 @@ import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentOrderBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
+import com.nux.dhoan9.firstmvvm.utils.RetrofitUtils;
+import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.OrderAdapter;
@@ -113,49 +115,72 @@ public class OrderFragment extends BaseFragment {
     private void initializeData() {
         binding.setViewModel(cartItemListViewModel);
         binding.executePendingBindings();
-        cartItemListViewModel
-                .initialize()
+        RxUtils.checkNetWork(getContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(() -> showProcessing(getString(R.string.text_processing)))
-                .subscribe(result -> {
-                    initTotalPayment(cartItemListViewModel.getCartItems());
-                    checkDishIsAvailable();
+                .subscribe(isAvailable -> {
+                    if (-1 == isAvailable) {
+                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
+                    } else if (-2 == isAvailable) {
+                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
+                    } else {
+                        cartItemListViewModel
+                                .initialize()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnSubscribe(() -> showProcessing(getString(R.string.text_processing)))
+                                .doOnError(e -> ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e)))
+                                .subscribe(result -> {
+                                    initTotalPayment(cartItemListViewModel.getCartItems());
+                                    checkDishIsAvailable();
+                                });
+                    }
                 });
 //        showProcessing("Loading...");
     }
 
     private void checkDishIsAvailable() {
-        orderRepo.isAvailable()
+        RxUtils.checkNetWork(getContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnTerminate(() -> hideProcessing())
-                .flatMap(new Func1<CanOrder, Observable<List<CartDishAvailable>>>() {
-                    @Override
-                    public Observable<List<CartDishAvailable>> call(CanOrder canOrder) {
-                        if (canOrder.isAvailable()) {
-                            if (cartManager.getCart().size() == 0) {
-                                return dishRepo.checkDishCartAvailable("")
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread());
-                            } else {
-                                return dishRepo.checkDishCartAvailable(getIdDishInCart())
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread());
-                            }
-                        }
-                        return null;
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(dishNotAvailable -> {
-                    if (null == dishNotAvailable) {
-                        showrRlHourOver();
-                    } else if (0 < dishNotAvailable.size()) {
-                        showBeforeHandle(dishNotAvailable);
+                .subscribe(isAvailable -> {
+                    if (-1 == isAvailable) {
+                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
+                    } else if (-2 == isAvailable) {
+                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
+                    } else {
+                        orderRepo.isAvailable()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnError(e -> ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e)))
+                                .doOnTerminate(() -> hideProcessing())
+                                .flatMap(new Func1<CanOrder, Observable<List<CartDishAvailable>>>() {
+                                    @Override
+                                    public Observable<List<CartDishAvailable>> call(CanOrder canOrder) {
+                                        if (canOrder.isAvailable()) {
+                                            if (cartManager.getCart().size() == 0) {
+                                                return dishRepo.checkDishCartAvailable("")
+                                                        .subscribeOn(Schedulers.io())
+                                                        .observeOn(AndroidSchedulers.mainThread());
+                                            } else {
+                                                return dishRepo.checkDishCartAvailable(getIdDishInCart())
+                                                        .subscribeOn(Schedulers.io())
+                                                        .observeOn(AndroidSchedulers.mainThread());
+                                            }
+                                        }
+                                        return null;
+                                    }
+                                })
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(dishNotAvailable -> {
+                                    if (null == dishNotAvailable) {
+                                        showrRlHourOver();
+                                    } else if (0 < dishNotAvailable.size()) {
+                                        showBeforeHandle(dishNotAvailable);
+                                    }
+                                });
                     }
                 });
-
     }
 
     private String getIdDishInCart() {

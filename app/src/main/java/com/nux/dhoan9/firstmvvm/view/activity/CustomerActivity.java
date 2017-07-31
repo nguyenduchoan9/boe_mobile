@@ -159,28 +159,40 @@ public class CustomerActivity extends BaseActivity {
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().endsWith(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
                     String token = intent.getStringExtra("token");
-                    userRepo.registerRegToken(token)
-                            .compose(RxUtils.onProcessRequest())
-                            .subscribe(new Subscriber<NotificationResponse>() {
-                                @Override
-                                public void onCompleted() {
+                    RxUtils.checkNetWork(CustomerActivity.this)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(isAvailable -> {
+                                if (-1 == isAvailable) {
+                                    ToastUtils.toastLongMassage(CustomerActivity.this, getString(R.string.text_not_available_network));
+                                } else if (-2 == isAvailable) {
+                                    ToastUtils.toastLongMassage(CustomerActivity.this, getString(R.string.text_server_maintanance));
+                                } else {
+                                    userRepo.registerRegToken(token)
+                                            .compose(RxUtils.onProcessRequest())
+                                            .subscribe(new Subscriber<NotificationResponse>() {
+                                                @Override
+                                                public void onCompleted() {
 
-                                }
+                                                }
 
-                                @Override
-                                public void onError(Throwable e) {
-                                    ToastUtils.toastLongMassage(CustomerActivity.this, RetrofitUtils.getMessageError(CustomerActivity.this, e));
-                                }
+                                                @Override
+                                                public void onError(Throwable e) {
+                                                    ToastUtils.toastLongMassage(CustomerActivity.this, RetrofitUtils.getMessageError(CustomerActivity.this, e));
+                                                }
 
-                                @Override
-                                public void onNext(NotificationResponse subscribe) {
-                                    if (true == subscribe.status) {
-                                        Log.v("GCM-register", "Success");
-                                    } else {
-                                        Log.v("GCM-register", "fail");
-                                    }
+                                                @Override
+                                                public void onNext(NotificationResponse subscribe) {
+                                                    if (true == subscribe.status) {
+                                                        Log.v("GCM-register", "Success");
+                                                    } else {
+                                                        Log.v("GCM-register", "fail");
+                                                    }
+                                                }
+                                            });
                                 }
                             });
+
                     Log.v(GCM_TOKEN, token);
                 } else if (intent.getAction().endsWith(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
                     ToastUtils.toastLongMassage(CustomerActivity.this,
@@ -300,30 +312,41 @@ public class CustomerActivity extends BaseActivity {
         rvSuggestion.setLayoutManager(manager);
         rvSuggestion.addItemDecoration(dividerItemDecoration);
         rvSuggestion.setAdapter(suggestionAdapter);
-        dishRepo.getSuggestedDish()
+        RxUtils.checkNetWork(CustomerActivity.this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<SuggestionByCategory>() {
-                    @Override
-                    public void onCompleted() {
+                .subscribe(isAvailable -> {
+                    if (-1 == isAvailable) {
+                        ToastUtils.toastLongMassage(CustomerActivity.this, getString(R.string.text_not_available_network));
+                    } else if (-2 == isAvailable) {
+                        ToastUtils.toastLongMassage(CustomerActivity.this, getString(R.string.text_server_maintanance));
+                    } else {
+                        dishRepo.getSuggestedDish()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Subscriber<SuggestionByCategory>() {
+                                    @Override
+                                    public void onCompleted() {
 
-                    }
+                                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        ToastUtils.toastLongMassage(CustomerActivity.this, RetrofitUtils.getMessageError(CustomerActivity.this, e));
-                    }
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        ToastUtils.toastLongMassage(CustomerActivity.this, RetrofitUtils.getMessageError(CustomerActivity.this, e));
+                                    }
 
-                    @Override
-                    public void onNext(SuggestionByCategory results) {
-                        dishSuggest = new ArrayList<>();
-                        if (null != results) {
-                            if (null != results.getDish() && results.getDish().size() > 0) {
-                                dishSuggest.addAll(results.getDish());
-                            }
-                        }
-                        suggestionAdapter.setData(dishSuggest);
-                        tvNoSuggestResult.setVisibility(View.GONE);
+                                    @Override
+                                    public void onNext(SuggestionByCategory results) {
+                                        dishSuggest = new ArrayList<>();
+                                        if (null != results) {
+                                            if (null != results.getDish() && results.getDish().size() > 0) {
+                                                dishSuggest.addAll(results.getDish());
+                                            }
+                                        }
+                                        suggestionAdapter.setData(dishSuggest);
+                                        tvNoSuggestResult.setVisibility(View.GONE);
+                                    }
+                                });
                     }
                 });
     }
@@ -586,26 +609,38 @@ public class CustomerActivity extends BaseActivity {
     }
 
     private void logout() {
-        userRepo.logout(preferencesManager.getUser().getId())
+        RxUtils.checkNetWork(CustomerActivity.this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Void>() {
-                    @Override
-                    public void onCompleted() {
+                .subscribe(isAvailable -> {
+                    if (-1 == isAvailable) {
+                        ToastUtils.toastLongMassage(CustomerActivity.this, getString(R.string.text_not_available_network));
+                    } else if (-2 == isAvailable) {
+                        ToastUtils.toastLongMassage(CustomerActivity.this, getString(R.string.text_server_maintanance));
+                    } else {
+                        userRepo.logout(preferencesManager.getUser().getId())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Subscriber<Void>() {
+                                    @Override
+                                    public void onCompleted() {
 
-                    }
+                                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        ToastUtils.toastLongMassage(CustomerActivity.this, RetrofitUtils.getMessageError(CustomerActivity.this, e));
-                    }
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        ToastUtils.toastLongMassage(CustomerActivity.this, RetrofitUtils.getMessageError(CustomerActivity.this, e));
+                                    }
 
-                    @Override
-                    public void onNext(Void aVoid) {
-                        preferencesManager.logOut();
-                        startActivity(LoginActivity.newInstance(CustomerActivity.this));
+                                    @Override
+                                    public void onNext(Void aVoid) {
+                                        preferencesManager.logOut();
+                                        startActivity(LoginActivity.newInstance(CustomerActivity.this));
+                                    }
+                                });
                     }
                 });
+
     }
 
     private void initContent() {
@@ -724,46 +759,56 @@ public class CustomerActivity extends BaseActivity {
             if (0F == total) {
                 return;
             }
-            orderRepo.isAvailable()
+            RxUtils.checkNetWork(CustomerActivity.this)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(() -> showProcessing(getString(R.string.text_info_processing)))
-                    .doOnTerminate(() -> hideProcessing())
-                    .flatMap(new Func1<CanOrder, Observable<List<CartDishAvailable>>>() {
-                        @Override
-                        public Observable<List<CartDishAvailable>> call(CanOrder canOrder) {
-                            if (canOrder.isAvailable()) {
-                                return dishRepo.checkDishCartAvailable(getIdDishInCart())
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread());
-                            }
-                            return null;
-                        }
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<List<CartDishAvailable>>() {
-                        @Override
-                        public void onCompleted() {
+                    .subscribe(isAvailable -> {
+                        if (-1 == isAvailable) {
+                            ToastUtils.toastLongMassage(CustomerActivity.this, getString(R.string.text_not_available_network));
+                        } else if (-2 == isAvailable) {
+                            ToastUtils.toastLongMassage(CustomerActivity.this, getString(R.string.text_server_maintanance));
+                        } else {
+                            orderRepo.isAvailable()
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .doOnSubscribe(() -> showProcessing(getString(R.string.text_info_processing)))
+                                    .doOnTerminate(() -> hideProcessing())
+                                    .flatMap(new Func1<CanOrder, Observable<List<CartDishAvailable>>>() {
+                                        @Override
+                                        public Observable<List<CartDishAvailable>> call(CanOrder canOrder) {
+                                            if (canOrder.isAvailable()) {
+                                                return dishRepo.checkDishCartAvailable(getIdDishInCart())
+                                                        .subscribeOn(Schedulers.io())
+                                                        .observeOn(AndroidSchedulers.mainThread());
+                                            }
+                                            return null;
+                                        }
+                                    })
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Subscriber<List<CartDishAvailable>>() {
+                                        @Override
+                                        public void onCompleted() {
 
-                        }
+                                        }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            ToastUtils.toastLongMassage(CustomerActivity.this, RetrofitUtils.getMessageError(CustomerActivity.this, e));
-                        }
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            ToastUtils.toastLongMassage(CustomerActivity.this, RetrofitUtils.getMessageError(CustomerActivity.this, e));
+                                        }
 
-                        @Override
-                        public void onNext(List<CartDishAvailable> dishNotAvailable) {
-                            if (null == dishNotAvailable) {
-                                orderFragment.showrRlHourOver();
-                            } else if (0 == dishNotAvailable.size()) {
-                                navToPayment();
-                            } else if (0 < dishNotAvailable.size()) {
-                                orderFragment.showDialog(dishNotAvailable);
-                            }
+                                        @Override
+                                        public void onNext(List<CartDishAvailable> dishNotAvailable) {
+                                            if (null == dishNotAvailable) {
+                                                orderFragment.showrRlHourOver();
+                                            } else if (0 == dishNotAvailable.size()) {
+                                                navToPayment();
+                                            } else if (0 < dishNotAvailable.size()) {
+                                                orderFragment.showDialog(dishNotAvailable);
+                                            }
+                                        }
+                                    });
                         }
                     });
-
         });
     }
 

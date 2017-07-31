@@ -143,7 +143,7 @@ public class DishRepoImpl implements DishRepo {
 
                         @Override
                         public void onError(Throwable e) {
-
+subscriber.onError(e);
                         }
 
                         @Override
@@ -167,7 +167,7 @@ public class DishRepoImpl implements DishRepo {
 
                         @Override
                         public void onError(Throwable e) {
-
+subscriber.onError(e);
                         }
 
                         @Override

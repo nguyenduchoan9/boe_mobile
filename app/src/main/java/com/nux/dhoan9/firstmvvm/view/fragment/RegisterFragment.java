@@ -25,6 +25,8 @@ import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class RegisterFragment extends BaseFragment {
     private FragmentRegisterBinding binding;
@@ -60,26 +62,38 @@ public class RegisterFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         binding.setViewmodel(viewModel);
         binding.btnRegister.setOnClickListener(v -> {
-                    EspressoIdlingResource.increment();
-                    viewModel.register()
-                            .compose(RxUtils.withLoading(binding.pbLoading))
-                            .subscribe(new Subscriber<Response<User>>() {
-                                @Override
-                                public void onCompleted() {
+                    RxUtils.checkNetWork(getContext())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(isAvailable -> {
+                                if (-1 == isAvailable) {
+                                    ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
+                                } else if (-2 == isAvailable) {
+                                    ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
+                                } else {
+                                    EspressoIdlingResource.increment();
+                                    viewModel.register()
+                                            .compose(RxUtils.withLoading(binding.pbLoading))
+                                            .subscribe(new Subscriber<Response<User>>() {
+                                                @Override
+                                                public void onCompleted() {
 
-                                }
+                                                }
 
-                                @Override
-                                public void onError(Throwable e) {
-                                    ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e));
-                                }
+                                                @Override
+                                                public void onError(Throwable e) {
+                                                    ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e));
+                                                }
 
-                                @Override
-                                public void onNext(Response<User> userResponse) {
-                                    navigateFlow(userResponse);
-                                    EspressoIdlingResource.decrement();
+                                                @Override
+                                                public void onNext(Response<User> userResponse) {
+                                                    navigateFlow(userResponse);
+                                                    EspressoIdlingResource.decrement();
+                                                }
+                                            });
                                 }
                             });
+
 //                    RxUtils.checkNetWork(getContext())
 //                            .subscribeOn(Schedulers.io())
 //                            .observeOn(AndroidSchedulers.mainThread())

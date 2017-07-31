@@ -22,6 +22,8 @@ import com.nux.dhoan9.firstmvvm.databinding.FragmentDrinkingBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
+import com.nux.dhoan9.firstmvvm.utils.RetrofitUtils;
+import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 import com.nux.dhoan9.firstmvvm.utils.ToastUtils;
 import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.adapter.MenuCategoryListAdapter;
@@ -100,10 +102,23 @@ public class DrinkingFragment extends BaseFragment {
 
     private void initializerData() {
         binding.setViewModel(viewModel);
-        viewModel.initializeDrinking(false)
+        binding.executePendingBindings();
+        RxUtils.checkNetWork(getContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
+                .subscribe(isAvailable -> {
+                    if (-1 == isAvailable) {
+                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
+                    } else if (-2 == isAvailable) {
+                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
+                    } else {
+                        viewModel.initializeDrinking(false)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnError(e -> ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e)))
+                                .subscribe(result -> {
+                                });
+                    }
                 });
         Glide.with(this)
                 .load(Constant.API_ENDPOINT + "/images/background.jpg")
@@ -135,19 +150,31 @@ public class DrinkingFragment extends BaseFragment {
     private void initView() {
         setActionSwipeContainer();
         adapter.setListener((isMax, dishId) -> {
-            dishRepo.checkDishCartAvailable(String.valueOf(dishId))
+            RxUtils.checkNetWork(getContext())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnTerminate(() -> hideProcessing())
-                    .subscribe(dishNotAvailable -> {
-                        if (null == dishNotAvailable || 0 == dishNotAvailable.size()) {
-                            if (isMax) {
-                                ToastUtils.toastLongMassage(getContext(), getString(R.string.text_toast_maximum_quantity));
-                            } else
-                                updateOrderBagde();
-                        } else if (0 < dishNotAvailable.size()) {
-                            cartManager.removeOutOfCart(dishId);
-                            handleDishNotServe();
+                    .subscribe(isAvailable -> {
+                        if (-1 == isAvailable) {
+                            ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
+                        } else if (-2 == isAvailable) {
+                            ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
+                        } else {
+                            dishRepo.checkDishCartAvailable(String.valueOf(dishId))
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .doOnTerminate(() -> hideProcessing())
+                                    .doOnError(e -> ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e)))
+                                    .subscribe(dishNotAvailable -> {
+                                        if (null == dishNotAvailable || 0 == dishNotAvailable.size()) {
+                                            if (isMax) {
+                                                ToastUtils.toastLongMassage(getContext(), getString(R.string.text_toast_maximum_quantity));
+                                            } else
+                                                updateOrderBagde();
+                                        } else if (0 < dishNotAvailable.size()) {
+                                            cartManager.removeOutOfCart(dishId);
+                                            handleDishNotServe();
+                                        }
+                                    });
                         }
                     });
         });
@@ -176,25 +203,35 @@ public class DrinkingFragment extends BaseFragment {
     }
 
     public void refreshMenu() {
-        binding.srRefresh.setRefreshing(true);
-        binding.srRefresh.setEnabled(false);
-        viewModel.initializeDrinking(true)
+        RxUtils.checkNetWork(getContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    binding.srRefresh.setRefreshing(false);
-                    binding.srRefresh.setEnabled(true);
-                    isHaveResult = true;
-                    isHaveResultDishNotServe = false;
-                    clearSearchKey();
-                    hideNoSearchResult();
-                    hideSearchDishNotServe();
-                    rvDish.setVisibility(View.VISIBLE);
-                    binding.srRefresh.setRefreshing(false);
+                .subscribe(isAvailable -> {
+                    if (-1 == isAvailable) {
+                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
+                    } else if (-2 == isAvailable) {
+                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
+                    } else {
+                        binding.srRefresh.setRefreshing(true);
+                        binding.srRefresh.setEnabled(false);
+                        viewModel.initializeDrinking(true)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnError(e -> ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e)))
+                                .subscribe(result -> {
+                                    binding.srRefresh.setRefreshing(false);
+                                    binding.srRefresh.setEnabled(true);
+                                    isHaveResult = true;
+                                    isHaveResultDishNotServe = false;
+                                    clearSearchKey();
+                                    hideNoSearchResult();
+                                    hideSearchDishNotServe();
+                                    rvDish.setVisibility(View.VISIBLE);
+                                    binding.srRefresh.setRefreshing(false);
+                                });
+                    }
                 });
     }
-
-
 
     private void setActionSwipeContainer() {
         binding.srRefresh.setOnRefreshListener(() -> {
@@ -208,31 +245,43 @@ public class DrinkingFragment extends BaseFragment {
     }
 
     public void onSearchSubmit(String keySearch) {
-        viewModel.onDrinkingSearch(keySearch)
+        RxUtils.checkNetWork(getContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(action -> setAdapterSearchKey(keySearch))
-                .doOnSubscribe(() -> showProgressingOnSearching())
-                .doOnTerminate(() -> hideProgressingOnSearching())
-                .subscribe(result -> {
-                    hideNoSearchResult();
-                    hideSearchDishNotServe();
-                    if (result.isNoResult() == true && result.getResult().size() == 0) {
-                        // dish not serve
-                        ((CustomerActivity) getActivity()).showSearchDishNotServe();
-                        rvDish.setVisibility(View.INVISIBLE);
-                        isHaveResult = false;
-                        isHaveResultDishNotServe = true;
-                    } else if (result.isNoResult() == false) {
-                        // no search result
-                        showNoSearchResult();
-                        rvDish.setVisibility(View.INVISIBLE);
-                        isHaveResult = false;
+                .subscribe(isAvailable -> {
+                    if (-1 == isAvailable) {
+                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
+                    } else if (-2 == isAvailable) {
+                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
                     } else {
-                        rvDish.setVisibility(View.VISIBLE);
-                        isHaveResult = true;
+                        viewModel.onDrinkingSearch(keySearch)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(action -> setAdapterSearchKey(keySearch))
+                                .doOnSubscribe(() -> showProgressingOnSearching())
+                                .doOnTerminate(() -> hideProgressingOnSearching())
+                                .doOnError(e -> ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e)))
+                                .subscribe(result -> {
+                                    hideNoSearchResult();
+                                    hideSearchDishNotServe();
+                                    if (result.isNoResult() == true && result.getResult().size() == 0) {
+                                        // dish not serve
+                                        ((CustomerActivity) getActivity()).showSearchDishNotServe();
+                                        rvDish.setVisibility(View.INVISIBLE);
+                                        isHaveResult = false;
+                                        isHaveResultDishNotServe = true;
+                                    } else if (result.isNoResult() == false) {
+                                        // no search result
+                                        showNoSearchResult();
+                                        rvDish.setVisibility(View.INVISIBLE);
+                                        isHaveResult = false;
+                                    } else {
+                                        rvDish.setVisibility(View.VISIBLE);
+                                        isHaveResult = true;
+                                    }
+                                    hideProgressingOnSearching();
+                                });
                     }
-                    hideProgressingOnSearching();
                 });
     }
 

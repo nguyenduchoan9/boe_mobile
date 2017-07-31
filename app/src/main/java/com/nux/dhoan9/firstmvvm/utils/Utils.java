@@ -15,10 +15,14 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import com.nux.dhoan9.firstmvvm.BuildConfig;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.URL;
 import java.util.Locale;
 
@@ -37,12 +41,18 @@ public class Utils {
     public static boolean isOnline() {
         Runtime runtime = Runtime.getRuntime();
         try {
-            Process ipProcess = runtime.exec("/system/bin/ping -c 1 " + getHost(Constant.API_ENDPOINT));
-            int exitValue = ipProcess.waitFor();
-            return (exitValue == 0);
+            int timeoutMs = 1500;
+            Socket sock = new Socket();
+            SocketAddress sockaddr = null;
+            sockaddr = new InetSocketAddress(BuildConfig.IP_BASE_URL, 3000);
+
+            sock.connect(sockaddr, timeoutMs);
+            sock.close();
+//            Process ipProcess = runtime.exec("/system/bin/ping -c 1 " + getHost(Constant.API_ENDPOINT));
+//            int exitValue = ipProcess.waitFor();
+//            return (exitValue == 0);
+            return true;
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return false;

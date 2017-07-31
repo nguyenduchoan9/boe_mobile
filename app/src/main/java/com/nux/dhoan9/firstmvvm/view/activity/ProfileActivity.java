@@ -21,7 +21,9 @@ import com.nux.dhoan9.firstmvvm.viewmodel.ProfileViewModel;
 import javax.inject.Inject;
 import retrofit2.Response;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class ProfileActivity extends AppCompatActivity {
     private ActivityProfileBinding binding;
@@ -43,30 +45,40 @@ public class ProfileActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Profile");
 
         initView();
-//        bindingData();
     }
 
     private void initView() {
-        viewModel.initializeData()
-                .compose(RxUtils.withLoading(binding.pbLoading))
-                .subscribe(new Subscriber<Response<User>>() {
-                    @Override
-                    public void onCompleted() {
+        RxUtils.checkNetWork(ProfileActivity.this)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(isAvailable -> {
+                    if (-1 == isAvailable) {
+                        ToastUtils.toastLongMassage(ProfileActivity.this, getString(R.string.text_not_available_network));
+                    } else if (-2 == isAvailable) {
+                        ToastUtils.toastLongMassage(ProfileActivity.this, getString(R.string.text_server_maintanance));
+                    } else {
+                        viewModel.initializeData()
+                                .compose(RxUtils.withLoading(binding.pbLoading))
+                                .subscribe(new Subscriber<Response<User>>() {
+                                    @Override
+                                    public void onCompleted() {
 
-                    }
+                                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        ToastUtils.toastLongMassage(ProfileActivity.this, RetrofitUtils.getMessageError(ProfileActivity.this, e));
-                    }
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        ToastUtils.toastLongMassage(ProfileActivity.this, RetrofitUtils.getMessageError(ProfileActivity.this, e));
+                                    }
 
-                    @Override
-                    public void onNext(Response<User> userResponse) {
+                                    @Override
+                                    public void onNext(Response<User> userResponse) {
 //                        if (userResponse.isSuccessful()) {
-                        bindingData();
+                                        bindingData();
 //                        } else {
 //
 //                        }
+                                    }
+                                });
                     }
                 });
     }
