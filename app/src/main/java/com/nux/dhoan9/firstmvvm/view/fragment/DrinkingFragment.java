@@ -14,6 +14,7 @@ import android.widget.Button;
 
 import com.bumptech.glide.Glide;
 import com.nux.dhoan9.firstmvvm.BoeApplication;
+import com.nux.dhoan9.firstmvvm.BuildConfig;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
 import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
@@ -103,25 +104,26 @@ public class DrinkingFragment extends BaseFragment {
     private void initializerData() {
         binding.setViewModel(viewModel);
         binding.executePendingBindings();
-        RxUtils.checkNetWork(getContext())
+        viewModel.initializeDrinking(false)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(isAvailable -> {
-                    if (-1 == isAvailable) {
-                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
-                    } else if (-2 == isAvailable) {
-                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
-                    } else {
-                        viewModel.initializeDrinking(false)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnError(e -> ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e)))
-                                .subscribe(result -> {
-                                });
-                    }
+                .doOnError(e -> ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e)))
+                .subscribe(result -> {
                 });
+//        RxUtils.checkNetWork(getContext())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(isAvailable -> {
+//                    if (-1 == isAvailable) {
+//                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
+//                    } else if (-2 == isAvailable) {
+//                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
+//                    } else {
+//
+//                    }
+//                });
         Glide.with(this)
-                .load(Constant.API_ENDPOINT + "/images/background.jpg")
+                .load(BuildConfig.BASE_URL + "images/background.jpg")
                 .into(binding.ivBackground);
     }
 

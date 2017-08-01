@@ -70,6 +70,7 @@ import com.nux.dhoan9.firstmvvm.view.fragment.HistoryFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.LanguageDialog;
 import com.nux.dhoan9.firstmvvm.view.fragment.OrderFragment;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -914,7 +915,7 @@ public class CustomerActivity extends BaseActivity {
         svSearch.clearFocus();
     }
 
-    private final int NOTIFY_DINER = 0;
+    private final int NOTIFY_DINER = 2;
     private ArrayList<Dish> notificationdishes = new ArrayList<>();
 
     private void notifyDishNotServe(List<Dish> dishes) {
@@ -923,7 +924,9 @@ public class CustomerActivity extends BaseActivity {
         parcel.setDishList(notificationdishes);
         Intent intent = new Intent(this, ListDishNotServeActivity.class);
         intent.putExtra(Constant.LIST_DISH_NOT_SERVE, parcel);
+        intent.setAction(Long.toString(System.currentTimeMillis()));
         int requestID = (int) System.currentTimeMillis();
+        Log.d("Hoang", "notifyDishNotServe: " + requestID);
         int flags = PendingIntent.FLAG_UPDATE_CURRENT;
         PendingIntent pIntent = PendingIntent.getActivity(this, requestID, intent, flags);
         NotificationManager notificationManager =
@@ -939,12 +942,14 @@ public class CustomerActivity extends BaseActivity {
         notificationManager.notify(NOTIFY_DINER, mBuilder.build());
     }
 
-    private final int NOTIFY_DINER_REFUND = 1;
+    private final int NOTIFY_DINER_REFUND = 4;
 
     private void notifyRefundSuccess(AfterRefundNotification response) {
         Intent intent = new Intent(this, RefundInfoActivity.class);
         intent.putExtra(Constant.LIST_DISH_NOT_SERVE, response);
+        intent.setAction(Long.toString(System.currentTimeMillis()));
         int requestID = (int) System.currentTimeMillis();
+        Log.d("Hoang", "notifyRefundSuccess: "+requestID);
         int flags = PendingIntent.FLAG_UPDATE_CURRENT;
         PendingIntent pIntent = PendingIntent.getActivity(this, requestID, intent, flags);
         NotificationManager notificationManager =

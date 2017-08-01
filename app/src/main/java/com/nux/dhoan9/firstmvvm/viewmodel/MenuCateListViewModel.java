@@ -19,7 +19,7 @@ import rx.Subscriber;
  */
 
 public class MenuCateListViewModel extends BaseViewModel {
-    private List<MenuCategoriesViewModel> menuCategoriesViewModels;
+    private List<MenuCategoriesViewModel> menuCategoriesViewModels = new ArrayList<>();
     private final ListBinder<DishViewModel> listBinder;
     private final ListBinder<MenuCategoriesViewModel> menuListBinder;
     private final DishRepo dishRepo;

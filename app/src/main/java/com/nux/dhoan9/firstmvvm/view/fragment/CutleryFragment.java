@@ -14,10 +14,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import com.bumptech.glide.Glide;
 import com.nux.dhoan9.firstmvvm.BoeApplication;
+import com.nux.dhoan9.firstmvvm.BuildConfig;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
-import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
-import com.nux.dhoan9.firstmvvm.data.response.CanOrder;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentCutleryBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
@@ -32,7 +31,6 @@ import com.nux.dhoan9.firstmvvm.view.custom.MyContextWrapper;
 import com.nux.dhoan9.firstmvvm.viewmodel.MenuCateListViewModel;
 import javax.inject.Inject;
 import javax.inject.Named;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -93,7 +91,7 @@ public class CutleryFragment extends BaseFragment {
         initializerData();
         ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
         Glide.with(this)
-                .load(Constant.API_ENDPOINT + "/images/background.jpg")
+                .load(BuildConfig.BASE_URL + "images/background.jpg")
                 .into(binding.ivBackground);
     }
 
@@ -108,25 +106,26 @@ public class CutleryFragment extends BaseFragment {
     private void initializerData() {
         binding.setViewModel(viewModel);
         binding.executePendingBindings();
-        RxUtils.checkNetWork(getContext())
+        viewModel.initialize(false)
                 .subscribeOn(Schedulers.io())
+                .doOnSubscribe(() -> showProcessing(getString(R.string.text_processing)))
+                .doOnCompleted(() -> hideProcessing())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(isAvailable -> {
-                    if (-1 == isAvailable) {
-                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
-                    } else if (-2 == isAvailable) {
-                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
-                    } else {
-                        viewModel.initialize(false)
-                                .subscribeOn(Schedulers.io())
-                                .doOnSubscribe(() -> showProcessing(getString(R.string.text_processing)))
-                                .doOnCompleted(() -> hideProcessing())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnError(e -> ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e)))
-                                .subscribe(result -> {
-                                });
-                    }
+                .doOnError(e -> ToastUtils.toastLongMassage(getContext(), RetrofitUtils.getMessageError(getContext(), e)))
+                .subscribe(result -> {
                 });
+//        RxUtils.checkNetWork(getContext())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(isAvailable -> {
+//                    if (-1 == isAvailable) {
+//                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_not_available_network));
+//                    } else if (-2 == isAvailable) {
+//                        ToastUtils.toastLongMassage(getContext(), getString(R.string.text_server_maintanance));
+//                    } else {
+//
+//                    }
+//                });
     }
 
     public void handleNoSearchResultView() {

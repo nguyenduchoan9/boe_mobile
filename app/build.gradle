@@ -28,8 +28,8 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "BASE_URL", "\"http://192.168.0.102:3000/\""
-            buildConfigField "String", "IP_BASE_URL", "\"192.168.0.102\""
+            buildConfigField "String", "BASE_URL", "\"http://192.168.0.104:3000/\""
+            buildConfigField "String", "IP_BASE_URL", "\"192.168.0.104\""
             buildConfigField "String", "HEADER_VERSION_KEY", "\"AcceptVersion\""
             buildConfigField "String", "HEADER_VERSION_VALUE", "\"version=v1\""
             buildConfigField "boolean", "IS_PROD", "true"

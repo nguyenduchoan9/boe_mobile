@@ -26,16 +26,19 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract void setProcessing();
 
     public void showProcessing(String title) {
-        if (null != title) {
-            tvProcessingTitle.setText(title);
-        } else {
-            tvProcessingTitle.setText(R.string.text_processing);
+        if (tvProcessingTitle != null && rlProcessing != null) {
+            if (null != title) {
+                tvProcessingTitle.setText(title);
+            } else {
+                tvProcessingTitle.setText(R.string.text_processing);
+            }
+            rlProcessing.setVisibility(View.VISIBLE);
         }
-        rlProcessing.setVisibility(View.VISIBLE);
     }
 
     public void hideProcessing() {
-        rlProcessing.setVisibility(View.GONE);
+        if (null != rlProcessing)
+            rlProcessing.setVisibility(View.GONE);
     }
 
     @Override

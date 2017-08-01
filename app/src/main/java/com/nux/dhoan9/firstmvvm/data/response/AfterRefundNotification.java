@@ -95,4 +95,16 @@ public class AfterRefundNotification implements Parcelable {
             dest.writeInt(quantity);
         }
     }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public List<DishAndQuantity> getDishes() {
+        return dishes;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
 }

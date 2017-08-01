@@ -29,7 +29,6 @@ public class GCMIntentService extends GcmListenerService {
             } else if ("afterRefund".equals(term)) {
                 sendMessageRefundToDiner(body);
             }
-            sendMessageToDiner(body);
         } else if ("chef".equals(to)) {
             sendMessageToChef(body);
         } else if ("waiter".equals(to)) {

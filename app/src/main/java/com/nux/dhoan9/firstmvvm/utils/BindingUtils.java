@@ -3,12 +3,14 @@ package com.nux.dhoan9.firstmvvm.utils;
 import android.databinding.BindingAdapter;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
+import com.nux.dhoan9.firstmvvm.BuildConfig;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.utils.support.ListBinder;
 import com.nux.dhoan9.firstmvvm.view.custom.TextChange;
@@ -64,8 +66,18 @@ public class BindingUtils {
 //                .diskCacheStrategy(DiskCacheStrategy.NONE)
 //                .skipMemoryCache(true)
 //                .into(imageView);
+        String imageUrl = "";
+        if(null == url){
+            return;
+        }
+        if (BuildConfig.IS_PROD) {
+            imageUrl = BuildConfig.BASE_URL + url.substring(1);
+        } else {
+            imageUrl = Constant.API_ENDPOINT + url.substring(1);
+        }
+        Log.d("Hoang", "setResizedBackground: "+imageUrl);
         Glide.with(imageView.getContext())
-                .load(Constant.API_ENDPOINT + url)
+                .load(imageUrl)
                 .placeholder(R.drawable.dish_placeholder)
                 .centerCrop()
                 .signature(new StringSignature(key + url))

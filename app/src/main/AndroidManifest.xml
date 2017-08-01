@@ -118,6 +118,10 @@
         </activity>
         <activity android:name=".view.activity.ListDishNotServeActivity">
         </activity>
+        <activity
+            android:name=".view.activity.RefundInfoActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

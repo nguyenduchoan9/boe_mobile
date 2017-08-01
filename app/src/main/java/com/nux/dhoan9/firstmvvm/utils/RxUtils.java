@@ -30,13 +30,14 @@ public class RxUtils {
         return Observable.create(subscriber -> {
             if (!Utils.isNetworkAvailable(context)) {
                 subscriber.onNext(-1);
-            } else if (!Utils.isOnline()) {
-                subscriber.onNext(-2);
-            }else{
+            } else{
                 subscriber.onNext(0);
             }
             subscriber.onCompleted();
         });
+//        else if (!Utils.isOnline()) {
+//            subscriber.onNext(-2);
+//        }
     }
 
 }

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Button;
 import com.nux.dhoan9.firstmvvm.R;
+import com.nux.dhoan9.firstmvvm.data.response.AfterRefundNotification;
 import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.model.ParcelDishList;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
@@ -34,11 +35,11 @@ public class RefundInfoActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Bundle b = getIntent().getExtras();
-        ParcelDishList object = b.getParcelable(Constant.LIST_DISH_NOT_SERVE);
+        AfterRefundNotification object = b.getParcelable(Constant.LIST_DISH_NOT_SERVE);
 
         if (null != object) {
-            dishes = object.getDishList();
-            Log.d("pac pac", String.valueOf(object.getDishList().size()));
+//            dishes = object.getDishList();
+            Log.d("pac pac", String.valueOf(object.getDishes().size()));
         }
         btnBackToMenu.setOnClickListener(v -> naviToMenu());
 

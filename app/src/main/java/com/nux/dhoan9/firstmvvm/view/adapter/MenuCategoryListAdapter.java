@@ -50,6 +50,9 @@ public class MenuCategoryListAdapter extends RecyclerView.Adapter<MenuCategoryLi
 
     @Override
     public int getItemCount() {
+        if(null == menuCateListViewModel){
+            return 0;
+        }
         return menuCateListViewModel.getSize();
     }
 
