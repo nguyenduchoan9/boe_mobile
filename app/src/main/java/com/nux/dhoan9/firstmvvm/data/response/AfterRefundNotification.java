@@ -17,38 +17,15 @@ public class AfterRefundNotification implements Parcelable {
     private List<DishAndQuantity> dishes;
     @SerializedName("order_id")
     private int orderId;
+    @SerializedName("table_number")
+    private int tableNumber;
+    @SerializedName("date")
+    private String billDate;
 
-    protected AfterRefundNotification(Parcel in) {
-        total = in.readFloat();
-        dishes = in.createTypedArrayList(DishAndQuantity.CREATOR);
-        orderId = in.readInt();
-    }
 
-    public static final Creator<AfterRefundNotification> CREATOR = new Creator<AfterRefundNotification>() {
-        @Override
-        public AfterRefundNotification createFromParcel(Parcel in) {
-            return new AfterRefundNotification(in);
-        }
-
-        @Override
-        public AfterRefundNotification[] newArray(int size) {
-            return new AfterRefundNotification[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeFloat(total);
-        dest.writeTypedList(dishes);
-        dest.writeInt(orderId);
-    }
 
     public static class DishAndQuantity implements Parcelable {
+        @SerializedName("dish_name")
         private String dishName;
         private float price;
         private int quantity;
@@ -96,6 +73,40 @@ public class AfterRefundNotification implements Parcelable {
         }
     }
 
+    protected AfterRefundNotification(Parcel in) {
+        total = in.readFloat();
+        dishes = in.createTypedArrayList(DishAndQuantity.CREATOR);
+        orderId = in.readInt();
+        tableNumber = in.readInt();
+        billDate = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(total);
+        dest.writeTypedList(dishes);
+        dest.writeInt(orderId);
+        dest.writeInt(tableNumber);
+        dest.writeString(billDate);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<AfterRefundNotification> CREATOR = new Creator<AfterRefundNotification>() {
+        @Override
+        public AfterRefundNotification createFromParcel(Parcel in) {
+            return new AfterRefundNotification(in);
+        }
+
+        @Override
+        public AfterRefundNotification[] newArray(int size) {
+            return new AfterRefundNotification[size];
+        }
+    };
+
     public float getTotal() {
         return total;
     }
@@ -106,5 +117,13 @@ public class AfterRefundNotification implements Parcelable {
 
     public int getOrderId() {
         return orderId;
+    }
+
+    public int getTableNumber() {
+        return tableNumber;
+    }
+
+    public String getBillDate() {
+        return billDate;
     }
 }

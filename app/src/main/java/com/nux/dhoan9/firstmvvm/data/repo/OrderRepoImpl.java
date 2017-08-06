@@ -1,18 +1,14 @@
 package com.nux.dhoan9.firstmvvm.data.repo;
 
+import com.nux.dhoan9.firstmvvm.data.request.OrderBaseRequest;
+import com.nux.dhoan9.firstmvvm.data.request.OrderPaypalRequest;
 import com.nux.dhoan9.firstmvvm.data.response.CanOrder;
-import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
-import com.nux.dhoan9.firstmvvm.data.response.OrderResponse;
 import com.nux.dhoan9.firstmvvm.data.response.StatusResponse;
-import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.model.OrderCreateResponse;
 import com.nux.dhoan9.firstmvvm.model.OrderInfo;
 import com.nux.dhoan9.firstmvvm.model.OrderView;
-import com.nux.dhoan9.firstmvvm.services.DishServices;
 import com.nux.dhoan9.firstmvvm.services.OrderServices;
-import com.nux.dhoan9.firstmvvm.utils.RxUtils;
 import java.util.List;
-import java.util.Map;
 import retrofit2.Retrofit;
 import rx.Observable;
 
@@ -31,8 +27,18 @@ public class OrderRepoImpl implements OrderRepo {
     }
 
     @Override
-    public Observable<OrderCreateResponse> makeOrder(String cart, int tableNumber, String paymentId) {
-        return services.makeOrder(cart, tableNumber, paymentId);
+    public Observable<OrderCreateResponse> makeOrder(OrderPaypalRequest request) {
+        return services.makeOrder(request);
+    }
+
+    @Override
+    public Observable<StatusResponse> makeOrderByCash(OrderBaseRequest request) {
+        return services.makeOrderByCash(request);
+    }
+
+    @Override
+    public Observable<StatusResponse> makeOrderByVoucher(OrderBaseRequest request) {
+        return services.makeOrderByVouher(request);
     }
 
     @Override

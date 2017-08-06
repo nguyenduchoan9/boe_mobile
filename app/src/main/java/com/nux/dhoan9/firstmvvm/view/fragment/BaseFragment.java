@@ -46,7 +46,8 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void hideProcessing() {
-        ((CustomerActivity) getActivity()).hideProcessing();
+        if (null != getActivity())
+            ((CustomerActivity) getActivity()).hideProcessing();
     }
 
     protected void setTotal(String total) {

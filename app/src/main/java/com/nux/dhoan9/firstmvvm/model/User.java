@@ -11,12 +11,13 @@ public class User {
     @SerializedName("full_name")
     private String fullName;
     private String avatar;
-//    private Image avatar;
+    //    private Image avatar;
     private String phone;
     private String role;
     private String provider;
     private String username;
     private String membership;
+    private float balance;
 
     public User(int id, String fullName, String avatar, String phone, String role, String provider, String username, String membership) {
         this.id = id;
@@ -91,5 +92,13 @@ public class User {
 
     public void setMembership(String membership) {
         this.membership = membership;
+    }
+
+    public float getBalance() {
+        return balance;
+    }
+
+    public void setBalance(float balance) {
+        this.balance = balance;
     }
 }

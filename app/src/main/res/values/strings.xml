@@ -108,5 +108,9 @@
     <string name="text_response_error_msg">The server is under maintenance</string>
     <string name="text_response_error_connection">The connection has a error</string>
     <string name="text_response_error_not_process">The server can not process this request</string>
+    <string name="text_select_payment_method">Select payment method</string>
+    <string name="text_balance">Số dư:\u0020</string>
+    <string name="text_navi_add_voucher">Add Voucher</string>
+
     <!--End Information-->
 </resources>

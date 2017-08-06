@@ -53,4 +53,10 @@ public class Constant {
     public final static String LANGUAGE_KEY = "LANGUAGE_KEY";
     public final static String VI_LANGUAGE_STRING = "vi";
     public final static String EN_LANGUAGE_STRING = "en";
+
+    public static interface PaymentMethod{
+        int Paypal = 0;
+        int Cash = 1;
+        int Voucher = 2;
+    }
 }

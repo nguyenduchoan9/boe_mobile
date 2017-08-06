@@ -58,6 +58,11 @@ public class DishViewModel {
         isOrder.set(true);
     }
 
+    private void addToCart(String description) {
+        cartManager.plus(this.id, 1, description);
+        isOrder.set(true);
+    }
+
     public boolean onOrderClick() {
         isOrder.set(false);
         if (!isInCart()) {
@@ -69,6 +74,22 @@ public class DishViewModel {
                 return false;
             }
             addToCart();
+            quantityView.set("" + (previousQuantity + 1));
+        }
+        return true;
+    }
+
+    public boolean onOrderClick(String description) {
+        isOrder.set(false);
+        if (!isInCart()) {
+            addToCart(description);
+            quantityView.set("1");
+        } else {
+            int previousQuantity = getQuantityInCart();
+            if (4 == previousQuantity) {
+                return false;
+            }
+            addToCart(description);
             quantityView.set("" + (previousQuantity + 1));
         }
         return true;

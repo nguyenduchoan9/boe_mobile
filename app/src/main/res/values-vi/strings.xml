@@ -107,5 +107,7 @@
     <string name="text_profile_phone_hint">Your phone number</string>
     <string name="text_response_error_msg">The server is not available</string>
     <string name="text_response_error_connection">The connection has a error</string>
+    <string name="text_balance">Số dư:\u0020</string>
+    <string name="text_navi_add_voucher">Add Voucher</string>
     <!--End Information-->
 </resources>

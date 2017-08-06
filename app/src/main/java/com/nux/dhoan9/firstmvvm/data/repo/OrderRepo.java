@@ -1,5 +1,7 @@
 package com.nux.dhoan9.firstmvvm.data.repo;
 
+import com.nux.dhoan9.firstmvvm.data.request.OrderBaseRequest;
+import com.nux.dhoan9.firstmvvm.data.request.OrderPaypalRequest;
 import com.nux.dhoan9.firstmvvm.data.response.CanOrder;
 import com.nux.dhoan9.firstmvvm.data.response.StatusResponse;
 import com.nux.dhoan9.firstmvvm.model.OrderCreateResponse;
@@ -13,7 +15,11 @@ import rx.Observable;
  */
 
 public interface OrderRepo {
-    Observable<OrderCreateResponse> makeOrder(String cart, int tableNumber, String paymentId);
+    Observable<OrderCreateResponse> makeOrder(OrderPaypalRequest request);
+
+    Observable<StatusResponse> makeOrderByCash(OrderBaseRequest request);
+
+    Observable<StatusResponse> makeOrderByVoucher(OrderBaseRequest request);
 
     Observable<List<OrderView>> getOrder();
 

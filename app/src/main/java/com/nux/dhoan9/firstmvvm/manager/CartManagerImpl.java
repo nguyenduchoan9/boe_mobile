@@ -12,10 +12,12 @@ import java.util.Map;
 public class CartManagerImpl implements CartManager {
     Map<Integer, Integer> cart;
     List<Integer> listOrder;
+    Map<Integer, List<String>> descriptionMap;
 
     public CartManagerImpl() {
         this.cart = new HashMap<>();
         listOrder = new ArrayList<>();
+        descriptionMap = new HashMap<>();
     }
 
     @Override
@@ -27,7 +29,27 @@ public class CartManagerImpl implements CartManager {
             cart.put(idDish, 1);
             listOrder.add(idDish);
         }
+    }
 
+    @Override
+    public void plus(int idDish, int quantity, String description) {
+        if (cart.containsKey(idDish)) {
+            int currentQuantity = cart.get(idDish);
+            cart.put(idDish, currentQuantity + 1);
+        } else {
+            cart.put(idDish, 1);
+            listOrder.add(idDish);
+        }
+
+        if (descriptionMap.containsKey(idDish)) {
+            List<String> previousDes = descriptionMap.get(idDish);
+            previousDes.add(description);
+            descriptionMap.put(idDish, previousDes);
+        } else {
+            List<String> newDes = new ArrayList<>();
+            newDes.add(description);
+            descriptionMap.put(idDish, newDes);
+        }
     }
 
     @Override
@@ -45,6 +67,7 @@ public class CartManagerImpl implements CartManager {
     public void clear() {
         cart.clear();
         listOrder.clear();
+        descriptionMap.clear();
     }
 
     @Override
@@ -78,6 +101,34 @@ public class CartManagerImpl implements CartManager {
         return 0;
     }
 
+    @Override
+    public boolean isHaveDescription(int dishId) {
+        return descriptionMap.containsKey(dishId);
+    }
+
+    @Override
+    public List<String> getDescriptionByDishId(int dishId) {
+        if (descriptionMap.containsKey(dishId)) {
+            return descriptionMap.get(dishId);
+        }
+        return null;
+    }
+
+    @Override
+    public void setDescriptionByDishId(int dishId, List<String> descriptions) {
+        if (descriptions.size() == 0) {
+            return;
+        }
+        if (descriptionMap.containsKey(dishId)) {
+            descriptionMap.put(dishId, descriptions);
+        }
+    }
+
+    @Override
+    public Map<Integer, List<String>> getAllDEscription() {
+        return descriptionMap;
+    }
+
     public int getItemTotal() {
         return cart.size();
     }
@@ -89,7 +140,10 @@ public class CartManagerImpl implements CartManager {
 
     @Override
     public void removeOutOfCart(int id) {
-        cart.remove(id);
+        if (cart.containsKey(id))
+            cart.remove(id);
+        if (descriptionMap.containsKey(id))
+            descriptionMap.remove(id);
         syncListOrder(id);
     }
 

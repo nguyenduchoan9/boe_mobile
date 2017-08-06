@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.Log;
@@ -20,7 +21,9 @@ import com.nux.dhoan9.firstmvvm.databinding.DishItemLayoutBinding;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ActivityScope;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ForActivity;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
+import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.DishDetailActivity;
+import com.nux.dhoan9.firstmvvm.view.fragment.DescriptionDialogFragment;
 import com.nux.dhoan9.firstmvvm.viewmodel.DishListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.DishViewModel;
 
@@ -77,15 +80,29 @@ public class DishListAdapter extends Adapter<RecyclerView.ViewHolder> {
             ((DishViewHolder) holder).binding.setViewModel(viewModel);
             ((DishViewHolder) holder).binding.executePendingBindings();
             holder.itemView.setOnClickListener(v -> {
-                boolean isUpperBound = viewModel.onOrderClick();
+                boolean isUpperBound = viewModel.onOrderClick("");
 
                 if (null != mListener) mListener.onOrderClick(!isUpperBound, viewModel.id);
 
             });
             holder.itemView.setOnLongClickListener(v -> {
-                Intent intent = new Intent(mContext, DishDetailActivity.class);
-                intent.putExtra(Constant.KEY_DISH_DETAIL, viewModel.id);
-                mContext.startActivity(intent);
+                FragmentTransaction fm = ((CustomerActivity) mContext).getSupportFragmentManager().beginTransaction();
+                DescriptionDialogFragment dialog = DescriptionDialogFragment.newInstance();
+                dialog.setListener(new DescriptionDialogFragment.DescriptionDialogListener() {
+                    @Override
+                    public void onOrderClick(String description) {
+                        boolean isUpperBound = viewModel.onOrderClick(description);
+                        if (null != mListener) mListener.onOrderClick(!isUpperBound, viewModel.id);
+                    }
+
+                    @Override
+                    public void onOrderClick() {
+                        boolean isUpperBound = viewModel.onOrderClick("");
+                        if (null != mListener) mListener.onOrderClick(!isUpperBound, viewModel.id);
+
+                    }
+                });
+                dialog.show(fm, "description");
                 return true;
             });
 
@@ -150,4 +167,5 @@ public class DishListAdapter extends Adapter<RecyclerView.ViewHolder> {
     public void setListener(OrderHandleListener mListener) {
         this.mListener = mListener;
     }
+
 }

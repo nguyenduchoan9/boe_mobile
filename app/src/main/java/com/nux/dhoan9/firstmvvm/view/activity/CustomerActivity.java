@@ -228,7 +228,6 @@ public class CustomerActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
                 new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
@@ -373,12 +372,25 @@ public class CustomerActivity extends BaseActivity {
         TextView tvTableNo = (TextView) headerLayout.findViewById(R.id.tvTableNumber);
         tvTableNo.setText(getString(R.string.text_nav_header_layout_table)
                 + preferencesManager.getTableInfo().table_number);
+        TextView tvBalance = (TextView) headerLayout.findViewById(R.id.tvBalance);
+        tvBalance.setText(getString(R.string.text_balance) + CurrencyUtil.formatVNDecimal(preferencesManager.getUser().getBalance()));
         binding.navView.setNavigationItemSelectedListener(item -> {
             selectDrawerItem(item);
             return false;
         });
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.drawer,
-                binding.actionBarContent.toolbar, R.string.open, R.string.close);
+                binding.actionBarContent.toolbar, R.string.open, R.string.close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                userRepo.getBalance()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(balance -> setBalance(balance.getBalance()));
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+                syncState();
+            }
+        };
         binding.drawer.addDrawerListener(actionBarDrawerToggle);
     }
 
@@ -496,6 +508,9 @@ public class CustomerActivity extends BaseActivity {
             case R.id.apiEndpoint:
                 showEndpointDialog();
                 break;
+            case R.id.addVoucher:
+                showAddVoucherDialog();
+                break;
             case R.id.setting:
                 startActivity(QRCodeActivity.newInstance(this));
                 break;
@@ -507,6 +522,30 @@ public class CustomerActivity extends BaseActivity {
                 break;
         }
         binding.drawer.closeDrawers();
+    }
+
+    final int VOUCHER_REQUEST_CODE = 204;
+
+    private void showAddVoucherDialog() {
+        Intent i = new Intent(CustomerActivity.this, VoucherActivity.class);
+
+        startActivityForResult(i, VOUCHER_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (VOUCHER_REQUEST_CODE == requestCode) {
+                setBalance(preferencesManager.getUser().getBalance());
+            }
+        }
+    }
+
+    private void setBalance(float balance) {
+        View headerLayout = binding.navView.getHeaderView(0);
+        TextView tvBalance = (TextView) headerLayout.findViewById(R.id.tvBalance);
+        tvBalance.setText(getString(R.string.text_balance) + CurrencyUtil.formatVNDecimal(balance));
     }
 
     private void showDialogSelectLanguage() {
@@ -949,7 +988,7 @@ public class CustomerActivity extends BaseActivity {
         intent.putExtra(Constant.LIST_DISH_NOT_SERVE, response);
         intent.setAction(Long.toString(System.currentTimeMillis()));
         int requestID = (int) System.currentTimeMillis();
-        Log.d("Hoang", "notifyRefundSuccess: "+requestID);
+        Log.d("Hoang", "notifyRefundSuccess: " + requestID);
         int flags = PendingIntent.FLAG_UPDATE_CURRENT;
         PendingIntent pIntent = PendingIntent.getActivity(this, requestID, intent, flags);
         NotificationManager notificationManager =

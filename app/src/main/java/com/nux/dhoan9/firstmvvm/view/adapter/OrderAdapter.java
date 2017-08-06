@@ -3,6 +3,8 @@ package com.nux.dhoan9.firstmvvm.view.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +13,11 @@ import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.databinding.DishCartItemBinding;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ActivityScope;
 import com.nux.dhoan9.firstmvvm.dependency.scope.ForActivity;
+import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
+import com.nux.dhoan9.firstmvvm.view.activity.CustomerActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.DishDetailActivity;
+import com.nux.dhoan9.firstmvvm.view.fragment.MinusDesDialog;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemListViewModel;
 import com.nux.dhoan9.firstmvvm.viewmodel.CartItemViewModel;
 import java.math.BigDecimal;
@@ -40,6 +45,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
         DishCartItemBinding binding =
                 DataBindingUtil.inflate(layoutInflater, R.layout.dish_cart_item, parent, false);
         return new CartItemViewHolder(binding);
+    }
+
+    private CartManager getCartManager() {
+        return viewModel.getCartManager();
     }
 
     public void clearDate() {
@@ -75,14 +84,46 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
         public void setupListeners() {
             CartItemViewModel cartItemViewModel = getCartItems().get(getAdapterPosition());
             binding.ivMinus.setOnClickListener(v -> {
-                cartItemViewModel.onMinusClick()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(oops -> {
-                            if (null != listener) {
-                                listener.onDecrementQuantity(oops);
-                            }
+                int dishId = cartItemViewModel.id;
+                if (getCartManager().isHaveDescription(dishId)) {
+                    List<String> des = getCartManager().getDescriptionByDishId(dishId);
+
+                    if (isAllBlank(des)) {
+                        cartItemViewModel.onMinusClick()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(oops -> {
+                                    if (null != listener) {
+                                        listener.onDecrementQuantity(oops);
+                                    }
+                                });
+                    } else {
+                        FragmentTransaction fm = ((CustomerActivity) itemView.getContext())
+                                .getSupportFragmentManager().beginTransaction();
+                        MinusDesDialog dialog = MinusDesDialog.newInstance(des);
+                        dialog.setListener(updatedDes -> {
+                            getCartManager().setDescriptionByDishId(dishId, updatedDes);
+                            cartItemViewModel.onMinusClick()
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(oops -> {
+                                        if (null != listener) {
+                                            listener.onDecrementQuantity(oops);
+                                        }
+                                    });
                         });
+                        dialog.show(fm, "Minus");
+                    }
+                } else {
+                    cartItemViewModel.onMinusClick()
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(oops -> {
+                                if (null != listener) {
+                                    listener.onDecrementQuantity(oops);
+                                }
+                            });
+                }
             });
 
             binding.ivPlus.setOnClickListener(v -> {
@@ -123,6 +164,15 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.CartItemView
             binding.setViewModel(cartItemViewModel);
             binding.executePendingBindings();
         }
+    }
+
+    private boolean isAllBlank(List<String> des) {
+        for (String s : des) {
+            if (s.length() > 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public interface CartListener {

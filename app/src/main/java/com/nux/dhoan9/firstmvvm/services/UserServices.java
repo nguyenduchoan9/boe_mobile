@@ -2,8 +2,10 @@ package com.nux.dhoan9.firstmvvm.services;
 
 import com.nux.dhoan9.firstmvvm.data.request.user.LoginUserParam;
 import com.nux.dhoan9.firstmvvm.data.request.user.UserRegisterParam;
+import com.nux.dhoan9.firstmvvm.data.response.Balance;
 import com.nux.dhoan9.firstmvvm.data.response.NotificationResponse;
 import com.nux.dhoan9.firstmvvm.data.response.SessionDeleteResponse;
+import com.nux.dhoan9.firstmvvm.data.response.StatusResponse;
 import com.nux.dhoan9.firstmvvm.model.User;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 
@@ -29,6 +31,16 @@ public interface UserServices {
     @GET("users/{id}")
     Observable<Response<User>> getUserProfile(@Path("id") long id);
 
+    @GET("users/balance")
+    Observable<Balance> getBalance();
+
+    @POST("vouchers/check_balance_code")
+    @FormUrlEncoded
+    Observable<StatusResponse> checkBalanceCode(@Field("code") String code);
+
+    @POST("users/add_voucher")
+    @FormUrlEncoded
+    Observable<Balance> addVoucher(@Field("code") String code);
 //    @FormUrlEncoded
     @POST("sessions")
     Observable<Response<User>> loginByEmail(@Body LoginUserParam param);

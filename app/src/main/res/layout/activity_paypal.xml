@@ -134,6 +134,43 @@
                         android:text="Customer name"
                         android:textSize="@dimen/size_medium_text"/>
 
+                    <RelativeLayout
+                        android:id="@+id/rlBalance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:id="@+id/tvTitleBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Balance"
+                            android:textAllCaps="true"
+                            android:textSize="@dimen/size_large_text"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/tvBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tvTitleBalance"
+                            android:layout_marginTop="4dp"
+                            android:text="4000"
+                            android:textSize="@dimen/size_medium_text"/>
+
+                        <TextView
+                            android:id="@+id/tvRecharge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/tvBalance"
+                            android:layout_alignParentRight="true"
+                            android:text="Recharge"
+                            android:textColor="@color/order_green"
+                            android:textSize="@dimen/size_medium_text"/>
+                    </RelativeLayout>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -178,13 +215,24 @@
                         android:textSize="@dimen/size_large_text"
                         android:textStyle="bold"/>
 
-                    <TextView
-                        android:id="@+id/tvPaymentMethod"
-                        android:layout_width="wrap_content"
+                    <Spinner
+                        android:id="@+id/spinnerPayment"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Paypal"
-                        android:textSize="@dimen/size_medium_text"/>
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginTop="16dp"
+                        android:entries="@array/payment_array"
+                        android:prompt="@string/text_select_payment_method"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/medium_space"/>
+
+                    <!--<TextView-->
+                    <!--android:id="@+id/tvPaymentMethod"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="4dp"-->
+                    <!--android:text="Paypal"-->
+                    <!--android:textSize="@dimen/size_medium_text"/>-->
                 </LinearLayout>
 
                 <Button

@@ -69,6 +69,10 @@
                     android:title="@string/drawer_text_api"
                     android:icon="@drawable/ic_settings_cogwheel"/>
                 <item
+                    android:id="@+id/addVoucher"
+                    android:title="@string/text_navi_add_voucher"
+                    android:icon="@drawable/ic_settings_cogwheel"/>
+                <item
                     android:id="@+id/language"
                     android:title="@string/drawer_text_language"
                     android:icon="@drawable/ic_language_black"/>

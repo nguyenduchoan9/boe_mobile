@@ -155,4 +155,9 @@
         <item name="android:gravity">left</item>
         <item name="android:textSize">@dimen/size_small_text</item>
     </style>
+
+    <style name="spinner_dropdown_style" parent="Widget.AppCompat.DropDownItem.Spinner">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:background">#FFF</item>
+    </style>
 </resources>

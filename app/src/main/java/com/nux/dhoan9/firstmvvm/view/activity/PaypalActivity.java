@@ -4,20 +4,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import com.google.gson.Gson;
 import com.nux.dhoan9.firstmvvm.BoeApplication;
 import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
+import com.nux.dhoan9.firstmvvm.data.repo.UserRepo;
+import com.nux.dhoan9.firstmvvm.data.request.DescriptionRequest;
+import com.nux.dhoan9.firstmvvm.data.request.ListDescription;
+import com.nux.dhoan9.firstmvvm.data.request.OrderBaseRequest;
+import com.nux.dhoan9.firstmvvm.data.request.OrderPaypalRequest;
 import com.nux.dhoan9.firstmvvm.data.request.PaypalPartialReq;
 import com.nux.dhoan9.firstmvvm.data.response.Amount;
+import com.nux.dhoan9.firstmvvm.data.response.Balance;
 import com.nux.dhoan9.firstmvvm.data.response.FullRefundResponse;
 import com.nux.dhoan9.firstmvvm.data.response.PartialRefundResponse;
 import com.nux.dhoan9.firstmvvm.data.response.PaypalDetailResponse;
@@ -44,9 +54,13 @@ import com.paypal.android.sdk.payments.PaymentConfirmation;
 import org.json.JSONException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.inject.Inject;
 import butterknife.BindView;
@@ -79,6 +93,15 @@ public class PaypalActivity extends BaseActivity {
     RelativeLayout mRlProcessing;
     @BindView(R.id.rlProcessingRollBack)
     RelativeLayout rlProcessingRollBack;
+    @BindView(R.id.spinnerPayment)
+    Spinner spinnerPayment;
+
+    @BindView(R.id.rlBalance)
+    RelativeLayout rlBalance;
+    @BindView(R.id.tvBalance)
+    TextView tvBalance;
+    @BindView(R.id.tvRecharge)
+    TextView tvRecharge;
     @Inject
     PreferencesManager preferencesManager;
 
@@ -87,7 +110,12 @@ public class PaypalActivity extends BaseActivity {
 
     @Inject
     CartManager cartManager;
+    @Inject
+    UserRepo userRepo;
     private boolean isSuccess = false;
+    private Balance balance = new Balance();
+    private int paymentMethodindex = Constant.PaymentMethod.Paypal;
+    private List<String> pays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,8 +132,77 @@ public class PaypalActivity extends BaseActivity {
         Intent intent = new Intent(this, PayPalService.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, configuration);
         startService(intent);
+        pays = Arrays.asList(getResources().getStringArray(R.array.payment_array));
+        btnPay.setOnClickListener(v -> {
+            if (isPaypalMethod()) {
+                onOkPress();
+            } else if (isCashMethod()) {
+                payByCash();
+            } else if (isVoucherMethod()) {
+                if (balance.getBalance() < getTotal()) {
+// show error
+                    return;
+                }
+                payByVoucher();
+            }
+        });
 
-        btnPay.setOnClickListener(v -> onOkPress());
+        initializePayment();
+
+    }
+
+    final int VOUCHER_REQUEST_CODE = 204;
+
+    private void initializePayment() {
+        rlBalance.setVisibility(View.GONE);
+        spinnerPayment.setSelection(paymentMethodindex);
+        spinnerPayment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isVoucherMethod()) {
+                    setBalance(balance.getBalance());
+                    rlBalance.setVisibility(View.VISIBLE);
+                } else {
+                    rlBalance.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        tvRecharge.setOnClickListener(v -> {
+            Intent i = new Intent(PaypalActivity.this, VoucherActivity.class);
+            startActivityForResult(i, VOUCHER_REQUEST_CODE);
+        });
+    }
+
+    private void setBalance(float balance) {
+        if (balance >= getTotal()) {
+            tvBalance.setTextColor(ContextCompat.getColor(this, R.color.primaryText));
+        } else {
+            tvBalance.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        }
+        tvBalance.setText(CurrencyUtil.formatVNDecimal(balance));
+    }
+
+    private boolean isPaypalMethod() {
+        String paymentSelection = spinnerPayment.getSelectedItem().toString();
+        int index = pays.indexOf(paymentSelection);
+        return Constant.PaymentMethod.Paypal == index;
+    }
+
+    private boolean isCashMethod() {
+        String paymentSelection = spinnerPayment.getSelectedItem().toString();
+        int index = pays.indexOf(paymentSelection);
+        return Constant.PaymentMethod.Cash == index;
+    }
+
+    private boolean isVoucherMethod() {
+        String paymentSelection = spinnerPayment.getSelectedItem().toString();
+        int index = pays.indexOf(paymentSelection);
+        return Constant.PaymentMethod.Voucher == index;
     }
 
     private void confiBill() {
@@ -142,6 +239,14 @@ public class PaypalActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         setProcessing();
+        userRepo.getBalance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(balance -> {
+                    this.balance = balance;
+                    preferencesManager.setBalance(balance.getBalance());
+                    tvBalance.setText(CurrencyUtil.formatVNDecimal(balance.getBalance()));
+                });
     }
 
     @Override
@@ -153,6 +258,72 @@ public class PaypalActivity extends BaseActivity {
     private void initDependency() {
         ((BoeApplication) getApplication()).getComponent()
                 .inject(this);
+    }
+
+    private void payByVoucher() {
+        RxUtils.checkNetWork(PaypalActivity.this)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(isAvailable -> {
+                    if (-1 == isAvailable) {
+                        ToastUtils.toastLongMassage(PaypalActivity.this, getString(R.string.text_not_available_network));
+                    } else if (-2 == isAvailable) {
+                        ToastUtils.toastLongMassage(PaypalActivity.this, getString(R.string.text_server_maintanance));
+                    } else {
+                        OrderBaseRequest request = new OrderBaseRequest(getCartParams(),
+                                Integer.valueOf(preferencesManager.getTableInfo().table_number),
+                                prepareDescriptionParams());
+                        orderRepo.makeOrderByVoucher(request)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .doOnError(e -> ToastUtils.toastLongMassage(PaypalActivity.this, RetrofitUtils.getMessageError(PaypalActivity.this, e)))
+                                .doOnSubscribe(() -> showMProcessing(null))
+                                .doOnTerminate(() -> hideMProcessing())
+                                .subscribe(statusResponse -> {
+                                    showDialogInform();
+                                });
+                    }
+                });
+    }
+
+    private void payByCash() {
+        RxUtils.checkNetWork(PaypalActivity.this)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(isAvailable -> {
+                    if (-1 == isAvailable) {
+                        ToastUtils.toastLongMassage(PaypalActivity.this, getString(R.string.text_not_available_network));
+                    } else if (-2 == isAvailable) {
+                        ToastUtils.toastLongMassage(PaypalActivity.this, getString(R.string.text_server_maintanance));
+                    } else {
+                        OrderBaseRequest request = new OrderBaseRequest(getCartParams(),
+                                Integer.valueOf(preferencesManager.getTableInfo().table_number),
+                                prepareDescriptionParams());
+                        orderRepo.makeOrderByCash(request)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .doOnError(e -> ToastUtils.toastLongMassage(PaypalActivity.this, RetrofitUtils.getMessageError(PaypalActivity.this, e)))
+                                .doOnSubscribe(() -> showMProcessing(null))
+                                .doOnTerminate(() -> hideMProcessing())
+                                .subscribe(statusResponse -> {
+                                    showDialogInform();
+                                });
+                    }
+                });
+    }
+
+    private String BLANK_CHAR = "@blank@";
+
+    private List<DescriptionRequest> prepareDescriptionParams() {
+        List<DescriptionRequest> descriptionRequests = new ArrayList<>();
+        Map<Integer, List<String>> des = cartManager.getAllDEscription();
+        for (Map.Entry<Integer, List<String>> item : des.entrySet()) {
+            int dishId = item.getKey();
+            List<String> desItem = item.getValue();
+            DescriptionRequest requestItem = new DescriptionRequest(dishId, desItem);
+            descriptionRequests.add(requestItem);
+        }
+        return descriptionRequests;
     }
 
     private void onOkPress() {
@@ -208,7 +379,10 @@ public class PaypalActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (null != data) {
+            if (VOUCHER_REQUEST_CODE == requestCode) {
+                balance.setBalance(preferencesManager.getUser().getBalance());
+                setBalance(preferencesManager.getUser().getBalance());
+            } else if (null != data) {
                 PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
                 if (null != confirmation) {
                     try {
@@ -242,9 +416,10 @@ public class PaypalActivity extends BaseActivity {
                     } else if (-2 == isAvailable) {
                         ToastUtils.toastLongMassage(PaypalActivity.this, getString(R.string.text_server_maintanance));
                     } else {
-                        orderRepo.makeOrder(getCartParams(),
+                        OrderPaypalRequest request = new OrderPaypalRequest(getCartParams(),
                                 Integer.valueOf(preferencesManager.getTableInfo().table_number),
-                                invoiceResp.getResponse().getId())
+                                prepareDescriptionParams(), invoiceResp.getResponse().getId());
+                        orderRepo.makeOrder(request)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
                                 .doOnError(e -> ToastUtils.toastLongMassage(PaypalActivity.this, RetrofitUtils.getMessageError(PaypalActivity.this, e)))
@@ -256,7 +431,8 @@ public class PaypalActivity extends BaseActivity {
                                         showDialogConfirmContinue(orderCreateRes.getDish());
                                     } else {
                                         cartManager.clear();
-                                        startActivity(CustomerActivity.newInstance(PaypalActivity.this));
+                                        showDialogInform();
+//                                        startActivity(CustomerActivity.newInstance(PaypalActivity.this));
                                     }
 
                                 });
@@ -311,6 +487,7 @@ public class PaypalActivity extends BaseActivity {
         builder.setView(dialogView);
         tvGoToMenu = (TextView) dialogView.findViewById(R.id.tvGoToMenu);
         tvGoToMenu.setOnClickListener(v -> {
+            cartManager.clear();
             startActivity(CustomerActivity.newInstance(PaypalActivity.this));
             builder.dismiss();
         });
@@ -409,15 +586,25 @@ public class PaypalActivity extends BaseActivity {
                                                                 .flatMap(new Func1<PaypalDetailResponse, Observable<PartialRefundResponse>>() {
                                                                     @Override
                                                                     public Observable<PartialRefundResponse> call(PaypalDetailResponse detail) {
+                                                                        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
+                                                                        DecimalFormat df = (DecimalFormat) nf;
+                                                                        df.applyPattern("#.##");
                                                                         PaypalPartialReq req = new PaypalPartialReq();
                                                                         Amount amount = new Amount();
                                                                         amount.setCurrency("USD");
-                                                                        amount.setTotal(String.valueOf(usdMoney));
+                                                                        String total = String.valueOf(df.format(usdMoney));
+                                                                        if (Character.toString(total.charAt(total.length() - 2)).equals(".")) {
+                                                                            total = total.concat("0");
+                                                                        }
+                                                                        Log.d("Hoang", "total: " + total);
+                                                                        amount.setTotal(total);
                                                                         req.amount = amount;
-                                                                        DecimalFormat decimalFormat = new DecimalFormat("#.##");
-                                                                        float standardMoney = Float.valueOf(decimalFormat.format(usdMoney));
+
+                                                                        float standardMoney;
+                                                                        standardMoney = Float.valueOf(df.format(usdMoney));
+                                                                        Log.d("Hoang", "total float: " + standardMoney);
                                                                         return PaypalServices.partialRefund(detail.getTransactions().get(0).getRelatedResource().get(0).getSale().getId(),
-                                                                                credential.getAccessToken(), String.valueOf(standardMoney))
+                                                                                credential.getAccessToken(), total)
                                                                                 .subscribeOn(Schedulers.io());
                                                                     }
                                                                 })

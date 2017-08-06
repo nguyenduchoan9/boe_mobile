@@ -122,6 +122,8 @@
             android:name=".view.activity.RefundInfoActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".view.activity.VoucherActivity">
+        </activity>
     </application>
 
 </manifest>

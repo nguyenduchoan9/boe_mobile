@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="Your note"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_x_large_text"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/etDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:gravity="top|left"
+        android:hint="Your note"
+        android:lines="4"
+        android:minLines="4"
+        android:padding="8dp"
+        android:textSize="@dimen/size_medium_text"
+        tools:text="description"/>
+
+    <Button
+        android:id="@+id/btnSelect"
+        style="@style/LoginButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnCancel"
+        android:layout_marginLeft="@dimen/small_space"
+        android:layout_marginRight="@dimen/small_space"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_btn_order"/>
+
+    <Button
+        android:id="@+id/btnCancel"
+        style="@style/LanguageButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="@dimen/small_space"
+        android:layout_marginRight="@dimen/small_space"
+        android:layout_marginTop="@dimen/small_space"
+        android:text="@string/text_btn_close"/>
+</LinearLayout>

@@ -4,9 +4,11 @@ import android.util.Log;
 
 import com.nux.dhoan9.firstmvvm.data.request.user.LoginUserParam;
 import com.nux.dhoan9.firstmvvm.data.request.user.UserRegisterParam;
+import com.nux.dhoan9.firstmvvm.data.response.Balance;
 import com.nux.dhoan9.firstmvvm.data.response.LoginResponse;
 import com.nux.dhoan9.firstmvvm.data.response.NotificationResponse;
 import com.nux.dhoan9.firstmvvm.data.response.SessionDeleteResponse;
+import com.nux.dhoan9.firstmvvm.data.response.StatusResponse;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.User;
 import com.nux.dhoan9.firstmvvm.services.UserServices;
@@ -136,6 +138,21 @@ public class UserRepoImpl implements UserRepo {
     @Override
     public Observable<NotificationResponse> registerRegToken(String regToken) {
         return services.registerRegToken(regToken);
+    }
+
+    @Override
+    public Observable<Balance> getBalance() {
+        return services.getBalance();
+    }
+
+    @Override
+    public Observable<Balance> addVoucher(String code) {
+        return services.addVoucher(code);
+    }
+
+    @Override
+    public Observable<StatusResponse> checkVoucherCode(String code) {
+        return services.checkBalanceCode(code);
     }
 
 }

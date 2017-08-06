@@ -136,5 +136,9 @@ public class CartItemListViewModel extends BaseViewModel {
         }
         listBinder.notifyDataChange(cartItems);
     }
+
+    public CartManager getCartManager(){
+        return cartManager;
+    }
 }
 

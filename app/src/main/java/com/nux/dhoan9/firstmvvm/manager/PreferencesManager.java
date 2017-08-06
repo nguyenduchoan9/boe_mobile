@@ -22,4 +22,5 @@ public interface PreferencesManager {
     QRCodeTableInfo getTableInfo();
     String getLanguage();
     void setLanguage(String language);
+    void setBalance(float balance);
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvDishName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:textSize="@dimen/size_large_text"
+        tools:text="what the fuck"/>
+
+    <TextView
+        android:id="@+id/tvInfoDish"
+        android:layout_width="wrap_content"
+        android:textSize="@dimen/size_medium_text"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

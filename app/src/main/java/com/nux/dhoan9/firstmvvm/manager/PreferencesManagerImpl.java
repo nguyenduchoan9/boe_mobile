@@ -105,7 +105,7 @@ public class PreferencesManagerImpl implements PreferencesManager {
 
     @Override
     public QRCodeTableInfo getTableInfo() {
-        if(BuildConfig.IS_FAKE){
+        if (BuildConfig.IS_FAKE) {
             QRCodeTableInfo info = new QRCodeTableInfo("", String.valueOf(BuildConfig.NUMBER_TABLE));
             return info;
         }
@@ -127,6 +127,18 @@ public class PreferencesManagerImpl implements PreferencesManager {
         sharedPreferences.edit()
                 .putString(LANGUAGE_INFO, language)
                 .apply();
+    }
+
+    @Override
+    public void setBalance(float balance) {
+        String userJSON = sharedPreferences.getString(USER, "");
+        if (!StringUtils.isEmpty(userJSON)) {
+            User user = gson.fromJson(userJSON, User.class);
+            user.setBalance(balance);
+            sharedPreferences.edit()
+                    .putString(USER, gson.toJson(user))
+                    .apply();
+        }
     }
 
 }

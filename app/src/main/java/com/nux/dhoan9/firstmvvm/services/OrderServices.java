@@ -1,5 +1,7 @@
 package com.nux.dhoan9.firstmvvm.services;
 
+import com.nux.dhoan9.firstmvvm.data.request.OrderBaseRequest;
+import com.nux.dhoan9.firstmvvm.data.request.OrderPaypalRequest;
 import com.nux.dhoan9.firstmvvm.data.response.CanOrder;
 import com.nux.dhoan9.firstmvvm.data.response.OrderResponse;
 import com.nux.dhoan9.firstmvvm.data.response.StatusResponse;
@@ -8,6 +10,7 @@ import com.nux.dhoan9.firstmvvm.model.OrderCreateResponse;
 import com.nux.dhoan9.firstmvvm.model.OrderInfo;
 import com.nux.dhoan9.firstmvvm.model.OrderView;
 import java.util.List;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -22,10 +25,13 @@ import rx.Observable;
 public interface OrderServices {
 
     @POST("orders")
-    @FormUrlEncoded
-    Observable<OrderCreateResponse> makeOrder(@Field("order") String orderParams,
-                                              @Field("table_number") int tableNumber,
-                                              @Field("payment_id") String paymentId);
+    Observable<OrderCreateResponse> makeOrder(@Body OrderPaypalRequest request);
+
+    @POST("orders/create_by_cash")
+    Observable<StatusResponse> makeOrderByCash(@Body OrderBaseRequest request);
+
+    @POST("orders/create_by_voucher")
+    Observable<StatusResponse> makeOrderByVouher(@Body OrderBaseRequest request);
 
     @GET("orders")
     Observable<List<OrderView>> getOrder();

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/rlContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp">
+                android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/tvDishName"
-        android:layout_width="wrap_content"
+        android:id="@+id/tvDes"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:textSize="@dimen/size_large_text"
-        tools:text="what the fuck"/>
+        android:padding="12dp"
+        android:textSize="@dimen/size_x_medium_text"
+        tools:text="dihsihasdihasidhasi"/>
 </RelativeLayout>
