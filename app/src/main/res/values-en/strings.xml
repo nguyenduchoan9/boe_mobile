@@ -109,5 +109,18 @@
     <string name="text_response_error_connection">The connection has a error</string>
     <string name="text_balance">Balance:\u0020</string>
     <string name="text_navi_add_voucher">Add Voucher</string>
+    <string name="text_recharge">Deposit</string>
+    <string name="text_input_username">Username</string>
+    <string name="text_input_pwd">Password</string>
+    <string name="text_titla_balance">Balance</string>
+    <string name="text_current_balance">YOUR BALANCE</string>
+    <string name="text_voucher_btn_add">ADD</string>
+    <string name="text_voucher_btn_refresh">REFRESH</string>
+    <string name="text_action_bar_add_prepaidcode">VOUCHER</string>
+    <string name="text_dialog_feedback">Feedback</string>
+    <string name="text_feedback_rating">Your rating</string>
+    <string name="text_feedback_short">Write a short feedback</string>
+    <string name="text_feedback_et">Tell us what do you think</string>
+    <string name="text_s">S</string>
     <!--End Information-->
 </resources>

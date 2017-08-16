@@ -87,7 +87,7 @@
     <string name="text_info_dishes">món</string>
     <string name="text_info_refunding_bill">Hệ thống đang hoàn tác tiền món ăn</string>
     <string name="text_btn_bill_pay">Thanh toán</string>
-    <string name="text_info_scan_qr_code">Scan QR code and get menu</string>
+    <string name="text_info_scan_qr_code">Quét QR code và nhận menu</string>
     <string name="text_info_processing">Đang xử lý...</string>
     <string name="text_info_no_search_result">Không tìm thấy kết quả</string>
     <string name="text_info_checkout">Thanh Toán</string>
@@ -106,8 +106,21 @@
     <string name="text_profile_phone">Phone</string>
     <string name="text_profile_phone_hint">Your phone number</string>
     <string name="text_response_error_msg">The server is not available</string>
-    <string name="text_response_error_connection">The connection has a error</string>
+    <string name="text_response_error_connection">Kết nối xảy ra lỗi</string>
     <string name="text_balance">Số dư:\u0020</string>
-    <string name="text_navi_add_voucher">Add Voucher</string>
+    <string name="text_navi_add_voucher">Nạp tài khoản</string>
+    <string name="text_recharge">Nạp tiền</string>
+    <string name="text_input_username">Tên đăng nhập</string>
+    <string name="text_input_pwd">Mật khẩu</string>
+    <string name="text_titla_balance">Số dư</string>
+    <string name="text_current_balance">Số dư hiện tại</string>
+    <string name="text_voucher_btn_add">Nạp</string>
+    <string name="text_voucher_btn_refresh">Làm mới</string>
+    <string name="text_action_bar_add_prepaidcode">Nạp tiền</string>
+    <string name="text_dialog_feedback">Phản hồi</string>
+    <string name="text_feedback_rating">Sự hài lòng</string>
+    <string name="text_feedback_short">Đóng góp ý kiến</string>
+    <string name="text_feedback_et">Hãy nói cho chúng tôi về suy nghĩ của bạn</string>
+    <string name="text_s">Gửi</string>
     <!--End Information-->
 </resources>

@@ -5,15 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import com.nux.dhoan9.firstmvvm.BoeApplication;
+import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.utils.Utils;
 import com.nux.dhoan9.firstmvvm.view.custom.MyContextWrapper;
 import com.nux.dhoan9.firstmvvm.view.fragment.QRCodeFragment;
+import javax.inject.Inject;
 
 public class QRCodeActivity extends AppCompatActivity {
+
+    @Inject
+    PreferencesManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((BoeApplication) getApplication()).getComponent()
+                .inject(this);
+        Utils.handleSelectLanguage(this, preferencesManager.getLanguage());
         getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, QRCodeFragment.newInstance())
                 .commit();

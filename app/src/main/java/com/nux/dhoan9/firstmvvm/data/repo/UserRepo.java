@@ -24,5 +24,6 @@ public interface UserRepo {
     Observable<Balance> getBalance();
     Observable<Balance> addVoucher(String code);
     Observable<StatusResponse> checkVoucherCode(String code);
+    Observable<StatusResponse> postFeedBack(float rate, String feedback);
 
 }

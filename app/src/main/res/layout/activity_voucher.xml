@@ -28,7 +28,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="YOUR BALANCE"
+                android:text="@string/text_current_balance"
                 android:textSize="@dimen/size_x_medium_text"/>
 
             <TextView
@@ -84,7 +84,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="16dp"
-            android:text="ADD"/>
+            android:text="@string/text_voucher_btn_add"/>
 
         <Button
             android:id="@+id/btnRefresh"
@@ -95,7 +95,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="16dp"
-            android:text="REFRESH"/>
+            android:text="@string/text_voucher_btn_refresh"/>
     </RelativeLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"

@@ -160,4 +160,25 @@
         <item name="android:textColor">@android:color/black</item>
         <item name="android:background">#FFF</item>
     </style>
+
+    <style name="rating_bar_small" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/rating_bar_small</item>
+        <item name="android:indeterminateDrawable">@drawable/rating_bar_small</item>
+        <item name="android:numStars">5</item>
+        <item name="android:isIndicator">false</item>
+        <item name="android:stepSize">1.0</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:minHeight">32dp</item>
+        <item name="android:maxHeight">32dp</item>
+    </style>
+
+    <style name="rating_bar_big" parent="rating_bar_small">
+        <item name="android:progressDrawable">@drawable/rating_bar_big</item>
+        <item name="android:indeterminateDrawable">@drawable/rating_bar_big</item>
+        <item name="android:isIndicator">false</item>
+        <item name="android:layout_height">23dp</item>
+        <item name="android:minHeight">23dp</item>
+        <item name="android:maxHeight">23dp</item>
+    </style>
 </resources>

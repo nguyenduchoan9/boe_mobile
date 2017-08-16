@@ -1,0 +1,27 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="16dp"
+                tools:context="com.nux.dhoan9.firstmvvm.view.fragment.RatingFragment">
+
+    <TextView
+        android:id="@+id/tvRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_feedback_rating"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/size_x_medium_text"/>
+
+    <RatingBar
+        android:id="@+id/rbRating"
+        style="@style/rating_bar_small"
+        android:layout_below="@+id/tvRating"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:stepSize="0.1"/>
+
+</RelativeLayout>

@@ -155,4 +155,9 @@ public class UserRepoImpl implements UserRepo {
         return services.checkBalanceCode(code);
     }
 
+    @Override
+    public Observable<StatusResponse> postFeedBack(float rate, String feedback) {
+        return services.postFeedback(rate, feedback);
+    }
+
 }

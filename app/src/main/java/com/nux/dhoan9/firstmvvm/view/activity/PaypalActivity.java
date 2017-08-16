@@ -102,6 +102,8 @@ public class PaypalActivity extends BaseActivity {
     TextView tvBalance;
     @BindView(R.id.tvRecharge)
     TextView tvRecharge;
+    @BindView(R.id.tvMsg)
+    TextView tvMsg;
     @Inject
     PreferencesManager preferencesManager;
 
@@ -134,13 +136,14 @@ public class PaypalActivity extends BaseActivity {
         startService(intent);
         pays = Arrays.asList(getResources().getStringArray(R.array.payment_array));
         btnPay.setOnClickListener(v -> {
+            tvMsg.setVisibility(View.GONE);
             if (isPaypalMethod()) {
                 onOkPress();
             } else if (isCashMethod()) {
                 payByCash();
             } else if (isVoucherMethod()) {
                 if (balance.getBalance() < getTotal()) {
-// show error
+                    tvMsg.setVisibility(View.VISIBLE);
                     return;
                 }
                 payByVoucher();
@@ -154,6 +157,7 @@ public class PaypalActivity extends BaseActivity {
     final int VOUCHER_REQUEST_CODE = 204;
 
     private void initializePayment() {
+        tvMsg.setVisibility(View.GONE);
         rlBalance.setVisibility(View.GONE);
         spinnerPayment.setSelection(paymentMethodindex);
         spinnerPayment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -165,6 +169,7 @@ public class PaypalActivity extends BaseActivity {
                 } else {
                     rlBalance.setVisibility(View.GONE);
                 }
+                tvMsg.setVisibility(View.GONE);
             }
 
             @Override
@@ -182,6 +187,7 @@ public class PaypalActivity extends BaseActivity {
         if (balance >= getTotal()) {
             tvBalance.setTextColor(ContextCompat.getColor(this, R.color.primaryText));
         } else {
+            tvMsg.setVisibility(View.VISIBLE);
             tvBalance.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
         }
         tvBalance.setText(CurrencyUtil.formatVNDecimal(balance));

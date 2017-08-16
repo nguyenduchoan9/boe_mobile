@@ -53,7 +53,7 @@
                         android:id="@+id/etEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/login_text_input_username"
+                        android:hint="@string/text_input_username"
                         android:inputType="textEmailAddress"
                         android:textColor="@android:color/white"
                         android:textSize="16sp"

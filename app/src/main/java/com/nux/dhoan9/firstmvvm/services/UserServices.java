@@ -18,13 +18,14 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import rx.Observable;
+
 /**
  * Created by hoang on 29/04/2017.
  */
 
 public interface UserServices {
 
-//    @FormUrlEncoded
+    //    @FormUrlEncoded
     @POST("users")
     Observable<Response<User>> postRegisterUser(@Body UserRegisterParam param);
 
@@ -41,7 +42,8 @@ public interface UserServices {
     @POST("users/add_voucher")
     @FormUrlEncoded
     Observable<Balance> addVoucher(@Field("code") String code);
-//    @FormUrlEncoded
+
+    //    @FormUrlEncoded
     @POST("sessions")
     Observable<Response<User>> loginByEmail(@Body LoginUserParam param);
 
@@ -51,4 +53,8 @@ public interface UserServices {
     @POST("notifications/register_reg_token")
     @FormUrlEncoded
     Observable<NotificationResponse> registerRegToken(@Field("reg_token") String regToken);
+
+    @POST("feedbacks")
+    @FormUrlEncoded
+    Observable<StatusResponse> postFeedback(@Field("rate") float rate, @Field("feed_back") String feed);
 }

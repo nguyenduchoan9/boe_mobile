@@ -49,7 +49,7 @@ public class VoucherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_voucher);
         ButterKnife.bind(this);
 
-        getSupportActionBar().setTitle("VOUCHER");
+        getSupportActionBar().setTitle(R.string.text_action_bar_add_prepaidcode);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar()

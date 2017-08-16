@@ -14,6 +14,7 @@ import com.nux.dhoan9.firstmvvm.view.activity.SlashActivity;
 public class GCMIntentService extends GcmListenerService {
     public static final String MESSAGE_TO_DINER = "MESSAGE_TO_DINER";
     public static final String MESSAGE_TO_DINER_REFUND = "MESSAGE_TO_DINER_REFUND";
+    public static final String MESSAGE_TO_DINER_CASH_PEDING = "MESSAGE_TO_DINER_CASH_PEDING";
     public static final String MESSAGE_TO_CHEF = "MESSAGE_TO_CHEF";
     public static final String MESSAGE_TO_WAITER = "MESSAGE_TO_WAITER";
 
@@ -28,6 +29,8 @@ public class GCMIntentService extends GcmListenerService {
                 sendMessageToDiner(body);
             } else if ("afterRefund".equals(term)) {
                 sendMessageRefundToDiner(body);
+            } else if ("cashPending".equals(term)) {
+                sendMessageCashPedingToDiner(body);
             }
         } else if ("chef".equals(to)) {
             sendMessageToChef(body);
@@ -56,6 +59,12 @@ public class GCMIntentService extends GcmListenerService {
 
     private void sendMessageRefundToDiner(String message) {
         Intent i = new Intent(MESSAGE_TO_DINER_REFUND);
+        i.putExtra("body", message);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+    }
+
+    private void sendMessageCashPedingToDiner(String message) {
+        Intent i = new Intent(MESSAGE_TO_DINER_CASH_PEDING);
         i.putExtra("body", message);
         LocalBroadcastManager.getInstance(this).sendBroadcast(i);
     }

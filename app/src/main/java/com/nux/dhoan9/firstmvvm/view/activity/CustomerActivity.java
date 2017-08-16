@@ -69,6 +69,7 @@ import com.nux.dhoan9.firstmvvm.view.fragment.EndpointDialogFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.HistoryFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.LanguageDialog;
 import com.nux.dhoan9.firstmvvm.view.fragment.OrderFragment;
+import com.nux.dhoan9.firstmvvm.view.fragment.RatingDialog;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -505,9 +506,9 @@ public class CustomerActivity extends BaseActivity {
             case R.id.logOut:
                 logout();
                 break;
-            case R.id.apiEndpoint:
-                showEndpointDialog();
-                break;
+//            case R.id.apiEndpoint:
+//                showEndpointDialog();
+//                break;
             case R.id.addVoucher:
                 showAddVoucherDialog();
                 break;
@@ -518,10 +519,30 @@ public class CustomerActivity extends BaseActivity {
 //                orderFragment.showDialogSelectLanguage(preferencesManager);
                 showDialogSelectLanguage();
                 break;
+            case R.id.feedback:
+//                orderFragment.showDialogSelectLanguage(preferencesManager);
+                showDialogFeedback();
+                break;
             default:
                 break;
         }
         binding.drawer.closeDrawers();
+    }
+
+    private void showDialogFeedback() {
+        FragmentTransaction fm = getSupportFragmentManager().beginTransaction();
+        RatingDialog dialog = RatingDialog.newInstance();
+        dialog.setListener((rate, feedback) -> {
+            userRepo.postFeedBack(rate, feedback)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(this::showProgressAndDisableTouch)
+                    .doOnTerminate(this::hideProcessing)
+                    .subscribe(action -> {
+                        ToastUtils.toastShortMassage(CustomerActivity.this, "Success");
+                    });
+        });
+        dialog.show(fm, "rating");
     }
 
     final int VOUCHER_REQUEST_CODE = 204;

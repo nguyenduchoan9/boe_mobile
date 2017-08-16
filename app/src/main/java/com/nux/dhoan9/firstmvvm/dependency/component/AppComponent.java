@@ -12,7 +12,9 @@ import com.nux.dhoan9.firstmvvm.view.activity.ChefActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.ListDishNotServeActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.LoginActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.PaypalActivity;
+import com.nux.dhoan9.firstmvvm.view.activity.QRCodeActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.RefundInfoActivity;
+import com.nux.dhoan9.firstmvvm.view.activity.RegisterActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.SlashActivity;
 import com.nux.dhoan9.firstmvvm.view.activity.VoucherActivity;
 import com.nux.dhoan9.firstmvvm.view.fragment.EndpointDialogFragment;
@@ -37,6 +39,10 @@ public interface AppComponent {
     OrderComponent plus(OrderModule cartModule);
 
     void inject(ChefActivity chefActivity);
+
+    void inject(QRCodeActivity qrCodeActivity);
+
+    void inject(RegisterActivity registerActivity);
 
     void inject(CustomerActivity customerActivity);
 

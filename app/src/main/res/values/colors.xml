@@ -24,4 +24,6 @@
     <color name="holoGreenLight">@android:color/holo_green_light</color>
     <color name="holoOrangeLight">@android:color/holo_orange_light</color>
     <color name="holoRedLight">@android:color/holo_red_light</color>
+
+    <color name="page_indicator_dark_selected">#ff333333</color>
 </resources>
