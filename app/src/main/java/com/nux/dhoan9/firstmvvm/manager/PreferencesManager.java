@@ -23,4 +23,5 @@ public interface PreferencesManager {
     String getLanguage();
     void setLanguage(String language);
     void setBalance(float balance);
+    boolean isTableQRCodeExpire();
 }

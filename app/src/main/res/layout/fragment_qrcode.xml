@@ -9,6 +9,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/get_menu"/>
 
+
         <TextView
             android:id="@+id/tvScanner"
             android:layout_width="match_parent"
@@ -22,6 +23,20 @@
             android:textColor="@color/white"
             android:textSize="@dimen/size_large_text"
             android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvMsg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/tvScanner"
+            android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:text="Your QR code is expired\n Please scan Qr code again"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_large_text"
+            android:textStyle="bold"
+            android:visibility="visible"/>
 
     </RelativeLayout>
 

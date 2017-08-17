@@ -125,6 +125,8 @@
     <string name="text_feedback_short">Write a short feedback</string>
     <string name="text_feedback_et">Tell us what do you think</string>
     <string name="text_s">S</string>
+    <string name="text_paypal_order_success">Order successfully</string>
+    <string name="text_go_to_m">GO TO MENU</string>
 
     <!--End Information-->
 </resources>

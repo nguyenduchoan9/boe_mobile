@@ -13,6 +13,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -40,10 +41,16 @@ import com.nux.dhoan9.firstmvvm.R;
 import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
 import com.nux.dhoan9.firstmvvm.data.repo.OrderRepo;
 import com.nux.dhoan9.firstmvvm.data.repo.UserRepo;
+import com.nux.dhoan9.firstmvvm.data.request.PaypalPartialReq;
 import com.nux.dhoan9.firstmvvm.data.response.AfterRefundNotification;
+import com.nux.dhoan9.firstmvvm.data.response.Amount;
 import com.nux.dhoan9.firstmvvm.data.response.CanOrder;
 import com.nux.dhoan9.firstmvvm.data.response.CartDishAvailable;
+import com.nux.dhoan9.firstmvvm.data.response.FullRefundResponse;
 import com.nux.dhoan9.firstmvvm.data.response.NotificationResponse;
+import com.nux.dhoan9.firstmvvm.data.response.PartialRefundResponse;
+import com.nux.dhoan9.firstmvvm.data.response.PaypalDetailResponse;
+import com.nux.dhoan9.firstmvvm.data.response.StatusResponse;
 import com.nux.dhoan9.firstmvvm.databinding.ActivityCustomerBinding;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
 import com.nux.dhoan9.firstmvvm.manager.GCMIntentService;
@@ -52,8 +59,10 @@ import com.nux.dhoan9.firstmvvm.manager.LocalServices;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
 import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.model.DishSugesstion;
+import com.nux.dhoan9.firstmvvm.model.OrderCreateResponse;
 import com.nux.dhoan9.firstmvvm.model.ParcelDishList;
 import com.nux.dhoan9.firstmvvm.model.SuggestionByCategory;
+import com.nux.dhoan9.firstmvvm.services.PaypalServices;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.CurrencyUtil;
 import com.nux.dhoan9.firstmvvm.utils.RetrofitUtils;
@@ -69,10 +78,15 @@ import com.nux.dhoan9.firstmvvm.view.fragment.EndpointDialogFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.HistoryFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.LanguageDialog;
 import com.nux.dhoan9.firstmvvm.view.fragment.OrderFragment;
+import com.nux.dhoan9.firstmvvm.view.fragment.PaypalInfoDialog;
+import com.nux.dhoan9.firstmvvm.view.fragment.QRCodeFragment;
 import com.nux.dhoan9.firstmvvm.view.fragment.RatingDialog;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observable;
@@ -216,6 +230,14 @@ public class CustomerActivity extends BaseActivity {
                         AfterRefundNotification bo = gson.fromJson(message, AfterRefundNotification.class);
                         notifyRefundSuccess(bo);
                     }
+                } else if (intent.getAction().endsWith(GCMIntentService.MESSAGE_TO_DINER_CASH_PEDING)) {
+                    String message = intent.getStringExtra("body");
+                    Log.d("fucking cool refund", intent.getStringExtra("body"));
+                    if (message.length() > 0) {
+                        Gson gson = new Gson();
+                        OrderCreateResponse bo = gson.fromJson(message, OrderCreateResponse.class);
+                        notifyAfterPayedByCashMaterialOut(bo);
+                    }
                 } else {
 //                    ToastUtils.toastShortMassage(getApplicationContext(), "Nothing");
                 }
@@ -224,6 +246,92 @@ public class CustomerActivity extends BaseActivity {
 
         Intent intent = new Intent(getApplicationContext(), GCMRegistrationIntentService.class);
         startService(intent);
+    }
+
+    private void notifyAfterPayedByCashMaterialOut(OrderCreateResponse bo) {
+        FragmentManager fm = getSupportFragmentManager();
+        PaypalInfoDialog dialog = PaypalInfoDialog.newInstance(bo.getDish());
+        dialog.setCancelable(false);
+        dialog.setListener(new PaypalInfoDialog.PaypalListener() {
+            @Override
+            public void onOkieClick(List<Dish> items) {
+                RxUtils.checkNetWork(CustomerActivity.this)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(isAvailable -> {
+                            if (-1 == isAvailable) {
+                                ToastUtils.toastLongMassage(CustomerActivity.this, getString(R.string.text_not_available_network));
+                            } else if (-2 == isAvailable) {
+                                ToastUtils.toastLongMassage(CustomerActivity.this, getString(R.string.text_server_maintanance));
+                            } else {
+                                orderRepo.partialRefundInCash(bo.getOrderId())
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Subscriber<StatusResponse>() {
+                                            @Override
+                                            public void onCompleted() {
+
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+
+                                            }
+
+                                            @Override
+                                            public void onNext(StatusResponse statusResponse) {
+
+                                            }
+                                        });
+                            }
+                        });
+            }
+
+            @Override
+            public void onAngryClick() {
+                RxUtils.checkNetWork(CustomerActivity.this)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(isAvailable -> {
+                            if (-1 == isAvailable) {
+                                ToastUtils.toastLongMassage(CustomerActivity.this, getString(R.string.text_not_available_network));
+                            } else if (-2 == isAvailable) {
+                                ToastUtils.toastLongMassage(CustomerActivity.this, getString(R.string.text_server_maintanance));
+                            } else {
+                                orderRepo.fullRefundInCash(bo.getOrderId())
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Subscriber<StatusResponse>() {
+                                            @Override
+                                            public void onCompleted() {
+
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+
+                                            }
+
+                                            @Override
+                                            public void onNext(StatusResponse statusResponse) {
+
+                                            }
+                                        });
+                            }
+                        });
+            }
+        });
+        dialog.show(fm, "Paypal");
+    }
+
+    @Override
+    protected void onStart() {
+        if (preferencesManager.isTableQRCodeExpire()) {
+            Intent i = new Intent(this, QRCodeActivity.class);
+            i.putExtra(QRCodeActivity.QR_CODE_EXPIRE_KEY, true);
+            startActivity(i);
+        }
+        super.onStart();
     }
 
     @Override
@@ -237,6 +345,8 @@ public class CustomerActivity extends BaseActivity {
                 new IntentFilter(GCMIntentService.MESSAGE_TO_DINER));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
                 new IntentFilter(GCMIntentService.MESSAGE_TO_DINER_REFUND));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
+                new IntentFilter(GCMIntentService.MESSAGE_TO_DINER_CASH_PEDING));
         showToolBar(fragmentPos);
     }
 
@@ -1003,8 +1113,11 @@ public class CustomerActivity extends BaseActivity {
     }
 
     private final int NOTIFY_DINER_REFUND = 4;
+    private ArrayList<AfterRefundNotification.DishAndQuantity> abc = new ArrayList<>();
 
     private void notifyRefundSuccess(AfterRefundNotification response) {
+        abc.addAll(response.getDishes());
+        response.setDishes(abc);
         Intent intent = new Intent(this, RefundInfoActivity.class);
         intent.putExtra(Constant.LIST_DISH_NOT_SERVE, response);
         intent.setAction(Long.toString(System.currentTimeMillis()));

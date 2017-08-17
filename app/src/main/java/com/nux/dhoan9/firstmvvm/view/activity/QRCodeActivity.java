@@ -13,7 +13,7 @@ import com.nux.dhoan9.firstmvvm.view.fragment.QRCodeFragment;
 import javax.inject.Inject;
 
 public class QRCodeActivity extends AppCompatActivity {
-
+    public static String QR_CODE_EXPIRE_KEY = "QR_CODE_EXPIRE_KEY";
     @Inject
     PreferencesManager preferencesManager;
 
@@ -24,8 +24,12 @@ public class QRCodeActivity extends AppCompatActivity {
                 .inject(this);
         Utils.handleSelectLanguage(this, preferencesManager.getLanguage());
         getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, QRCodeFragment.newInstance())
+                .replace(android.R.id.content, QRCodeFragment.newInstance(getQrCodeExpire()))
                 .commit();
+    }
+
+    private boolean getQrCodeExpire() {
+        return getIntent().getBooleanExtra(QR_CODE_EXPIRE_KEY, false);
     }
 
     public static Intent newInstance(Context context) {

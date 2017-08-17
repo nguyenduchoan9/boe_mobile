@@ -66,4 +66,14 @@ public class OrderRepoImpl implements OrderRepo {
         return services.partialRefund(id, totla, dishList);
     }
 
+    @Override
+    public Observable<StatusResponse> partialRefundInCash(int orderId) {
+        return services.partialRefundInCash(orderId);
+    }
+
+    @Override
+    public Observable<StatusResponse> fullRefundInCash(int orderId) {
+        return services.fullyRefundInCash(orderId);
+    }
+
 }

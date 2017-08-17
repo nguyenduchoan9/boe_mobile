@@ -29,6 +29,7 @@ import static android.app.Activity.RESULT_OK;
 public class QRCodeFragment extends Fragment {
     private final int REQUEST_CODE = 400;
     private final int MY_PERMISSIONS_REQUEST_CAMERA = 404;
+    private final static String QR_CODE_EXPIRE_KEY = "QR_CODE_EXPIRE_KEY";
     FragmentQrcodeBinding binding;
 
     @Inject
@@ -38,9 +39,10 @@ public class QRCodeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static QRCodeFragment newInstance() {
+    public static QRCodeFragment newInstance(boolean isQrCodeExpire) {
         QRCodeFragment fragment = new QRCodeFragment();
         Bundle args = new Bundle();
+        args.putBoolean(QR_CODE_EXPIRE_KEY, isQrCodeExpire);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,8 +67,8 @@ public class QRCodeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         binding.tvScanner.setOnClickListener(v -> {
             checkAndHandlePermission();
-
         });
+        binding.tvMsg.setVisibility(getArguments().getBoolean(QR_CODE_EXPIRE_KEY) ? View.VISIBLE : View.GONE);
     }
 
     @Override

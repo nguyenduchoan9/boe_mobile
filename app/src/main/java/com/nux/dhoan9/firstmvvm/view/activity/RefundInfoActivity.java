@@ -97,7 +97,14 @@ public class RefundInfoActivity extends AppCompatActivity {
     private void initializeInfo() {
         tvBillDate.setText(info.getBillDate());
         tvTableNumber.setText(String.valueOf(info.getTableNumber()));
-        tvRefund.setText(CurrencyUtil.formatVNDecimal(info.getTotal()));
+        tvRefund.setText(CurrencyUtil.formatVNDecimal(getTotal()));
+    }
+    private float getTotal(){
+        float total = 0;
+        for (AfterRefundNotification.DishAndQuantity d : info.getDishes()){
+            total += d.getPrice() * d.getQuantity();
+        }
+        return total;
     }
 
     private void configRecyclerView() {

@@ -51,4 +51,12 @@ public interface OrderServices {
     Observable<StatusResponse> partialRefund(@Field("orderId") int id,
                                              @Field("total") float total,
                                              @Field("dishes") String dishList);
+
+    @POST("orders/cash_partial_refund")
+    @FormUrlEncoded
+    Observable<StatusResponse> partialRefundInCash(@Field("orderId") int id);
+
+    @POST("orders/cash_full_refund")
+    @FormUrlEncoded
+    Observable<StatusResponse> fullyRefundInCash(@Field("orderId") int id);
 }

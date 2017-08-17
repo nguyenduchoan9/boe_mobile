@@ -1,11 +1,9 @@
 package com.nux.dhoan9.firstmvvm.manager;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import com.google.android.gms.gcm.GcmListenerService;
-import com.nux.dhoan9.firstmvvm.view.activity.SlashActivity;
 
 /**
  * Created by hoang on 24/05/2017.
@@ -30,7 +28,7 @@ public class GCMIntentService extends GcmListenerService {
             } else if ("afterRefund".equals(term)) {
                 sendMessageRefundToDiner(body);
             } else if ("cashPending".equals(term)) {
-                sendMessageCashPedingToDiner(body);
+                sendMessageCashPendingToDiner(body);
             }
         } else if ("chef".equals(to)) {
             sendMessageToChef(body);
@@ -63,7 +61,7 @@ public class GCMIntentService extends GcmListenerService {
         LocalBroadcastManager.getInstance(this).sendBroadcast(i);
     }
 
-    private void sendMessageCashPedingToDiner(String message) {
+    private void sendMessageCashPendingToDiner(String message) {
         Intent i = new Intent(MESSAGE_TO_DINER_CASH_PEDING);
         i.putExtra("body", message);
         LocalBroadcastManager.getInstance(this).sendBroadcast(i);

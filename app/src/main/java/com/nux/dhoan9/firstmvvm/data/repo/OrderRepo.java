@@ -30,4 +30,8 @@ public interface OrderRepo {
     Observable<StatusResponse> fullyRefund(int id);
 
     Observable<StatusResponse> partialRefund(int id, float totla, String dishList);
+
+    Observable<StatusResponse> partialRefundInCash(int orderId);
+
+    Observable<StatusResponse> fullRefundInCash(int orderId);
 }

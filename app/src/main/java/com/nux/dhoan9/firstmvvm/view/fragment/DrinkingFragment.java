@@ -22,6 +22,7 @@ import com.nux.dhoan9.firstmvvm.data.response.CanOrder;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentDrinkingBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
+import com.nux.dhoan9.firstmvvm.manager.EndpointManager;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.RetrofitUtils;
 import com.nux.dhoan9.firstmvvm.utils.RxUtils;
@@ -51,6 +52,8 @@ public class DrinkingFragment extends BaseFragment {
     CartManager cartManager;
     @Inject
     DishRepo dishRepo;
+    @Inject
+    EndpointManager endpointManager;
 
     public DrinkingFragment() {
         // Required empty public constructor
@@ -123,7 +126,7 @@ public class DrinkingFragment extends BaseFragment {
 //                    }
 //                });
         Glide.with(this)
-                .load(BuildConfig.BASE_URL + "images/background.jpg")
+                .load(endpointManager.getEndpoint() + "images/background.jpg")
                 .into(binding.ivBackground);
     }
 

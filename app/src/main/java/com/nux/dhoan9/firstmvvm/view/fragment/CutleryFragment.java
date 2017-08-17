@@ -20,6 +20,7 @@ import com.nux.dhoan9.firstmvvm.data.repo.DishRepo;
 import com.nux.dhoan9.firstmvvm.databinding.FragmentCutleryBinding;
 import com.nux.dhoan9.firstmvvm.dependency.module.ActivityModule;
 import com.nux.dhoan9.firstmvvm.manager.CartManager;
+import com.nux.dhoan9.firstmvvm.manager.EndpointManager;
 import com.nux.dhoan9.firstmvvm.utils.Constant;
 import com.nux.dhoan9.firstmvvm.utils.RetrofitUtils;
 import com.nux.dhoan9.firstmvvm.utils.RxUtils;
@@ -47,6 +48,8 @@ public class CutleryFragment extends BaseFragment {
     CartManager cartManager;
     @Inject
     DishRepo dishRepo;
+    @Inject
+    EndpointManager endpointManager;
     private boolean isHaveResult = true;
     private boolean isHaveResultDishNotServe = false;
 
@@ -91,7 +94,7 @@ public class CutleryFragment extends BaseFragment {
         initializerData();
         ((CustomerActivity) getActivity()).getNavigationBottom().setVisibility(View.VISIBLE);
         Glide.with(this)
-                .load(BuildConfig.BASE_URL + "images/background.jpg")
+                .load(endpointManager.getEndpoint() + "images/background.jpg")
                 .into(binding.ivBackground);
     }
 

@@ -122,5 +122,7 @@
     <string name="text_feedback_short">Đóng góp ý kiến</string>
     <string name="text_feedback_et">Hãy nói cho chúng tôi về suy nghĩ của bạn</string>
     <string name="text_s">Gửi</string>
+    <string name="text_paypal_order_success">Đặt món thành công</string>
+    <string name="text_go_to_m">Đến menu</string>
     <!--End Information-->
 </resources>

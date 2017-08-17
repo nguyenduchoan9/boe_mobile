@@ -126,4 +126,8 @@ public class AfterRefundNotification implements Parcelable {
     public String getBillDate() {
         return billDate;
     }
+
+    public void setDishes(List<DishAndQuantity> dishes) {
+        this.dishes = dishes;
+    }
 }

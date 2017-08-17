@@ -110,7 +110,7 @@ public class HistoryFragment extends BaseFragment {
             public void onOrderClick(List<OrderInfoItem> items) {
                 for (OrderInfoItem item : items) {
                     if (!cartManager.isInCart(item.getId())) {
-                        cartManager.plus(item.getId(), 1);
+                        cartManager.plus(item.getId(), 1, "");
                     }
                 }
                 updateOrderBagde();

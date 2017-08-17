@@ -14,6 +14,8 @@ import com.nux.dhoan9.firstmvvm.utils.StringUtils;
 import okhttp3.Headers;
 
 import com.nux.dhoan9.firstmvvm.model.HeaderCredential;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by hoang on 27/03/2017.
@@ -23,6 +25,7 @@ public class PreferencesManagerImpl implements PreferencesManager {
     private static final String USER = "USER";
     private static final String HEADERS = "HEADERS";
     private static final String TABLE_INFO = "TABLE_INFO";
+    private static final String TABLE_INFO_AT_TIME = "TABLE_INFO_AT_TIME";
     private static final String LANGUAGE_INFO = "LANGUAGE_INFO";
     private SharedPreferences sharedPreferences;
     private Gson gson;
@@ -101,6 +104,10 @@ public class PreferencesManagerImpl implements PreferencesManager {
         sharedPreferences.edit()
                 .putString(TABLE_INFO, gson.toJson(tableInfo))
                 .apply();
+        Date currentTime = new Date();
+        sharedPreferences.edit()
+                .putLong(TABLE_INFO_AT_TIME, currentTime.getTime())
+                .apply();
     }
 
     @Override
@@ -139,6 +146,23 @@ public class PreferencesManagerImpl implements PreferencesManager {
                     .putString(USER, gson.toJson(user))
                     .apply();
         }
+    }
+
+    @Override
+    public boolean isTableQRCodeExpire() {
+        long timeScanQrCode = sharedPreferences.getLong(TABLE_INFO_AT_TIME, -1);
+        if (timeScanQrCode > -1) {
+            Date currentTime = new Date();
+            long currentTimeInLong = currentTime.getTime();
+            if ((currentTimeInLong - timeScanQrCode) > TimeUnit.HOURS.toMillis(2)) {
+                sharedPreferences.edit()
+                        .remove(TABLE_INFO_AT_TIME)
+                        .remove(TABLE_INFO)
+                        .apply();
+                return true;
+            }
+        }
+        return false;
     }
 
 }
