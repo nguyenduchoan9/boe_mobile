@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.nux.dhoan9.firstmvvm"
-          android:versionCode="1"
-          android:versionName="1.0">
+    package="com.nux.dhoan9.firstmvvm"
+    android:versionCode="1"
+    android:versionName="1.0">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <permission
         android:name="com.nux.dhoan9.firstmvvm.permission.C2D_MESSAGE"
-        android:protectionLevel="signature"/>
+        android:protectionLevel="signature" />
 
     <application
         android:name=".BoeApplication"
@@ -26,10 +26,10 @@
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="com.example.gcm"/>
+                <category android:name="com.example.gcm" />
             </intent-filter>
         </receiver>
 
@@ -37,95 +37,84 @@
             android:name=".manager.GCMIntentService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <service
             android:name=".manager.GCMIdListenerService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
         <service
             android:name=".manager.GCMRegistrationIntentService"
-            android:exported="false">
-        </service>
+            android:exported="false"></service>
         <service
             android:name=".manager.LocalServices"
-            android:stopWithTask="false">
-        </service>
+            android:stopWithTask="false"></service>
 
         <activity
             android:name=".view.activity.SlashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.NoStatusBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".view.activity.LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.NoStatusBar"/>
+            android:theme="@style/AppTheme.NoActionBar.NoStatusBar" />
         <activity
             android:name=".view.activity.ChefActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.activity.RegisterActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.NoStatusBar"/>
-        <activity android:name=".view.activity.ColorChangeActivity"/>
+            android:theme="@style/AppTheme.NoActionBar.NoStatusBar" />
+        <activity android:name=".view.activity.ColorChangeActivity" />
         <activity
             android:name=".view.activity.ProfileActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".view.activity.CustomerActivity"
             android:configChanges="locale"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.NoStatusBar"/>
+            android:theme="@style/AppTheme.NoActionBar.NoStatusBar" />
         <activity
             android:name=".view.activity.QRCodeScanActivity"
-            android:theme="@style/AppTheme.NoActionBar.NoStatusBar"/>
+            android:theme="@style/AppTheme.NoActionBar.NoStatusBar" />
         <activity
             android:name=".view.activity.DishDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.NoStatusBar"/>
+            android:theme="@style/AppTheme.NoActionBar.NoStatusBar" />
         <activity
             android:name=".view.activity.CartActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".view.activity.HistoryActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".view.activity.DishesByCategoryActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".view.activity.QRCodeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.NoStatusBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar.NoStatusBar"></activity>
         <activity
             android:name=".view.activity.PaypalActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".view.activity.ListDishNotServeActivity">
-        </activity>
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".view.activity.ListDishNotServeActivity"></activity>
         <activity
             android:name=".view.activity.RefundInfoActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".view.activity.VoucherActivity">
-        </activity>
-        <activity android:name=".view.activity.FeedbackActivity">
-        </activity>
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".view.activity.VoucherActivity"></activity>
+        <activity android:name=".view.activity.FeedbackActivity"></activity>
+        <activity android:name=".view.activity.AllowancesSuccessActivity"></activity>
     </application>
 
 </manifest>

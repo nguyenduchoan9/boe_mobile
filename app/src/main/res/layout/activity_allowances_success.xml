@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blur_white"
+    android:padding="4dp"
+    tools:context="com.nux.dhoan9.firstmvvm.view.activity.ListDishNotServeActivity">
+
+    <TextView
+        android:id="@+id/tvDes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="Nhà hàng vừa thực hiện hoàn tiền món ăn\nVui lòng kiềm tra tài khoản"
+        android:textColor="@color/secondaryText"
+        android:textSize="@dimen/size_x_medium_text"/>
+
+    <View
+        android:id="@+id/sese"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/tvDes"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@color/blur_white"/>
+
+    <ScrollView
+        android:id="@+id/llInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnBackToMenu"
+        android:layout_below="@+id/sese"
+        android:layout_marginBottom="8dp"
+        android:fillViewport="true">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btnBackToMenu"
+            android:layout_below="@+id/sese"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Thông tin chi tiết"
+                android:textSize="@dimen/size_large_text"
+                android:textStyle="bold"/>
+
+            <TextView
+            android:id="@+id/tvBillDateTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Ngày bồi thường"
+            android:textSize="@dimen/size_medium_text"
+            android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text=""
+                android:textSize="@dimen/size_medium_text"/>
+
+            <TextView
+                android:id="@+id/tvAmountTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Ngày bồi thường"
+                android:textSize="@dimen/size_medium_text"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text=""
+                android:textSize="@dimen/size_medium_text"/>
+
+            <TextView
+                android:id="@+id/tvTitleDes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Lý do"
+                android:textSize="@dimen/size_medium_text"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="@dimen/size_medium_text"/>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnBackToMenu"
+        style="@style/PayButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Trở lại menu"/>
+
+</RelativeLayout>

@@ -59,4 +59,7 @@ public class Constant {
         int Cash = 1;
         int Voucher = 2;
     }
+
+
+    public final static String ALLOWANCE_SUCCESS = "ALLOWANCE_SUCCESS";
 }

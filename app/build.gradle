@@ -56,7 +56,7 @@ android {
             events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
         }
     }
-    buildToolsVersion '26'
+    buildToolsVersion '26.0.1'
 }
 
 dependencies {

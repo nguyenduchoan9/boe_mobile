@@ -57,6 +57,7 @@ import com.nux.dhoan9.firstmvvm.manager.GCMIntentService;
 import com.nux.dhoan9.firstmvvm.manager.GCMRegistrationIntentService;
 import com.nux.dhoan9.firstmvvm.manager.LocalServices;
 import com.nux.dhoan9.firstmvvm.manager.PreferencesManager;
+import com.nux.dhoan9.firstmvvm.model.Allowance;
 import com.nux.dhoan9.firstmvvm.model.Dish;
 import com.nux.dhoan9.firstmvvm.model.DishSugesstion;
 import com.nux.dhoan9.firstmvvm.model.OrderCreateResponse;
@@ -238,7 +239,15 @@ public class CustomerActivity extends BaseActivity {
                         OrderCreateResponse bo = gson.fromJson(message, OrderCreateResponse.class);
                         notifyAfterPayedByCashMaterialOut(bo);
                     }
-                } else {
+                } else if (intent.getAction().endsWith(GCMIntentService.MESSAGE_TO_DINER_ALLOWANCE)) {
+                    String message = intent.getStringExtra("body");
+                    Log.d("fucking cool refund", intent.getStringExtra("body"));
+                    if (message.length() > 0) {
+                        Gson gson = new Gson();
+                        Allowance bo = gson.fromJson(message, Allowance.class);
+                        notifyAllowanceSucess(bo);
+                    }
+                }else {
 //                    ToastUtils.toastShortMassage(getApplicationContext(), "Nothing");
                 }
             }
@@ -246,6 +255,29 @@ public class CustomerActivity extends BaseActivity {
 
         Intent intent = new Intent(getApplicationContext(), GCMRegistrationIntentService.class);
         startService(intent);
+    }
+
+    private final int NOTIFY_DINER_ALLOWANCE = 3;
+
+    private void notifyAllowanceSucess(Allowance bo) {
+        Intent intent = new Intent(this, AllowancesSuccessActivity.class);
+        intent.putExtra(Constant.ALLOWANCE_SUCCESS, bo);
+        intent.setAction(Long.toString(System.currentTimeMillis()));
+        int requestID = (int) System.currentTimeMillis();
+        Log.d("Hoang", "notifyDishNotServe: " + requestID);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        PendingIntent pIntent = PendingIntent.getActivity(this, requestID, intent, flags);
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_notification_bell)
+                .setContentTitle(getString(R.string.text_info_notification_annoucement))
+                .setContentText(getString(R.string.text_info_notification_description))
+                .setContentIntent(pIntent)
+                .setAutoCancel(true)
+                .setLights(Color.BLUE, 500, 500)
+                .setDefaults(Notification.DEFAULT_SOUND);
+        notificationManager.notify(NOTIFY_DINER_ALLOWANCE, mBuilder.build());
     }
 
     private void notifyAfterPayedByCashMaterialOut(OrderCreateResponse bo) {
@@ -347,6 +379,8 @@ public class CustomerActivity extends BaseActivity {
                 new IntentFilter(GCMIntentService.MESSAGE_TO_DINER_REFUND));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
                 new IntentFilter(GCMIntentService.MESSAGE_TO_DINER_CASH_PEDING));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver,
+                new IntentFilter(GCMIntentService.MESSAGE_TO_DINER_ALLOWANCE));
         showToolBar(fragmentPos);
     }
 
