@@ -124,5 +124,8 @@
     <string name="text_s">Gửi</string>
     <string name="text_paypal_order_success">Đặt món thành công</string>
     <string name="text_go_to_m">Đến menu</string>
+    <string name="txt_minus_dish">Chọn món bạn muốn loại</string>
+    <string name="txt_minus_remove">Loại</string>
+    <string name="txt_dish_blank">Món không có yêu cầu</string>
     <!--End Information-->
 </resources>

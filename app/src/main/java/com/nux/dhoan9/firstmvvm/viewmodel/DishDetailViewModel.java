@@ -48,7 +48,7 @@ public class DishDetailViewModel extends BaseViewModel {
     }
 
     public void onOrderClick(){
-        cartManager.plus(id, 1);
+        cartManager.plus(id, 1,"");
     }
 
     public void onCancelClick(){

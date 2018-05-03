@@ -12,7 +12,7 @@
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:padding="16dp"
-        android:text="Select dish you want to remove"
+        android:text="@string/txt_minus_dish"
         android:textColor="@color/white"
         android:textSize="@dimen/size_x_large_text"
         android:textStyle="bold"/>
@@ -33,7 +33,7 @@
         android:layout_marginLeft="@dimen/small_space"
         android:layout_marginRight="@dimen/small_space"
         android:layout_marginTop="16dp"
-        android:text="Remove"/>
+        android:text="@string/txt_minus_remove"/>
 
     <Button
         android:id="@+id/btnCancel"

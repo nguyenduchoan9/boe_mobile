@@ -168,6 +168,7 @@ public class OrderFragment extends BaseFragment {
                                                         .observeOn(AndroidSchedulers.mainThread());
                                             }
                                         }
+                                        showrRlHourOver();
                                         return null;
                                     }
                                 })

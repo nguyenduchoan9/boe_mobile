@@ -13,6 +13,7 @@ import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.HttpException;
@@ -125,28 +126,41 @@ public class RetrofitUtils {
     }
 
     private Interceptor headerAuthenticateInterceptor() {
-        return chain -> {
-            Log.d("retrofitUtils", "hedaerAuthen");
-            Request request = chain.request();
-            if (null != preferencesManager) {
-                if (preferencesManager.isLoggedin()) {
-                    HeaderCredential headerCredential;
-                    if (null != (headerCredential = preferencesManager.getCredentialHeader())) {
-                        Headers newHeaders = request.headers()
-                                .newBuilder()
-                                .add(Constant.HEADER_ACCESS_TOKEN, headerCredential.getAccesToken())
-                                .add(Constant.HEADER_TOKEN_TYPE, headerCredential.getTokenType())
-                                .add(Constant.HEADER_CLIENT, headerCredential.getClient())
-                                .add(Constant.HEADER_EXPIRY, headerCredential.getExpiry())
-                                .add(Constant.HEADER_UID, headerCredential.getUid())
-                                .build();
-                        request = request.newBuilder()
-                                .headers(newHeaders)
-                                .build();
+        return new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Log.d("retrofitUtils", "hedaerAuthen");
+                Request request = chain.request();
+                if (null != preferencesManager) {
+                    if (preferencesManager.isLoggedin()) {
+                        HeaderCredential headerCredential;
+                        if (null != (headerCredential = preferencesManager.getCredentialHeader())) {
+                            Headers newHeaders = request.headers()
+                                    .newBuilder()
+                                    .add(Constant.HEADER_ACCESS_TOKEN, headerCredential.getAccesToken())
+                                    .add(Constant.HEADER_TOKEN_TYPE, headerCredential.getTokenType())
+                                    .add(Constant.HEADER_CLIENT, headerCredential.getClient())
+                                    .add(Constant.HEADER_EXPIRY, headerCredential.getExpiry())
+                                    .add(Constant.HEADER_UID, headerCredential.getUid())
+                                    .build();
+                            request = request.newBuilder()
+                                    .headers(newHeaders)
+                                    .build();
+                        }
                     }
                 }
+                return chain.proceed(request);
             }
-            return chain.proceed(request);
+        };
+    }
+
+    private Interceptor convertToBaseResponse() {
+        return chain -> {
+            Request request = chain.request();
+            Response response = chain.proceed(request);
+            response.code();
+
+            return null;
         };
     }
 

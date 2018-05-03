@@ -53,7 +53,7 @@ public class CartItemViewModel extends DishViewModel {
         quantity += 1;
         quantityView.set(String.valueOf(quantity));
         totalView.set(String.valueOf(new BigDecimal(price * quantity)));
-        cartManager.plus(this.id, 1);
+        cartManager.plus(this.id, 1, "");
         return Observable.create(subscriber -> {
             subscriber.onNext(oops);
             subscriber.onCompleted();

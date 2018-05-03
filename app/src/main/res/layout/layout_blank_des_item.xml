@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
-        android:text="Dish with no description"
+        android:text="@string/txt_dish_blank"
         android:textSize="@dimen/size_x_medium_text"
         android:textStyle="bold|italic"/>
 </RelativeLayout>

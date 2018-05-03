@@ -124,5 +124,8 @@
     <string name="text_s">S</string>
     <string name="text_paypal_order_success">Order successfully</string>
     <string name="text_go_to_m">GO TO MENU</string>
+    <string name="txt_minus_dish">Select dish you want to remove</string>
+    <string name="txt_minus_remove">Remove</string>
+    <string name="txt_dish_blank">Dish with no description</string>
     <!--End Information-->
 </resources>

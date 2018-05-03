@@ -54,7 +54,7 @@ public class DishViewModel {
     }
 
     private void addToCart() {
-        cartManager.plus(this.id, 1);
+        cartManager.plus(this.id, 1, "");
         isOrder.set(true);
     }
 

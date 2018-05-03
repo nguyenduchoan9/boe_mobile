@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Ngày bồi thường"
+                android:text="Số tiền bồi thường"
                 android:textSize="@dimen/size_medium_text"
                 android:textStyle="bold"/>
 
